@@ -10,7 +10,7 @@ import { ProductShowcase } from '@/components/home/ProductShowcase';
 import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
-import { LeadForm } from '@/components/lead/LeadForm';
+import { InlineLeadForm } from '@/components/lead/LazyLeadForm';
 import { Reveal } from '@/components/Reveal';
 import { SplitText } from '@/components/SplitText';
 import { WorksShowcase } from '@/components/works/WorksShowcase';
@@ -97,7 +97,7 @@ export default async function HomePage() {
             <NextSteps replyWindow={replyWindow} className="mt-12 hidden lg:block" />
           </div>
           <div className="glass rounded-[2rem] p-6 md:p-10">
-            <LeadForm whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} location="inline" />
+            <InlineLeadForm whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} location="inline" />
           </div>
           <NextSteps replyWindow={replyWindow} className="lg:hidden" />
         </div>

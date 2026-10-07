@@ -1,5 +1,5 @@
 import 'server-only';
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 
 const optionalSecret = z.string().trim().min(1).max(4096).optional();
 

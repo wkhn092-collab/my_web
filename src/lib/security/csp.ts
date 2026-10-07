@@ -18,7 +18,8 @@ export function buildAppCsp(nonce: string, options: { preview?: boolean } = {}, 
 
   const policy: Record<string, (string | null | false | undefined)[]> = {
     'default-src': ["'self'"],
-    'script-src': ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", isDev && "'unsafe-eval'"],
+    // 'wasm-unsafe-eval' lets the bundled meshopt decoder compile its WebAssembly; it does not allow JavaScript eval.
+    'script-src': ["'self'", `'nonce-${nonce}'`, "'strict-dynamic'", "'wasm-unsafe-eval'", isDev && "'unsafe-eval'"],
     // Motion and React `style` props emit inline style attributes; scripts stay nonce-locked.
     'style-src': ["'self'", "'unsafe-inline'"],
     'img-src': [

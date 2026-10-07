@@ -6,6 +6,7 @@ import { Reveal } from '@/components/Reveal';
 import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import type { HomePage } from '@/lib/content/types';
 import { prefersReducedMotion } from '@/lib/motion/lenis';
+import { loadScrollMotion } from '@/lib/motion/scroll-motion';
 
 const PIN_QUERY = '(min-width: 1024px)';
 
@@ -22,10 +23,9 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
     let revert: (() => void) | undefined;
 
     (async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+      const { gsap, ScrollTrigger } = await loadScrollMotion();
       const section = sectionRef.current;
       if (cancelled || !section) return;
-      gsap.registerPlugin(ScrollTrigger);
       section.classList.add('is-pinned');
 
       const ctx = gsap.context(() => {

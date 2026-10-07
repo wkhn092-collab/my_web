@@ -9,6 +9,7 @@ import { Intro } from '@/components/motion/Intro';
 import { SmoothScroll } from '@/components/motion/SmoothScroll';
 import { TextMotion } from '@/components/motion/TextMotion';
 import { Analytics } from '@/components/site/Analytics';
+import { WebVitals } from '@/components/site/WebVitals';
 import { AnnouncementBar } from '@/components/site/AnnouncementBar';
 import { CookieBanner } from '@/components/site/CookieBanner';
 import { Footer } from '@/components/site/Footer';
@@ -16,6 +17,7 @@ import { Header } from '@/components/site/Header';
 import { StickyCta } from '@/components/site/StickyCta';
 import { WhatsAppFab } from '@/components/site/WhatsAppFab';
 import { getSiteContent } from '@/lib/content/site-content';
+import { publicEnv } from '@/lib/env.public';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 
@@ -52,7 +54,8 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
       <TextMotion />
       <ButtonFx />
       <CustomCursor />
-      <Analytics nonce={nonce} />
+      <Analytics nonce={nonce} ga4Id={publicEnv.ga4Id} clarityId={publicEnv.clarityId} />
+      <WebVitals />
       {draft.isEnabled && <VisualEditing />}
     </NextIntlClientProvider>
   );

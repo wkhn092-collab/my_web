@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { prefetchModel } from './model-cache';
 
@@ -54,7 +55,7 @@ export function buildEnvironment(renderer: THREE.WebGLRenderer): THREE.Texture {
   return texture;
 }
 
-const loader = new GLTFLoader();
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 
 export async function loadModel(url: string): Promise<GLTF> {
   const buffer = await prefetchModel(url);

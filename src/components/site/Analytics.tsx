@@ -1,16 +1,17 @@
 'use client';
 
 import Script from 'next/script';
-import { publicEnv } from '@/lib/env.public';
 import { useVisitor, useVisitorHydrated } from '@/lib/store/visitor';
 
-/** GA4 and Clarity load only after explicit consent, with the request nonce. */
-export function Analytics({ nonce }: { nonce?: string }) {
+/**
+ * GA4 and Clarity load only after explicit consent, with the request nonce. The ids arrive already validated by
+ * the server's env schema, which keeps zod out of the bundle every page downloads.
+ */
+export function Analytics({ nonce, ga4Id, clarityId }: { nonce?: string; ga4Id?: string; clarityId?: string }) {
   const hydrated = useVisitorHydrated();
   const consent = useVisitor((s) => s.consent);
   if (!hydrated || consent !== 'granted') return null;
 
-  const { ga4Id, clarityId } = publicEnv;
   return (
     <>
       {ga4Id && (

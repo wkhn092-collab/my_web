@@ -242,7 +242,7 @@ export const SEED_FAQS: Faq[] = [
 
 /**
  * Paid extras Avishi offers (PROJECT_BRIEF, script 2 module A). Copywriting is not here because the services
- * already include the texts; 3D is not offered to someone who picked the premium 3D site, since it is included.
+ * already include the texts; 3D motion and logo design were dropped at Avishi's request.
  */
 export const SEED_ADDONS: Addon[] = [
   {
@@ -255,18 +255,6 @@ export const SEED_ADDONS: Addon[] = [
     slug: 'booking',
     title: 'מערכת תורים או הזמנות',
     benefit: 'לקוחות קובעים תור או מזמינים ישר מהאתר, גם כשאתה לא זמין לענות.',
-    siteTypes: ['landing', 'brand', 'premium3d', 'unsure'],
-  },
-  {
-    slug: 'motion-3d',
-    title: 'תלת-ממד ואנימציות',
-    benefit: 'מוצר שאפשר לסובב או סצנה שזזה בגלילה, כשזה עוזר ללקוח להבין מה הוא מקבל.',
-    siteTypes: ['landing', 'brand', 'unsure'],
-  },
-  {
-    slug: 'logo',
-    title: 'עיצוב לוגו',
-    benefit: 'לוגו שמתאים לעסק ולאתר, ונראה טוב גם בשלט וגם בתמונת הפרופיל.',
     siteTypes: ['landing', 'brand', 'premium3d', 'unsure'],
   },
 ];

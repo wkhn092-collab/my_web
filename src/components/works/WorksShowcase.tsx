@@ -7,6 +7,7 @@ import { SplitText } from '@/components/SplitText';
 import { SITE_TYPE_LABEL } from '@/lib/content/labels';
 import type { Project } from '@/lib/content/types';
 import { prefersReducedMotion } from '@/lib/motion/lenis';
+import { loadScrollMotion } from '@/lib/motion/scroll-motion';
 import { ProjectArt } from './ProjectArt';
 
 const PIN_QUERY = '(min-width: 1024px)';
@@ -51,11 +52,10 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
     let revert: (() => void) | undefined;
 
     (async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+      const { gsap, ScrollTrigger } = await loadScrollMotion();
       const section = sectionRef.current;
       const track = trackRef.current;
       if (cancelled || !section || !track) return;
-      gsap.registerPlugin(ScrollTrigger);
       section.classList.add('is-pinned');
 
       const ctx = gsap.context(() => {
@@ -124,7 +124,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
           {projects.map((project, i) => (
             <li key={project.id} className="w-[70vw] max-w-80 shrink-0 snap-start sm:w-[46vw] sm:max-w-none lg:w-[34vw]">
               <article className="group relative" data-cursor="view">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 sm:aspect-[4/5] md:rounded-[1.75rem] lg:aspect-auto lg:h-[clamp(12rem,calc(100vh-31rem),34rem)]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-gold-soft sm:aspect-[4/5] md:rounded-[1.75rem] lg:aspect-auto lg:h-[clamp(12rem,calc(100vh-31rem),34rem)]">
                   <div data-art className="absolute -inset-x-[8%] inset-y-0">
                     <ProjectArt project={project} sizes="(min-width: 1024px) 34vw, (min-width: 640px) 46vw, 70vw" />
                   </div>
@@ -149,7 +149,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
                     </h3>
                   </div>
                   <span
-                    className="mt-1 inline-flex h-10 w-10 shrink-0 md:h-11 md:w-11 items-center justify-center rounded-full border border-pearl/20 text-lg transition-all duration-500 group-hover:-rotate-45 group-hover:border-gold group-hover:bg-gold group-hover:text-abyss"
+                    className="mt-1 inline-flex h-10 w-10 shrink-0 md:h-11 md:w-11 items-center justify-center rounded-full border border-pearl/20 text-lg transition-all duration-500 group-hover:-rotate-45 group-hover:border-gold group-hover:bg-gold group-hover:text-abyss group-has-[a:focus-visible]:-rotate-45 group-has-[a:focus-visible]:border-gold group-has-[a:focus-visible]:bg-gold group-has-[a:focus-visible]:text-abyss"
                     aria-hidden="true"
                   >
                     ←

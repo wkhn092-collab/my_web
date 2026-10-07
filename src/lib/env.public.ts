@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 
 const publicEnvSchema = z.object({
   siteUrl: z.url().default('http://localhost:3000'),

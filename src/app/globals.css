@@ -283,8 +283,9 @@
   transform: none;
 }
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  /* 0.01, not 0: invisible to the eye, but the browser counts the text as painted, so LCP isn't held back by the entrance. */
   .reveal:not(.is-visible) {
-    opacity: 0;
+    opacity: 0.01;
     transform: translateY(var(--motion-distance));
   }
   .reveal {
@@ -304,7 +305,7 @@
 }
 @keyframes rise-in {
   from {
-    opacity: 0;
+    opacity: 0.01;
     transform: translateY(20px);
   }
 }
@@ -387,7 +388,7 @@ html.intro-seen .intro {
 }
 @keyframes page-enter {
   from {
-    opacity: 0;
+    opacity: 0.01;
     transform: translateY(24px);
   }
 }

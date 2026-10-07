@@ -6,6 +6,7 @@ import { SplitText } from '@/components/SplitText';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import { prefersReducedMotion } from '@/lib/motion/lenis';
+import { loadScrollMotion } from '@/lib/motion/scroll-motion';
 
 const PIN_QUERY = '(min-width: 1024px)';
 
@@ -27,10 +28,9 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
     let revert: (() => void) | undefined;
 
     (async () => {
-      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import('gsap'), import('gsap/ScrollTrigger')]);
+      const { gsap, ScrollTrigger } = await loadScrollMotion();
       const section = sectionRef.current;
       if (cancelled || !section) return;
-      gsap.registerPlugin(ScrollTrigger);
       const ctx = gsap.context(() => {
         const items = gsap.utils.toArray<HTMLElement>('[data-fact-list] [data-fact]');
         const setActive = (index: number) => items.forEach((item, i) => item.toggleAttribute('data-active', i <= index));

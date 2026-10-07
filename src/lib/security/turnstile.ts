@@ -1,5 +1,5 @@
 import 'server-only';
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { env, isConfigured, isDeployed } from '@/lib/env.server';
 import { logWarn } from '@/lib/logger';
 

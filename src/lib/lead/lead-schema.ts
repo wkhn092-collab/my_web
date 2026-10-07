@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { LEAD_SITE_TYPES } from '@/lib/content/types';
 import { parseAddonIds } from '@/lib/domain/addons';
 import { normalizeIsraeliPhone } from '@/lib/domain/phone';

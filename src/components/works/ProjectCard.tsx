@@ -24,7 +24,7 @@ export function ProjectCard({
   return (
     <article className="group relative flex h-full flex-col" data-cursor="view">
       <div
-        className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-ink ring-1 ring-pearl/10 transition-shadow duration-700 group-hover:shadow-[0_30px_80px_-30px_rgb(201_166_107/0.35)]"
+        className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] bg-ink ring-1 ring-pearl/10 transition-shadow duration-700 group-hover:shadow-[0_30px_80px_-30px_rgb(201_166_107/0.35)] group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-gold-soft"
         style={morph ? { viewTransitionName: `project-${project.slug}` } : undefined}
       >
         <ProjectArt project={project} sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />

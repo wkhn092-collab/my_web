@@ -82,6 +82,11 @@ export function LeadForm({
 
   const id = (field: string) => `${uid}-${field}`;
 
+  // Loaded on demand, so the drawer may already be open when the fields arrive.
+  useEffect(() => {
+    if (location === 'drawer') formRef.current?.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+  }, [location]);
+
   function focusFirstError(fieldErrors: Partial<Record<LeadField, string>>) {
     const first = FIELD_ORDER.find((f) => fieldErrors[f]);
     if (!first) return;

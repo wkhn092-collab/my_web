@@ -23,6 +23,7 @@ test.describe('home', () => {
   test('every concept project is labelled', async ({ page }) => {
     await page.goto('/projects');
     const cards = page.locator('main article');
+    await expect(cards.first()).toBeVisible();
     const count = await cards.count();
     expect(count).toBeGreaterThan(0);
     for (let i = 0; i < count; i++) {
@@ -33,7 +34,7 @@ test.describe('home', () => {
 
 test.describe('lead form', () => {
   test('shows the approved microcopy for invalid input and focuses the first error', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/#contact');
     const form = page.locator('#contact form');
     await form.getByRole('button', { name: 'להמשך בוואטסאפ' }).click();
     await expect(form.getByText('צריך שם, כדי שאדע איך לפנות')).toBeVisible();
@@ -49,7 +50,7 @@ test.describe('lead form', () => {
   test('a valid lead opens WhatsApp with the prefilled message and lands on /thanks', async ({ page, context }) => {
     // Never hit the real WhatsApp from tests.
     await context.route('https://wa.me/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
-    await page.goto('/');
+    await page.goto('/#contact');
     const popup = context.waitForEvent('page');
     const form = page.locator('#contact form');
     await form.getByLabel('שם').fill('דנה');
@@ -65,6 +66,14 @@ test.describe('lead form', () => {
 
     await expect(page).toHaveURL(/\/thanks$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('תודה, דנה. הפנייה אצלי.');
+  });
+
+  test('the drawer loads the form on demand and focuses the name field', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#hero-cta').click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByLabel('שם')).toBeFocused();
   });
 
   test('a direct visit to /thanks shows no personal data', async ({ page }) => {

@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { getLenis, prefersReducedMotion, setLenis } from '@/lib/motion/lenis';
+import { loadScrollMotion } from '@/lib/motion/scroll-motion';
 import { useSession } from '@/lib/store/visitor';
 
 /** Lenis drives the window scroll on GSAP's ticker so ScrollTrigger scenes stay in sync. Off on reduced motion. */
@@ -14,13 +15,9 @@ export function SmoothScroll() {
     let cleanup: (() => void) | undefined;
 
     (async () => {
-      const [{ default: Lenis }, { gsap }, { ScrollTrigger }] = await Promise.all([
-        import('lenis'),
-        import('gsap'),
-        import('gsap/ScrollTrigger'),
-      ]);
+      const { gsap, ScrollTrigger } = await loadScrollMotion();
+      const { default: Lenis } = await import('lenis');
       if (cancelled) return;
-      gsap.registerPlugin(ScrollTrigger);
       const lenis = new Lenis({
         lerp: 0.085,
         wheelMultiplier: 0.95,

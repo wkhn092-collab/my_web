@@ -6,9 +6,8 @@ const prod = { NODE_ENV: 'production' } as NodeJS.ProcessEnv;
 describe('buildAppCsp', () => {
   it('locks scripts to the nonce in production', () => {
     const csp = buildAppCsp('abc', {}, prod);
-    expect(csp).toContain("script-src 'self' 'nonce-abc' 'strict-dynamic'");
-    expect(csp).not.toContain('unsafe-eval');
-    expect(csp).toContain("object-src 'none'");
+    expect(csp).toContain("script-src 'self' 'nonce-abc' 'strict-dynamic' 'wasm-unsafe-eval';");
+    expect(csp).not.toContain("'unsafe-eval'");    expect(csp).toContain("object-src 'none'");
     expect(csp).toContain("frame-ancestors 'self'");
     expect(csp).toContain('upgrade-insecure-requests');
   });

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { LEAD_SITE_TYPES, SITE_TYPES } from './types';
 
 const str = (max: number) => z.string().trim().min(1).max(max);
