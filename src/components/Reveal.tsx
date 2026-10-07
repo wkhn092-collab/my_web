@@ -20,6 +20,8 @@ export function Reveal({
   bare?: boolean;
   children: ReactNode;
   id?: string;
+  'aria-label'?: string;
+  'aria-hidden'?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {

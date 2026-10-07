@@ -118,16 +118,8 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
     }
   };
 
-  const onTouchEnd = () => {
-    touching = false;
-    lastTouchEnd = performance.now();
-  };
-
-  // A fling that coasts back up into the dive (or stops halfway) finishes the trip instead of parking mid-way.
-  const onScroll = () => {
-    const y = window.scrollY;
-    if (y !== lastY) direction = Math.sign(y - lastY);
-    lastY = y;
+  // A fling that coasts back up into the dive (or a drag released halfway) finishes the trip instead of parking mid-way.
+  const scheduleSettle = () => {
     window.clearTimeout(settleTimer);
     settleTimer = window.setTimeout(() => {
       if (gliding || touching || performance.now() - lastTouchEnd > 2500) return;
@@ -135,6 +127,20 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
       const at = window.scrollY;
       if (at > 4 && at < end - 4) glide(direction < 0 ? 0 : end);
     }, 160);
+  };
+
+  const onTouchEnd = () => {
+    touching = false;
+    lastTouchEnd = performance.now();
+    // A slow drag that stops before the finger lifts fires no further scroll events, so settle from here too.
+    scheduleSettle();
+  };
+
+  const onScroll = () => {
+    const y = window.scrollY;
+    if (y !== lastY) direction = Math.sign(y - lastY);
+    lastY = y;
+    scheduleSettle();
   };
 
   window.addEventListener('touchstart', onTouchStart, { passive: true });

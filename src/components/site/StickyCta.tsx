@@ -56,7 +56,7 @@ export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string
       ref={ref}
       aria-hidden={!visible}
       inert={!visible}
-      className={`fixed inset-x-0 bottom-0 z-30 border-t border-pearl/10 bg-abyss/80 px-4 pt-3 backdrop-blur-xl transition-transform duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
+      className={`sticky-cta fixed inset-x-0 bottom-0 z-30 border-t border-pearl/10 bg-abyss/80 px-4 pt-3 backdrop-blur-xl transition-transform duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
       style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
@@ -71,7 +71,7 @@ export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string
           rel="noopener noreferrer"
           aria-label={tFab('label')}
           onClick={() => track('whatsapp_click', { location: 'sticky' })}
-          className="glass inline-flex w-14 shrink-0 items-center justify-center rounded-full text-pearl"
+          className="glass btn-fx wa-ping inline-flex w-14 shrink-0 items-center justify-center rounded-full text-pearl"
         >
           <WhatsAppIcon className="h-6 w-6" />
         </a>

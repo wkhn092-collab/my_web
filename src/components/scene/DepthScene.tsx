@@ -74,8 +74,13 @@ export function DepthScene() {
           engine!.setPointer(Math.max(-1, Math.min(1, e.gamma / 30)), Math.max(-1, Math.min(1, (e.beta - 45) / 30)));
         };
         let lastY = window.scrollY;
+        let lastDive = 0;
         const onScroll = () => {
-          engine!.setDive(heroDiveProgress(hero));
+          const dive = heroDiveProgress(hero);
+          // Back at rest: re-measure, since the timed measure is skipped when the visitor scrolled away early.
+          if (dive === 0 && lastDive > 0) measure();
+          lastDive = dive;
+          engine!.setDive(dive);
           const lenis = getLenis();
           engine!.setVelocity(lenis ? lenis.velocity : window.scrollY - lastY);
           lastY = window.scrollY;

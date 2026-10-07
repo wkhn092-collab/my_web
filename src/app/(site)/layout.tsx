@@ -3,9 +3,11 @@ import { getMessages, getTranslations } from 'next-intl/server';
 import { draftMode, headers } from 'next/headers';
 import { VisualEditing } from 'next-sanity/visual-editing';
 import { LeadDrawer } from '@/components/lead/LeadDrawer';
+import { ButtonFx } from '@/components/motion/ButtonFx';
 import { CustomCursor } from '@/components/motion/CustomCursor';
 import { Intro } from '@/components/motion/Intro';
 import { SmoothScroll } from '@/components/motion/SmoothScroll';
+import { TextMotion } from '@/components/motion/TextMotion';
 import { Analytics } from '@/components/site/Analytics';
 import { AnnouncementBar } from '@/components/site/AnnouncementBar';
 import { CookieBanner } from '@/components/site/CookieBanner';
@@ -47,6 +49,8 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
       <CookieBanner />
       <div className="grain" aria-hidden="true" />
       <SmoothScroll />
+      <TextMotion />
+      <ButtonFx />
       <CustomCursor />
       <Analytics nonce={nonce} />
       {draft.isEnabled && <VisualEditing />}

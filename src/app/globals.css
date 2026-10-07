@@ -496,33 +496,6 @@ html.intro-seen .intro {
   opacity: 1;
 }
 
-/* ───────── Footer wordmark: polished gold, a slow band of light passing across it ───────── */
-.finale-word {
-  background: linear-gradient(
-    105deg,
-    #8f6f3c 0%,
-    var(--color-gold) 30%,
-    var(--color-gold) 42%,
-    #fff6e0 50%,
-    var(--color-gold) 58%,
-    var(--color-gold) 70%,
-    #8f6f3c 100%
-  );
-  background-size: 300% 100%;
-  background-position: 50% 0;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 28px rgb(201 166 107 / 0.18));
-}
-.finale-line {
-  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .finale-word {
-    animation: finale-sheen 7s var(--ease-lux) infinite;
-  }
-}
 @media (prefers-reduced-motion: no-preference) {
   .pulse-dot {
     animation: pulse-dot 2.4s ease-out infinite;
@@ -537,17 +510,6 @@ html.intro-seen .intro {
     box-shadow: 0 0 0 8px rgb(95 211 141 / 0);
   }
 }
-@keyframes finale-sheen {
-  0%,
-  35% {
-    background-position: 100% 0;
-  }
-  75%,
-  100% {
-    background-position: 0% 0;
-  }
-}
-
 /* Project art when there is no screenshot: per-project tint from --tint */
 .project-art {
   background:
@@ -815,4 +777,278 @@ dialog.drawer::backdrop {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* ───────── Text motion: copy surfaces out of a soft blur as it scrolls in (TextMotion.tsx adds .tm / .tm-in) ───────── */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .text-motion .tm {
+    transition:
+      opacity 1000ms var(--ease-out),
+      translate 1000ms var(--ease-out),
+      filter 1000ms var(--ease-out),
+      letter-spacing 1400ms var(--ease-out);
+    transition-delay: var(--tm-delay, 0ms);
+  }
+  .text-motion .tm:not(.tm-in) {
+    opacity: 0;
+    translate: 0 0.6em;
+    filter: blur(8px);
+  }
+  /* Eyebrows: the letters gather in while the gold rule draws itself. */
+  .text-motion .eyebrow.tm:not(.tm-in) {
+    translate: none;
+    letter-spacing: 0.7em;
+  }
+  .text-motion .eyebrow.tm::before {
+    transform-origin: right;
+    transition: transform 1200ms var(--ease-lux);
+    transition-delay: calc(var(--tm-delay, 0ms) + 150ms);
+  }
+  .text-motion .eyebrow.tm:not(.tm-in)::before {
+    transform: scaleX(0);
+  }
+}
+
+/* Gold words in headlines: a slow band of light passes over them now and then. */
+@media (prefers-reduced-motion: no-preference) {
+  .split-word .text-gilded {
+    background-image:
+      linear-gradient(105deg, transparent 40%, rgb(255 248 230 / 0.95) 50%, transparent 60%),
+      linear-gradient(180deg, #f5e6c4 0%, var(--color-gold) 60%, #8f6f3c 100%);
+    background-size:
+      250% 100%,
+      100% 100%;
+    background-repeat: no-repeat;
+    animation: gilded-sheen 6.5s var(--ease-lux) 1.8s infinite;
+  }
+}
+@keyframes gilded-sheen {
+  0%,
+  55% {
+    background-position:
+      130% 0,
+      0 0;
+  }
+  85%,
+  100% {
+    background-position:
+      -30% 0,
+      0 0;
+  }
+}
+
+/* ───────── Buttons: instant press feedback, a light that calls the eye to the main action ───────── */
+.btn-secondary,
+.btn-fx {
+  isolation: isolate;
+  overflow: hidden;
+}
+.btn-fx {
+  position: relative;
+}
+.btn-ripple {
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  pointer-events: none;
+  background: radial-gradient(circle, var(--ripple, rgb(201 166 107 / 0.38)) 0%, transparent 62%);
+  transform: scale(0);
+  animation: btn-ripple 700ms var(--ease-out) forwards;
+}
+.btn-primary .btn-ripple {
+  --ripple: rgb(255 255 255 / 0.6);
+}
+@keyframes btn-ripple {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+/* `scale`, not `transform`: magnetic buttons already own their transform. */
+.btn-primary:active,
+.btn-secondary:active,
+.footer-orb:active,
+.btn-fx:active {
+  scale: 0.96;
+}
+
+.btn-secondary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgb(201 166 107 / 0.16), rgb(201 166 107 / 0.05));
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 650ms var(--ease-out);
+}
+.btn-secondary:hover::before,
+.btn-secondary:focus-visible::before {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Only the main action moves on its own: a band of light every few seconds (paused while hovered). */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: -50% auto -50% -60%;
+    z-index: -1;
+    width: 34%;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.5), transparent);
+    transform: translateX(-120%) skewX(-18deg);
+    animation: btn-idle-sheen 5.5s var(--ease-lux) 2.5s infinite;
+  }
+  .btn-primary:hover::before {
+    opacity: 0;
+  }
+  /* The sticky bar calls once as it slides in. */
+  .sticky-cta[aria-hidden='false'] .btn-primary {
+    animation: cta-call 1.8s var(--ease-out) 350ms 2;
+  }
+  .wa-ping {
+    animation: wa-ping 2.2s ease-out 8s 3;
+  }
+}
+@keyframes btn-idle-sheen {
+  0%,
+  68% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(580%) skewX(-18deg);
+  }
+}
+@keyframes cta-call {
+  0% {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 0 0 0 rgb(201 166 107 / 0.6);
+  }
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 0 0 16px rgb(201 166 107 / 0);
+  }
+}
+@keyframes wa-ping {
+  0% {
+    box-shadow: 0 0 0 0 rgb(95 211 141 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 14px rgb(95 211 141 / 0);
+  }
+}
+
+/* ───────── Footer ───────── */
+.footer-orb {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 12rem;
+  height: 12rem;
+  overflow: hidden;
+  border: 1px solid rgb(201 166 107 / 0.45);
+  border-radius: 9999px;
+  color: var(--color-pearl);
+  transition:
+    color 600ms var(--ease-out),
+    border-color 600ms var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+@media (min-width: 768px) {
+  .footer-orb {
+    width: 14rem;
+    height: 14rem;
+  }
+}
+.footer-orb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 120%, var(--color-gold-soft), var(--color-gold) 55%, #a8854c);
+  transform: scale(0);
+  transition: transform 700ms var(--ease-out);
+}
+.footer-orb:hover,
+.footer-orb:focus-visible {
+  color: var(--color-abyss);
+  border-color: var(--color-gold);
+}
+.footer-orb:hover::before,
+.footer-orb:focus-visible::before {
+  transform: scale(1);
+}
+.footer-orb-ring {
+  position: absolute;
+  inset: 0.4rem;
+  width: calc(100% - 0.8rem);
+  height: calc(100% - 0.8rem);
+  fill: currentColor;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  opacity: 0.72;
+}
+.footer-orb-core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer-orb-arrow {
+  transition: transform 500ms var(--ease-out);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .footer-orb-ring {
+    animation: orb-spin 26s linear infinite;
+  }
+  .footer-orb:hover .footer-orb-arrow {
+    transform: translateX(-8px);
+  }
+}
+@keyframes orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer-nav-link {
+  transition: color 500ms var(--ease-out);
+}
+.footer-nav-dash {
+  align-self: center;
+  width: 0;
+  height: 1px;
+  margin-inline-end: 0;
+  background: var(--color-gold);
+  transition:
+    width 500ms var(--ease-out),
+    margin 500ms var(--ease-out);
+}
+.footer-nav-link:hover,
+.footer-nav-link:focus-visible {
+  color: var(--color-gold-soft);
+}
+.footer-nav-link:hover .footer-nav-dash,
+.footer-nav-link:focus-visible .footer-nav-dash {
+  width: 1.75rem;
+  margin-inline-end: 0.75rem;
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .group:hover .back-top-arrow {
+    animation: arrow-up 700ms var(--ease-out);
+  }
+}
+@keyframes arrow-up {
+  45% {
+    transform: translateY(-160%);
+  }
+  46% {
+    transform: translateY(160%);
+  }
 }

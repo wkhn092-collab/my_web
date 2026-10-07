@@ -21,7 +21,8 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (prefersReducedMotion() || !window.matchMedia(PIN_QUERY).matches) return;
+    if (prefersReducedMotion()) return;
+    if (!window.matchMedia(PIN_QUERY).matches) return lightFactsInView(sectionRef.current);
     let cancelled = false;
     let revert: (() => void) | undefined;
 
@@ -97,12 +98,29 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
           <ProductStage kind="perfume" cursorLabel={t('drag')} trackSelector=".pin-spacer" className="absolute inset-0 h-full w-full" />
         </div>
 
-        <div className="lg:hidden">
+        <div className="lg:hidden" data-fact-scroll="">
           <FactList facts={facts} />
         </div>
       </div>
     </section>
   );
+}
+
+/** Smaller screens have no pinned stage, so each fact lights up as it scrolls past the middle of the screen. */
+function lightFactsInView(section: HTMLElement | null) {
+  if (!section) return;
+  const items = Array.from(section.querySelectorAll<HTMLElement>('[data-fact-scroll] [data-fact]'));
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach((entry) => entry.target.toggleAttribute('data-active', entry.isIntersecting)),
+    { rootMargin: '0px 0px -45% 0px' },
+  );
+  items.forEach((item) => observer.observe(item));
+  section.classList.add('is-lighting');
+  return () => {
+    observer.disconnect();
+    section.classList.remove('is-lighting');
+    items.forEach((item) => item.removeAttribute('data-active'));
+  };
 }
 
 function FactList({ facts }: { facts: Fact[] }) {
@@ -112,7 +130,7 @@ function FactList({ facts }: { facts: Fact[] }) {
         <li
           key={fact.title}
           data-fact=""
-          className="flex gap-4 transition-opacity duration-700 group-[.is-pinned]/showcase:opacity-30 group-[.is-pinned]/showcase:data-[active]:opacity-100"
+          className="flex gap-4 transition-opacity duration-700 group-[.is-pinned]/showcase:opacity-30 group-[.is-pinned]/showcase:data-[active]:opacity-100 group-[.is-lighting]/showcase:opacity-30 group-[.is-lighting]/showcase:data-[active]:opacity-100"
         >
           <bdi className="font-display text-sm text-gold">{String(i + 1).padStart(2, '0')}</bdi>
           <div>

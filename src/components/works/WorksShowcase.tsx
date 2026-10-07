@@ -70,8 +70,8 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
         // RTL: the row starts on the right and overflows to the left, so it travels in +x.
         gsap.to(track, { x: () => distance(), ease: 'none', scrollTrigger: { ...scrollTrigger, pin: true, anticipatePin: 1 } });
         if (progressRef.current) gsap.fromTo(progressRef.current, { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger });
-        gsap.utils.toArray<HTMLElement>('[data-art]', track).forEach((art, i) => {
-          gsap.fromTo(art, { xPercent: -6 - i }, { xPercent: 6 + i, ease: 'none', scrollTrigger });
+        gsap.utils.toArray<HTMLElement>('[data-art]', track).forEach((art) => {
+          gsap.fromTo(art, { xPercent: -3 }, { xPercent: 3, ease: 'none', scrollTrigger });
         });
       }, section);
       ScrollTrigger.refresh();
@@ -163,7 +163,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
             <Link
               href="/projects"
               data-magnetic=""
-              className="group flex aspect-square w-40 flex-col items-center justify-center gap-2 rounded-full border border-pearl/20 text-center transition-colors duration-500 hover:border-gold hover:bg-gold hover:text-abyss sm:w-56 md:w-64"
+              className="btn-fx group flex aspect-square w-40 flex-col items-center justify-center gap-2 rounded-full border border-pearl/20 text-center transition-colors duration-500 hover:border-gold hover:bg-gold hover:text-abyss sm:w-56 md:w-64"
             >
               <span className="font-display text-2xl md:text-3xl">{t('works.allWorks')}</span>
               <span aria-hidden="true" className="text-2xl transition-transform duration-500 group-hover:-translate-x-2">
