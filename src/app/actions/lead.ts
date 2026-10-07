@@ -6,7 +6,7 @@ import { getSiteContent } from '@/lib/content/site-content';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 import { buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
-import { isConfigured } from '@/lib/env.server';
+import { isConfigured, leadsLocked } from '@/lib/env.server';
 import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
 import { sendCustomerConfirmation, sendOwnerBackup } from '@/lib/lead/notify';
 import { logError, logInfo, logWarn } from '@/lib/logger';
@@ -28,6 +28,8 @@ function readForm(formData: FormData): Record<string, string | undefined> {
 }
 
 export async function submitLead(_prev: LeadActionState, formData: FormData): Promise<LeadActionState> {
+  if (leadsLocked) return { status: 'error' };
+
   const parsed = leadInputSchema.safeParse(readForm(formData));
   if (!parsed.success) {
     const fieldErrors: Partial<Record<LeadField, string>> = {};

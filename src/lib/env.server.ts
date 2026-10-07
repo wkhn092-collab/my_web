@@ -74,24 +74,28 @@ function emptyToUndefined(source: NodeJS.ProcessEnv): Record<string, string | un
 }
 
 function loadEnv(): ServerEnv {
-  const parsed = serverEnvSchema.safeParse(emptyToUndefined(process.env));
+  const source = emptyToUndefined(process.env);
+  source.NEXT_PUBLIC_SITE_URL ??= source.VERCEL_PROJECT_PRODUCTION_URL ? `https://${source.VERCEL_PROJECT_PRODUCTION_URL}` : undefined;
+  const parsed = serverEnvSchema.safeParse(source);
   if (!parsed.success) {
     const fields = parsed.error.issues.map((i) => i.path.join('.')).join(', ');
     throw new Error(`Invalid environment variables: ${fields}`);
   }
-  const env = parsed.data;
-  if (env.VERCEL_ENV === 'production' || env.VERCEL_ENV === 'preview') {
-    const missing = REQUIRED_ON_VERCEL.filter((key) => !env[key]);
-    if (missing.length > 0) {
-      throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
-    }
-  }
-  return env;
+  return parsed.data;
 }
 
 export const env = loadEnv();
 
 export const isDeployed = env.VERCEL_ENV === 'production' || env.VERCEL_ENV === 'preview';
+
+const missingOnDeploy = isDeployed ? REQUIRED_ON_VERCEL.filter((key) => !env[key]) : [];
+
+/** Deployed without the lead-protection services: the form refuses every submission and visitors are sent to WhatsApp. */
+export const leadsLocked = missingOnDeploy.length > 0;
+
+if (leadsLocked) {
+  console.warn(`[env] Lead form locked. Missing: ${missingOnDeploy.join(', ')}`);
+}
 
 export class ServiceNotConfiguredError extends Error {
   constructor(service: string) {

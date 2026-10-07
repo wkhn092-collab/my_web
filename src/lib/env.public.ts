@@ -25,7 +25,9 @@ const blank = (value: string | undefined) => (value ? value : undefined);
 
 // Each NEXT_PUBLIC_ variable must be referenced literally so the bundler can inline it.
 export const publicEnv = publicEnvSchema.parse({
-  siteUrl: blank(process.env.NEXT_PUBLIC_SITE_URL),
+  siteUrl:
+    blank(process.env.NEXT_PUBLIC_SITE_URL) ??
+    (process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}` : undefined),
   sanityProjectId: blank(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID),
   sanityDataset: blank(process.env.NEXT_PUBLIC_SANITY_DATASET),
   turnstileSiteKey: blank(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY),
