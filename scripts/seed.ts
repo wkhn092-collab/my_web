@@ -7,6 +7,7 @@ import { createClient } from 'next-sanity';
 import { LEGAL_DRAFTS, draftToPortableText } from '../src/content/legal-drafts';
 import {
   SEED_ABOUT,
+  SEED_ADDONS,
   SEED_FAQS,
   SEED_HOME,
   SEED_HOURS,
@@ -76,6 +77,14 @@ const docs: Record<string, unknown>[] = [
     metrics: withKeys(metrics),
   })),
   ...SEED_FAQS.map(({ id, ...faq }, order) => ({ _id: id, _type: 'faq', order, ...faq })),
+  ...SEED_ADDONS.map(({ slug, ...addon }, order) => ({
+    _id: `addon-${slug}`,
+    _type: 'addon',
+    order,
+    active: true,
+    ...addon,
+    slug: { _type: 'slug', current: slug },
+  })),
   ...LEGAL_DRAFTS.map((draft) => ({
     _id: `legal-${draft.slug}`,
     _type: 'legalPage',

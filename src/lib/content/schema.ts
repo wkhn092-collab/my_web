@@ -102,6 +102,41 @@ export const projectSchema = z.object({
   metrics: z.array(z.object({ label: str(24), value: str(12), measuredAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), source: str(60) })),
 });
 
+const sanityImage = z.object({
+  url: z.url({ protocol: /^https$/, hostname: /^cdn\.sanity\.io$/ }),
+  alt: str(140),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  lqip: optStr(4000),
+});
+
+export const addonSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]{1,40}$/),
+  title: str(40),
+  benefit: str(140),
+  siteTypes: z.array(z.enum(LEAD_SITE_TYPES)).min(1),
+});
+
+export const testimonialSchema = z.object({
+  id: str(120),
+  fullName: str(60),
+  role: optStr(80),
+  quote: str(400),
+  rating: z.number().int().min(1).max(5).nullish().transform((v) => v ?? undefined),
+  photo: sanityImage.nullish().transform((v) => v ?? undefined),
+  project: z
+    .object({ title: str(40), slug: z.string().regex(/^[a-z0-9-]{1,48}$/), isConcept: z.boolean() })
+    .nullish()
+    .transform((v) => v ?? undefined),
+});
+
+/** Arrays added after launch arrive as null from older datasets; treat that as empty. */
+const list = <T extends z.ZodType>(item: T) =>
+  z
+    .array(item)
+    .nullish()
+    .transform((v) => v ?? []);
+
 export const siteContentSchema = z.object({
   settings: settingsSchema,
   hours: hoursSchema,
@@ -122,5 +157,7 @@ export const siteContentSchema = z.object({
   niches: z.array(nicheSchema),
   projects: z.array(projectSchema),
   faqs: z.array(z.object({ id: str(120), question: str(80), answer: str(600) })),
+  addons: list(addonSchema),
+  testimonials: list(testimonialSchema),
   legalPages: z.array(z.object({ slug: str(32), title: str(60) })),
 });

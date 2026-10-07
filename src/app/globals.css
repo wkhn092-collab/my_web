@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-abyss: #030608;
-  --color-ink: #091015;
-  --color-ink-2: #101a20;
+  --color-abyss: #0c1626;
+  --color-ink: #111e33;
+  --color-ink-2: #182842;
   --color-pearl: #efe9de;
   --color-mist: #9ba7ab;
   --color-gold: #c9a66b;
@@ -435,7 +435,7 @@ html.intro-seen .intro {
 .scene-poster {
   background:
     radial-gradient(70% 50% at 50% -10%, rgb(62 154 168 / 0.14), transparent 70%),
-    linear-gradient(to bottom, #061016 0%, #030608 70%);
+    linear-gradient(to bottom, #12213a 0%, var(--color-abyss) 70%);
 }
 /* The glow where the 3D object sits; it gives way once the live scene is drawing its own light. */
 .scene-poster::before {
@@ -515,7 +515,7 @@ html.intro-seen .intro {
   background:
     radial-gradient(60% 70% at 75% 20%, color-mix(in oklab, var(--tint) 70%, white 8%), transparent 70%),
     radial-gradient(70% 60% at 15% 100%, color-mix(in oklab, var(--tint) 55%, black 20%), transparent 70%),
-    linear-gradient(160deg, color-mix(in oklab, var(--tint) 35%, #05090c) 0%, #05080b 100%);
+    linear-gradient(160deg, color-mix(in oklab, var(--tint) 35%, #0a1424) 0%, #09121f 100%);
 }
 
 /* ───────── Marquee ───────── */
@@ -656,7 +656,7 @@ dialog.drawer {
   }
 }
 dialog.drawer::backdrop {
-  background: rgb(3 6 8 / 0.7);
+  background: rgb(12 22 38 / 0.7);
   backdrop-filter: blur(6px);
 }
 @media (prefers-reduced-motion: no-preference) {

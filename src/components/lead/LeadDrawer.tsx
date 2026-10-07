@@ -2,11 +2,12 @@
 
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef } from 'react';
+import type { Addon } from '@/lib/content/types';
 import { useSession } from '@/lib/store/visitor';
 import { LeadForm } from './LeadForm';
 
 /** Native <dialog>: focus trap, Escape and inert background come from the platform. */
-export function LeadDrawer({ whatsappNumber, nonce }: { whatsappNumber: string; nonce?: string }) {
+export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: string; addons: Addon[]; nonce?: string }) {
   const t = useTranslations('form');
   const tc = useTranslations('common');
   const titleId = useId();
@@ -60,7 +61,7 @@ export function LeadDrawer({ whatsappNumber, nonce }: { whatsappNumber: string; 
             </svg>
           </button>
         </div>
-        {open && <LeadForm whatsappNumber={whatsappNumber} presetSiteType={siteType} nonce={nonce} location="drawer" />}
+        {open && <LeadForm whatsappNumber={whatsappNumber} addons={addons} presetSiteType={siteType} nonce={nonce} location="drawer" />}
       </div>
     </dialog>
   );

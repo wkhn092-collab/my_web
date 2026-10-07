@@ -7,6 +7,7 @@ import { Hero } from '@/components/home/Hero';
 import { Marquee } from '@/components/home/Marquee';
 import { NextSteps } from '@/components/home/NextSteps';
 import { ProductShowcase } from '@/components/home/ProductShowcase';
+import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
 import { LeadForm } from '@/components/lead/LeadForm';
@@ -36,6 +37,8 @@ export default async function HomePage() {
       <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
 
       <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
+
+      <Proof testimonials={content.testimonials} eyebrow={t('home.proofEyebrow')} />
 
       <section aria-labelledby="about-teaser-title" className="relative overflow-hidden pb-24 pt-4 md:pb-32 lg:pt-0">
         <div
@@ -94,7 +97,7 @@ export default async function HomePage() {
             <NextSteps replyWindow={replyWindow} className="mt-12 hidden lg:block" />
           </div>
           <div className="glass rounded-[2rem] p-6 md:p-10">
-            <LeadForm whatsappNumber={whatsappNumber} nonce={nonce} location="inline" />
+            <LeadForm whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} location="inline" />
           </div>
           <NextSteps replyWindow={replyWindow} className="lg:hidden" />
         </div>

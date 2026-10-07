@@ -7,7 +7,8 @@ import { submitLead } from '@/app/actions/lead';
 import { WhatsAppIcon } from '@/components/site/WhatsAppIcon';
 import { track } from '@/lib/analytics';
 import { LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
-import { LEAD_SITE_TYPES, type LeadSiteType } from '@/lib/content/types';
+import { LEAD_SITE_TYPES, type Addon, type LeadSiteType } from '@/lib/content/types';
+import { addonsForSiteType } from '@/lib/domain/addons';
 import { FAB_MESSAGE, MESSAGE_MAX, whatsappUrl } from '@/lib/domain/whatsapp';
 import { publicEnv } from '@/lib/env.public';
 import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
@@ -22,11 +23,13 @@ const FIELD_ORDER: LeadField[] = ['name', 'phone', 'siteType', 'message', 'email
 
 export function LeadForm({
   whatsappNumber,
+  addons,
   presetSiteType = null,
   nonce,
   location,
 }: {
   whatsappNumber: string;
+  addons: Addon[];
   presetSiteType?: LeadSiteType | null;
   nonce?: string;
   location: 'drawer' | 'inline';
@@ -36,7 +39,9 @@ export function LeadForm({
   const uid = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const draftSiteType = useVisitor((s) => s.formDraft.siteType);
+  const draftAddons = useVisitor((s) => s.formDraft.addons);
   const setDraftSiteType = useVisitor((s) => s.setDraftSiteType);
+  const setDraftAddons = useVisitor((s) => s.setDraftAddons);
   const setHandoff = useSession((s) => s.setHandoff);
   const closeDrawer = useSession((s) => s.closeDrawer);
 
@@ -47,6 +52,10 @@ export function LeadForm({
     message: '',
     email: '',
   });
+  const [chosenAddons, setChosenAddons] = useState<string[]>(draftAddons);
+  const visibleAddons = addonsForSiteType(addons, values.siteType);
+  // Only extras that suit the current site type are sent; switching type quietly drops the rest.
+  const sentAddons = chosenAddons.filter((slug) => visibleAddons.some((a) => a.slug === slug));
   const [errors, setErrors] = useState<Partial<Record<LeadField, string>>>({});
   const [banner, setBanner] = useState<Banner>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -86,8 +95,8 @@ export function LeadForm({
     if (state.status === 'invalid') {
       focusFirstError(state.fieldErrors);
     } else if (state.status === 'success') {
-      track('generate_lead', { location, site_type: values.siteType || undefined });
-      setHandoff({ name: state.name, whatsappUrl: state.whatsappUrl, submissionId: state.submissionId });
+      track('generate_lead', { location, site_type: values.siteType || undefined, addons: state.addons.length });
+      setHandoff({ name: state.name, whatsappUrl: state.whatsappUrl, submissionId: state.submissionId, addons: state.addons });
       window.open(state.whatsappUrl, '_blank', 'noopener,noreferrer');
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const delay = reduced ? motion.duration.fast * 1000 : motion.signatureMs;
@@ -108,6 +117,16 @@ export function LeadForm({
     setValues((v) => ({ ...v, [field]: value }));
     if (errors[field as LeadField]) setErrors((e) => ({ ...e, [field]: undefined }));
     if (field === 'siteType') setDraftSiteType((value as LeadSiteType) || null);
+  }
+
+  function toggleAddon(slug: string, on: boolean) {
+    if (!started.current) {
+      started.current = true;
+      track('form_start', { location });
+    }
+    const next = on ? [...chosenAddons.filter((s) => s !== slug), slug] : chosenAddons.filter((s) => s !== slug);
+    setChosenAddons(next);
+    setDraftAddons(next);
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -227,6 +246,36 @@ export function LeadForm({
           </p>
         )}
       </fieldset>
+
+      {visibleAddons.length > 0 && (
+        <fieldset aria-describedby={id('addons-hint')} className="rise-in">
+          <legend className="font-medium text-pearl">{t('addonsLegend')}</legend>
+          <p id={id('addons-hint')} className="text-base text-mist">
+            {t('addonsHint')}
+          </p>
+          <div className="mt-2 grid gap-2">
+            {visibleAddons.map((addon) => (
+              <label
+                key={addon.slug}
+                className="flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border border-pearl/15 px-4 py-3 text-base transition-colors duration-300 hover:border-pearl/35 has-[:checked]:border-gold has-[:checked]:bg-gold/[0.08] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold-soft"
+              >
+                <input
+                  type="checkbox"
+                  value={addon.slug}
+                  checked={sentAddons.includes(addon.slug)}
+                  onChange={(e) => toggleAddon(addon.slug, e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 accent-[#C9A66B]"
+                />
+                <span>
+                  <span className="block text-pearl">{addon.title}</span>
+                  <span className="block text-sm text-mist">{addon.benefit}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+      <input type="hidden" name="addons" value={sentAddons.join(',')} />
 
       <div>
         <label htmlFor={id('message')} className="font-medium text-pearl">

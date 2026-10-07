@@ -202,7 +202,7 @@ function buildHalo() {
 export function createDepthEngine(canvas: HTMLCanvasElement, { quality, onFirstFrame, onTooSlow, onFail }: Options): DepthEngine {
   const { renderer, pixelRatio } = createRenderer(canvas, quality);
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x030608, 0.05);
+  scene.fog = new THREE.FogExp2(0x0c1626, 0.05);
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 60);
   camera.position.set(0, 0, 7);
 

@@ -3,7 +3,9 @@
 import { defineConfig } from 'sanity';
 import { presentationTool } from 'sanity/presentation';
 import { structureTool, type StructureResolver } from 'sanity/structure';
+import { requestTestimonialAction } from './src/sanity/actions/requestTestimonial';
 import { LEAD_STATUSES } from './src/sanity/schemaTypes/lead';
+import { TESTIMONIAL_STATUSES } from './src/sanity/schemaTypes/testimonial';
 import { contentSchemaTypes, leadSchemaTypes, SINGLETONS } from './src/sanity/schemaTypes';
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'missing-project-id';
@@ -31,6 +33,28 @@ const contentStructure: StructureResolver = (S) =>
       S.documentTypeListItem('project').title('פרויקטים'),
       S.documentTypeListItem('niche').title('תחומים'),
       S.documentTypeListItem('service').title('שירותים'),
+      S.documentTypeListItem('addon').title('תוספות בטופס'),
+      S.listItem()
+        .title('המלצות')
+        .id('testimonials')
+        .child(
+          S.list()
+            .title('המלצות')
+            .items(
+              TESTIMONIAL_STATUSES.map((status) =>
+                S.listItem()
+                  .title(status.title)
+                  .id(`testimonials-${status.value}`)
+                  .child(
+                    S.documentList()
+                      .title(status.title)
+                      .schemaType('testimonial')
+                      .filter('_type == "testimonial" && status == $status')
+                      .params({ status: status.value }),
+                  ),
+              ),
+            ),
+        ),
       S.documentTypeListItem('faq').title('שאלות נפוצות'),
       S.divider(),
       S.documentTypeListItem('legalPage').title('עמודים משפטיים'),
@@ -55,6 +79,8 @@ const leadsStructure: StructureResolver = (S) =>
       ),
       S.divider(),
       S.documentTypeListItem('lead').title('כל הפניות'),
+      S.divider(),
+      S.documentTypeListItem('testimonialConsent').title('אישורי פרסום המלצות'),
     ]);
 
 export default defineConfig([
@@ -86,9 +112,13 @@ export default defineConfig([
     projectId,
     dataset: leadsDataset,
     plugins: [structureTool({ structure: leadsStructure })],
-    schema: { types: leadSchemaTypes, templates: () => [] },
+    // Leads are created only by the server; consent records are created by hand.
+    schema: { types: leadSchemaTypes, templates: (templates) => templates.filter(({ schemaType }) => schemaType === 'testimonialConsent') },
     document: {
-      actions: (actions) => actions.filter(({ action }) => action && ['publish', 'discardChanges', 'delete'].includes(action)),
+      actions: (actions, { schemaType }) => {
+        const allowed = actions.filter(({ action }) => action && ['publish', 'discardChanges', 'delete'].includes(action));
+        return schemaType === 'lead' ? [...allowed, requestTestimonialAction] : allowed;
+      },
     },
   },
 ]);

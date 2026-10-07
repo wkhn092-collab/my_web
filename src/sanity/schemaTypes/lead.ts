@@ -26,6 +26,13 @@ export const lead = defineType({
     defineField({ name: 'phone', title: 'טלפון', type: 'string', readOnly: true }),
     defineField({ name: 'email', title: 'מייל', type: 'string', readOnly: true }),
     defineField({ name: 'siteType', title: 'סוג אתר', type: 'string', readOnly: true }),
+    defineField({
+      name: 'addons',
+      title: 'מעניין אותו גם',
+      type: 'array',
+      of: [{ type: 'string' }],
+      readOnly: true,
+    }),
     defineField({ name: 'message', title: 'הודעה', type: 'text', readOnly: true }),
     defineField({ name: 'createdAt', title: 'התקבלה', type: 'datetime', readOnly: true }),
     defineField({

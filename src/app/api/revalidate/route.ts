@@ -7,7 +7,7 @@ import { logError } from '@/lib/logger';
 
 /**
  * Signed GROQ webhook from Sanity (sanity.io/manage → API → Webhooks), on the `production` dataset only:
- * filter `_type in ["siteSettings","hours","announcement","homePage","aboutPage","service","niche","project","faq","legalPage"]`,
+ * filter `_type in ["siteSettings","hours","announcement","homePage","aboutPage","service","addon","niche","project","testimonial","faq","legalPage"]`,
  * projection `{_type}`, secret = SANITY_WEBHOOK_SECRET. All content is one query, so one tag refreshes it.
  */
 export async function POST(request: NextRequest) {

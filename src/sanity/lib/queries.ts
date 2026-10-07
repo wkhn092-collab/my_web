@@ -49,6 +49,24 @@ export const SITE_CONTENT_QUERY = defineQuery(`{
     "metrics": coalesce(metrics[]{label, value, measuredAt, source}, [])
   },
   "faqs": *[_type == "faq"] | order(order asc){"id": _id, question, answer},
+  "addons": *[_type == "addon" && active == true && defined(slug.current)] | order(order asc){
+    "slug": slug.current, title, benefit, siteTypes
+  },
+  "testimonials": *[_type == "testimonial" && status == "approved" && defined(consentDate)] | order(consentDate desc)[0...6]{
+    "id": _id,
+    fullName,
+    role,
+    quote,
+    rating,
+    "photo": select(defined(photo.asset) => {
+      "url": photo.asset->url,
+      "alt": photo.alt,
+      "width": photo.asset->metadata.dimensions.width,
+      "height": photo.asset->metadata.dimensions.height,
+      "lqip": photo.asset->metadata.lqip
+    }),
+    "project": select(defined(project->slug.current) => project->{title, "slug": slug.current, "isConcept": coalesce(isConcept, true)})
+  },
   "legalPages": *[_type == "legalPage" && defined(slug.current)] | order(title asc){"slug": slug.current, title}
 }`);
 

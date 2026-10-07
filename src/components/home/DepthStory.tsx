@@ -82,7 +82,7 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_70%_30%,rgb(62_154_168/0.14),transparent_70%)]" aria-hidden="true" />
       <div
         data-abyss
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_30%_80%,rgb(201_166_107/0.12),transparent_70%),linear-gradient(to_bottom,transparent,rgb(2_4_6/0.9))] opacity-0"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_30%_80%,rgb(201_166_107/0.12),transparent_70%),linear-gradient(to_bottom,transparent,rgb(12_22_38/0.9))] opacity-0"
         aria-hidden="true"
       />
 
@@ -120,12 +120,6 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
           {depth.layers.map((layer, i) => (
             <li key={layer.title} data-layer>
               <Reveal delay={i * 80} className="glass relative overflow-hidden rounded-[2rem] p-8 md:p-12 lg:min-h-[52vh] lg:p-14">
-                <span
-                  className="text-outline pointer-events-none absolute -top-6 left-6 font-display text-[9rem] leading-none md:text-[12rem]"
-                  aria-hidden="true"
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </span>
                 <div className="relative lg:flex lg:min-h-[calc(52vh-7rem)] lg:flex-col lg:justify-end">
                   <h3 className="text-3xl font-light md:text-5xl">{layer.title}</h3>
                   <p className="mt-5 max-w-xl text-lg leading-relaxed text-pearl/75">{layer.body}</p>

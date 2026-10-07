@@ -57,7 +57,7 @@ API → Webhooks → Create:
 - **URL:** `https://<הדומיין>/api/revalidate`
 - **Dataset:** `production` בלבד (לא `leads`)
 - **Trigger on:** Create, Update, Delete
-- **Filter:** `_type in ["siteSettings","hours","announcement","homePage","aboutPage","service","niche","project","faq","legalPage"]`
+- **Filter:** `_type in ["siteSettings","hours","announcement","homePage","aboutPage","service","addon","niche","project","testimonial","faq","legalPage"]`
 - **Projection:** `{_type}`
 - **HTTP method:** POST
 - **Secret:** מחרוזת אקראית של 32 תווים ומעלה. אותו ערך נכנס ל-`SANITY_WEBHOOK_SECRET`.

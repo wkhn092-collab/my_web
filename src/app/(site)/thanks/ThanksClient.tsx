@@ -49,6 +49,19 @@ export function ThanksClient({ replyWindow, projects, siteUrl }: { replyWindow: 
         <section className="glass rounded-[1.5rem] p-8">
           <h2 className="text-3xl font-light">{t('nextTitle')}</h2>
           <p className="mt-4 text-pearl/80">{t('next')}</p>
+          {handoff && handoff.addons.length > 0 && (
+            <div className="mt-6 border-t border-pearl/10 pt-5">
+              <p className="text-pearl">{t('addonsSummary')}</p>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {handoff.addons.map((title) => (
+                  <li key={title} className="rounded-full border border-gold/40 px-4 py-1.5 text-sm text-gold-soft">
+                    {title}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-sm text-mist">{t('addonsChange')}</p>
+            </div>
+          )}
         </section>
         <section className="glass rounded-[1.5rem] p-8">
           <h2 className="text-3xl font-light">{t('shareTitle')}</h2>

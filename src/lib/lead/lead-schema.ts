@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { LEAD_SITE_TYPES } from '@/lib/content/types';
+import { parseAddonIds } from '@/lib/domain/addons';
 import { normalizeIsraeliPhone } from '@/lib/domain/phone';
 import { MESSAGE_MAX, NAME_MAX, sanitizeText } from '@/lib/domain/whatsapp';
 
@@ -50,6 +51,8 @@ export const leadInputSchema = z.object({
     .optional()
     .transform((v) => v?.trim() || undefined)
     .pipe(z.email(LEAD_ERRORS.email).optional()),
+  // Extra IDs only, comma-separated. What they mean is decided on the server.
+  addons: z.string().max(400).optional().transform(parseAddonIds),
   // Hidden from people; bots fill it.
   website: z.string().max(200).optional(),
   turnstileToken: z.string().max(2048).optional(),
@@ -70,4 +73,4 @@ export type LeadActionState =
   | { status: 'invalid'; fieldErrors: Partial<Record<LeadField, string>> }
   | { status: 'rate-limited' }
   | { status: 'error' }
-  | { status: 'success'; name: string; whatsappUrl: string; submissionId: string };
+  | { status: 'success'; name: string; whatsappUrl: string; submissionId: string; addons: string[] };

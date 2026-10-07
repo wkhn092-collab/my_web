@@ -45,7 +45,7 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
       <Footer content={content} />
       <StickyCta replyWindow={replyWindow} whatsappNumber={whatsappNumber} />
       <WhatsAppFab whatsappNumber={whatsappNumber} />
-      <LeadDrawer whatsappNumber={whatsappNumber} nonce={nonce} />
+      <LeadDrawer whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} />
       <CookieBanner />
       <div className="grain" aria-hidden="true" />
       <SmoothScroll />

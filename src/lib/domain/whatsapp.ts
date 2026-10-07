@@ -17,10 +17,14 @@ export type LeadMessageInput = {
   name: string;
   siteTypeLabel: string;
   message?: string;
+  /** Titles resolved on the server, never raw form input. */
+  addons?: string[];
 };
 
-export function buildLeadMessage({ name, siteTypeLabel, message }: LeadMessageInput): string {
+export function buildLeadMessage({ name, siteTypeLabel, message, addons = [] }: LeadMessageInput): string {
   const lines = [`היי, אני ${sanitizeText(name, NAME_MAX)}, פניתי אליך מהאתר של עומק.`, `סוג אתר: ${sanitizeText(siteTypeLabel, 40)}`];
+  const extras = addons.map((a) => sanitizeText(a, 40)).filter(Boolean);
+  if (extras.length) lines.push(`מעניין אותי גם: ${extras.join(', ')}`);
   const details = message ? sanitizeText(message, MESSAGE_MAX) : '';
   if (details) lines.push(`פרטים: ${details}`);
   return lines.join('\n');

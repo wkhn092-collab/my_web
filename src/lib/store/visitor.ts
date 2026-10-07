@@ -4,6 +4,7 @@ import { useSyncExternalStore } from 'react';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { LeadSiteType } from '@/lib/content/types';
+import { parseAddonIds } from '@/lib/domain/addons';
 
 export type Consent = 'granted' | 'denied' | null;
 
@@ -13,13 +14,14 @@ const RECENT_MAX = 6;
 type VisitorState = {
   recentProjects: string[];
   lastFilter: string | null;
-  formDraft: { siteType: LeadSiteType | null };
+  formDraft: { siteType: LeadSiteType | null; addons: string[] };
   consent: Consent;
   motionPaused: boolean;
   rememberProject: (id: string) => void;
   clearRecent: () => void;
   setLastFilter: (slug: string | null) => void;
   setDraftSiteType: (siteType: LeadSiteType | null) => void;
+  setDraftAddons: (addons: string[]) => void;
   setConsent: (consent: Consent) => void;
   setMotionPaused: (paused: boolean) => void;
 };
@@ -29,14 +31,15 @@ export const useVisitor = create<VisitorState>()(
     (set) => ({
       recentProjects: [],
       lastFilter: null,
-      formDraft: { siteType: null },
+      formDraft: { siteType: null, addons: [] },
       consent: null,
       motionPaused: false,
       rememberProject: (id) =>
         set((s) => ({ recentProjects: [id, ...s.recentProjects.filter((p) => p !== id)].slice(0, RECENT_MAX) })),
       clearRecent: () => set({ recentProjects: [] }),
       setLastFilter: (slug) => set({ lastFilter: slug }),
-      setDraftSiteType: (siteType) => set({ formDraft: { siteType } }),
+      setDraftSiteType: (siteType) => set((s) => ({ formDraft: { ...s.formDraft, siteType } })),
+      setDraftAddons: (addons) => set((s) => ({ formDraft: { ...s.formDraft, addons: parseAddonIds(addons.join(',')) } })),
       setConsent: (consent) => set({ consent }),
       setMotionPaused: (motionPaused) => set({ motionPaused }),
     }),
@@ -60,12 +63,15 @@ export const useVisitor = create<VisitorState>()(
         const filter = typeof p.lastFilter === 'string' && /^[a-z0-9-]{1,32}$/.test(p.lastFilter) ? p.lastFilter : null;
         const siteTypes: LeadSiteType[] = ['landing', 'brand', 'premium3d', 'unsure'];
         const draft = siteTypes.includes(p.formDraft?.siteType as LeadSiteType) ? (p.formDraft!.siteType as LeadSiteType) : null;
+        const draftAddons = Array.isArray(p.formDraft?.addons)
+          ? parseAddonIds(p.formDraft.addons.filter((id): id is string => typeof id === 'string').join(','))
+          : [];
         const consent = p.consent === 'granted' || p.consent === 'denied' ? p.consent : null;
         return {
           ...current,
           recentProjects: ids,
           lastFilter: filter,
-          formDraft: { siteType: draft },
+          formDraft: { siteType: draft, addons: draftAddons },
           consent,
           motionPaused: p.motionPaused === true,
         };
@@ -78,7 +84,7 @@ export const useVisitor = create<VisitorState>()(
 type SessionState = {
   drawerOpen: boolean;
   drawerSiteType: LeadSiteType | null;
-  handoff: { name: string; whatsappUrl: string; submissionId: string } | null;
+  handoff: { name: string; whatsappUrl: string; submissionId: string; addons: string[] } | null;
   /** Ambient sound: needs a fresh gesture every visit, so it is never persisted. */
   soundOn: boolean;
   openDrawer: (siteType?: LeadSiteType | null) => void;

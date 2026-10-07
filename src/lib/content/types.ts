@@ -73,6 +73,20 @@ export type Project = {
 
 export type Faq = { id: string; question: string; answer: string };
 
+/** An extra the customer can ask about in the lead form. No price on purpose: prices come in the written quote. */
+export type Addon = { slug: string; title: string; benefit: string; siteTypes: LeadSiteType[] };
+
+/** Published only with status "approved" and a recorded consent date (the consent proof itself lives in `leads`). */
+export type Testimonial = {
+  id: string;
+  fullName: string;
+  role?: string;
+  quote: string;
+  rating?: number;
+  photo?: ProjectImage;
+  project?: { title: string; slug: string; isConcept: boolean };
+};
+
 export type LegalPage = { slug: string; title: string; updatedAt: string; body: PortableTextBlock[] };
 
 export type SiteContent = {
@@ -85,5 +99,7 @@ export type SiteContent = {
   niches: Niche[];
   projects: Project[];
   faqs: Faq[];
+  addons: Addon[];
+  testimonials: Testimonial[];
   legalPages: Pick<LegalPage, 'slug' | 'title'>[];
 };

@@ -5,6 +5,7 @@ import type { PortableTextBlock } from '@portabletext/react';
 import { LEGAL_DRAFTS, draftToPortableText } from '@/content/legal-drafts';
 import {
   SEED_ABOUT,
+  SEED_ADDONS,
   SEED_FAQS,
   SEED_HOME,
   SEED_HOURS,
@@ -12,6 +13,7 @@ import {
   SEED_PROJECTS,
   SEED_SERVICES,
   SEED_SETTINGS,
+  SEED_TESTIMONIALS,
 } from '@/content/seed-data';
 import { isConfigured } from '@/lib/env.server';
 import { logError } from '@/lib/logger';
@@ -32,6 +34,8 @@ const SEED_CONTENT: SiteContent = {
   niches: SEED_NICHES,
   projects: SEED_PROJECTS,
   faqs: SEED_FAQS,
+  addons: SEED_ADDONS,
+  testimonials: SEED_TESTIMONIALS,
   legalPages: LEGAL_DRAFTS.map(({ slug, title }) => ({ slug, title })),
 };
 

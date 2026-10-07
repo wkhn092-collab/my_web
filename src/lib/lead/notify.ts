@@ -29,11 +29,12 @@ async function send(to: string, subject: string, text: string, scope: string): P
 }
 
 /** Backup copy to Avishi, so a lead survives even if the customer never presses "send" in WhatsApp. */
-export function sendOwnerBackup(lead: LeadInput, replyWindow: string, savedInSanity: boolean): Promise<boolean> {
+export function sendOwnerBackup(lead: LeadInput, addonTitles: string[], replyWindow: string, savedInSanity: boolean): Promise<boolean> {
   const lines = [
     `שם: ${lead.name}`,
     `טלפון: ${formatIsraeliPhone(lead.phone)}`,
     `סוג אתר: ${LEAD_SITE_TYPE_LABEL[lead.siteType]}`,
+    addonTitles.length ? `מעניין אותו גם: ${addonTitles.join(', ')}` : null,
     lead.email ? `מייל: ${lead.email}` : null,
     lead.message ? `הודעה: ${lead.message}` : null,
     '',

@@ -17,6 +17,16 @@ describe('WhatsApp message (PROJECT_BRIEF §5ג)', () => {
     expect(text.split('\n')).toHaveLength(2);
   });
 
+  it('lists chosen extras on one line, before the details', () => {
+    const text = buildLeadMessage({ name: 'רון', siteTypeLabel: 'אתר תדמית', addons: ['עיצוב לוגו', 'תחזוקה ועדכונים'], message: 'שלום' });
+    expect(text.split('\n')).toEqual([
+      'היי, אני רון, פניתי אליך מהאתר של עומק.',
+      'סוג אתר: אתר תדמית',
+      'מעניין אותי גם: עיצוב לוגו, תחזוקה ועדכונים',
+      'פרטים: שלום',
+    ]);
+  });
+
   it('strips bidi overrides and control characters', () => {
     expect(sanitizeText('a\u202Eb\u2066c\u0007d', 50)).toBe('abcd');
   });

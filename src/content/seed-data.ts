@@ -1,5 +1,5 @@
 import type { ReplyHours } from '@/lib/domain/reply-window';
-import type { AboutPage, Faq, HomePage, Niche, Project, Service, SiteSettings } from '@/lib/content/types';
+import type { AboutPage, Addon, Faq, HomePage, Niche, Project, Service, SiteSettings, Testimonial } from '@/lib/content/types';
 
 /**
  * Approved copy from docs/copy-deck.md. Used by `npm run seed` to fill Sanity, and as the local fallback
@@ -239,3 +239,37 @@ export const SEED_FAQS: Faq[] = [
     answer: 'לא. אני עובד מרחוק מול עסקים בכל הארץ, בטלפון, בוואטסאפ או בשיחת וידאו.',
   },
 ];
+
+/**
+ * Paid extras Avishi offers (PROJECT_BRIEF, script 2 module A). Copywriting is not here because the services
+ * already include the texts; 3D is not offered to someone who picked the premium 3D site, since it is included.
+ */
+export const SEED_ADDONS: Addon[] = [
+  {
+    slug: 'maintenance',
+    title: 'תחזוקה ועדכונים',
+    benefit: 'עדכוני תוכן ותיקונים קטנים לאורך הזמן, בלי שתצטרך לפתוח את מערכת הניהול.',
+    siteTypes: ['landing', 'brand', 'premium3d', 'unsure'],
+  },
+  {
+    slug: 'booking',
+    title: 'מערכת תורים או הזמנות',
+    benefit: 'לקוחות קובעים תור או מזמינים ישר מהאתר, גם כשאתה לא זמין לענות.',
+    siteTypes: ['landing', 'brand', 'premium3d', 'unsure'],
+  },
+  {
+    slug: 'motion-3d',
+    title: 'תלת-ממד ואנימציות',
+    benefit: 'מוצר שאפשר לסובב או סצנה שזזה בגלילה, כשזה עוזר ללקוח להבין מה הוא מקבל.',
+    siteTypes: ['landing', 'brand', 'unsure'],
+  },
+  {
+    slug: 'logo',
+    title: 'עיצוב לוגו',
+    benefit: 'לוגו שמתאים לעסק ולאתר, ונראה טוב גם בשלט וגם בתמונת הפרופיל.',
+    siteTypes: ['landing', 'brand', 'premium3d', 'unsure'],
+  },
+];
+
+/** Empty until a real client gives a testimonial with written consent. Never fill with examples. */
+export const SEED_TESTIMONIALS: Testimonial[] = [];

@@ -3,6 +3,7 @@
 import { randomUUID } from 'node:crypto';
 import { LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { getSiteContent } from '@/lib/content/site-content';
+import { resolveAddons } from '@/lib/domain/addons';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 import { buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
@@ -15,7 +16,7 @@ import { getClientIp, hashIp } from '@/lib/security/request-meta';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 import { getSanityLeadsWriteClient } from '@/sanity/lib/client';
 
-const FIELDS = ['name', 'phone', 'siteType', 'message', 'email', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
+const FIELDS = ['name', 'phone', 'siteType', 'message', 'email', 'addons', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
 const LEAD_FIELDS = new Set<string>(['name', 'phone', 'siteType', 'message', 'email']);
 
 function readForm(formData: FormData): Record<string, string | undefined> {
@@ -61,6 +62,7 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
 
   const content = await getSiteContent();
   const replyWindow = formatReplyWindow(getReplyWindow(new Date(), content.hours));
+  const addonTitles = resolveAddons(content.addons, lead.addons, lead.siteType).map((a) => a.title);
 
   let savedInSanity = false;
   if (isConfigured.sanityWrite()) {
@@ -72,6 +74,8 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
         phone: lead.phone,
         email: lead.email,
         siteType: lead.siteType,
+        // A snapshot of the titles, so the lead still reads right after an extra is renamed or retired.
+        addons: addonTitles,
         message: lead.message,
         createdAt: new Date().toISOString(),
         source: { page: lead.page, utmSource: lead.utmSource, utmMedium: lead.utmMedium, utmCampaign: lead.utmCampaign },
@@ -83,7 +87,10 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
     }
   }
 
-  const [ownerNotified] = await Promise.all([sendOwnerBackup(lead, replyWindow, savedInSanity), sendCustomerConfirmation(lead, replyWindow)]);
+  const [ownerNotified] = await Promise.all([
+    sendOwnerBackup(lead, addonTitles, replyWindow, savedInSanity),
+    sendCustomerConfirmation(lead, replyWindow),
+  ]);
 
   if (!savedInSanity && !ownerNotified && isConfigured.sanityWrite()) {
     // Nowhere holds this lead; tell the customer to use WhatsApp directly.
@@ -91,13 +98,19 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
   }
 
   const submissionId = randomUUID();
-  logInfo('lead', 'Lead received', { submissionId, savedInSanity, ownerNotified, siteType: lead.siteType });
+  logInfo('lead', 'Lead received', { submissionId, savedInSanity, ownerNotified, siteType: lead.siteType, addons: addonTitles.length });
 
-  const text = buildLeadMessage({ name: lead.name, siteTypeLabel: LEAD_SITE_TYPE_LABEL[lead.siteType], message: lead.message });
+  const text = buildLeadMessage({
+    name: lead.name,
+    siteTypeLabel: LEAD_SITE_TYPE_LABEL[lead.siteType],
+    message: lead.message,
+    addons: addonTitles,
+  });
   return {
     status: 'success',
     name: lead.name,
     whatsappUrl: whatsappUrl(toWhatsAppNumber(content.settings.whatsappE164), text),
     submissionId,
+    addons: addonTitles,
   };
 }

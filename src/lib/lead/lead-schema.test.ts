@@ -29,6 +29,15 @@ describe('leadInputSchema', () => {
     expect(leadInputSchema.parse({ ...valid, name: 'דנה\u202E' }).name).toBe('דנה');
   });
 
+  it('reads extras as a clean id list and ignores junk', () => {
+    expect(leadInputSchema.parse({ ...valid, addons: 'logo,booking,<b>x</b>' }).addons).toEqual(['logo', 'booking']);
+    expect(leadInputSchema.parse(valid).addons).toEqual([]);
+  });
+
+  it('rejects an oversized extras field', () => {
+    expect(leadInputSchema.safeParse({ ...valid, addons: 'a,'.repeat(300) }).success).toBe(false);
+  });
+
   it('falls back to "/" for a suspicious page value', () => {
     expect(leadInputSchema.parse({ ...valid, page: 'https://evil.example' }).page).toBe('/');
   });
