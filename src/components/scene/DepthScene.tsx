@@ -147,12 +147,12 @@ export function DepthScene() {
           type="button"
           onClick={() => setPaused(!paused)}
           aria-pressed={paused}
-          className="absolute bottom-6 left-5 z-10 inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-xs tracking-[0.18em] text-mist transition-colors hover:text-gold-soft md:left-8"
+          className="absolute left-2 top-[calc(var(--header-height)+0.25rem)] z-10 inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full text-xs tracking-[0.18em] text-mist transition-colors hover:text-gold-soft md:bottom-6 md:left-8 md:top-auto md:px-4"
         >
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" aria-hidden="true" fill="currentColor">
             {paused ? <path d="M8 5v14l11-7z" /> : <path d="M7 5h4v14H7zM13 5h4v14h-4z" />}
           </svg>
-          {paused ? t('play') : t('pause')}
+          <span className="max-md:sr-only">{paused ? t('play') : t('pause')}</span>
         </button>
       )}
     </>

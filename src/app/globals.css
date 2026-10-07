@@ -68,6 +68,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
+    /* Room for the mobile sticky CTA so it never covers the end of the page. */
+    padding-bottom: var(--sticky-cta-height);
   }
 
   h1,

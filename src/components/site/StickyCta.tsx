@@ -4,13 +4,20 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { BidiText } from '@/components/BidiText';
+import { track } from '@/lib/analytics';
+import { FAB_MESSAGE, whatsappUrl } from '@/lib/domain/whatsapp';
 import { OpenDrawerButton } from './OpenDrawerButton';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 const HERO_CTA_ID = 'hero-cta';
 
-/** Mobile only. Slides in once the hero CTA leaves the screen; publishes its height so the FAB rides above it. */
-export function StickyCta({ replyWindow }: { replyWindow: string }) {
+/**
+ * Mobile only, and on mobile it replaces the floating WhatsApp button (which would sit on top of content).
+ * Slides in once the hero CTA leaves the screen; publishes its height so the page can leave room for it.
+ */
+export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string; whatsappNumber: string }) {
   const t = useTranslations('common');
+  const tFab = useTranslations('fab');
   const pathname = usePathname();
   const [pastHero, setPastHero] = useState<{ path: string; past: boolean } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -54,10 +61,22 @@ export function StickyCta({ replyWindow }: { replyWindow: string }) {
       }`}
       style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
     >
-      <OpenDrawerButton location="sticky" className="btn-primary w-full" magnetic={false}>
-        {t('ctaTalk')}
-      </OpenDrawerButton>
-      <p className="mt-1 text-center text-sm text-mist">
+      <div className="flex items-stretch gap-2.5">
+        <OpenDrawerButton location="sticky" className="btn-primary min-w-0 flex-1" magnetic={false}>
+          {t('ctaTalk')}
+        </OpenDrawerButton>
+        <a
+          href={whatsappUrl(whatsappNumber, FAB_MESSAGE)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={tFab('label')}
+          onClick={() => track('whatsapp_click', { location: 'sticky' })}
+          className="glass inline-flex w-14 shrink-0 items-center justify-center rounded-full text-pearl"
+        >
+          <WhatsAppIcon className="h-6 w-6" />
+        </a>
+      </div>
+      <p className="mt-1.5 text-center text-sm text-mist">
         <BidiText text={`${t('replyPrefix')} ${replyWindow}`} />
       </p>
     </div>
