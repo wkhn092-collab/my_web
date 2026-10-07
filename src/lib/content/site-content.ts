@@ -4,6 +4,7 @@ import { cache } from 'react';
 import type { PortableTextBlock } from '@portabletext/react';
 import { LEGAL_DRAFTS, draftToPortableText } from '@/content/legal-drafts';
 import {
+  LOCAL_COVERS,
   SEED_ABOUT,
   SEED_ADDONS,
   SEED_FAQS,
@@ -24,6 +25,9 @@ import type { LegalPage, Project, SiteContent } from './types';
 
 export const CONTENT_CACHE_TAG = 'sanity:content';
 
+const withLocalCover = (project: Project): Project =>
+  project.cover || !LOCAL_COVERS[project.slug] ? project : { ...project, cover: LOCAL_COVERS[project.slug] };
+
 const SEED_CONTENT: SiteContent = {
   settings: SEED_SETTINGS,
   hours: SEED_HOURS,
@@ -32,7 +36,7 @@ const SEED_CONTENT: SiteContent = {
   about: SEED_ABOUT,
   services: SEED_SERVICES,
   niches: SEED_NICHES,
-  projects: SEED_PROJECTS,
+  projects: SEED_PROJECTS.map(withLocalCover),
   faqs: SEED_FAQS,
   addons: SEED_ADDONS,
   testimonials: SEED_TESTIMONIALS,
@@ -70,7 +74,11 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     }
     const published = new Set(parsed.data.legalPages.map((p) => p.slug));
     const missingLegal = LEGAL_DRAFTS.filter((d) => !published.has(d.slug)).map(({ slug, title }) => ({ slug, title }));
-    return { ...parsed.data, legalPages: [...parsed.data.legalPages, ...missingLegal] };
+    return {
+      ...parsed.data,
+      projects: parsed.data.projects.map(withLocalCover),
+      legalPages: [...parsed.data.legalPages, ...missingLegal],
+    };
   } catch (error) {
     logError('content', error);
     throw new Error('Content unavailable');

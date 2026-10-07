@@ -464,6 +464,11 @@ html.intro-seen .intro {
 .hero-dive.is-diving {
   height: 260svh;
 }
+@media (max-width: 767px) {
+  .hero-dive.is-diving {
+    height: 190svh;
+  }
+}
 .hero-dive.is-diving .hero-stage {
   position: sticky;
   top: 0;

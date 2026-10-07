@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import Image from 'next/image';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { DepthStory } from '@/components/home/DepthStory';
@@ -6,7 +7,6 @@ import { Faq } from '@/components/home/Faq';
 import { Hero } from '@/components/home/Hero';
 import { Marquee } from '@/components/home/Marquee';
 import { NextSteps } from '@/components/home/NextSteps';
-import { ProductShowcase } from '@/components/home/ProductShowcase';
 import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
@@ -17,6 +17,9 @@ import { WorksShowcase } from '@/components/works/WorksShowcase';
 import { getSiteContent } from '@/lib/content/site-content';
 import { formatIsraeliPhone, toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
+
+/** Set to '/about/avishi.jpg' (square, about 512px, in public/) once the portrait is shot; until then the monogram stands in. */
+const PORTRAIT_SRC: string | null = null;
 
 export default async function HomePage() {
   const [content, t, requestHeaders] = await Promise.all([getSiteContent(), getTranslations(), headers()]);
@@ -32,14 +35,6 @@ export default async function HomePage() {
 
       <WorksShowcase projects={content.projects} title={home.works.title} intro={home.works.intro} eyebrow={t('home.worksEyebrow')} />
 
-      <DepthStory depth={home.depth} eyebrow={t('home.depthEyebrow')} ctaLabel={t('common.ctaTalk')} />
-
-      <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
-
-      <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
-
-      <Proof testimonials={content.testimonials} eyebrow={t('home.proofEyebrow')} />
-
       <section aria-labelledby="about-teaser-title" className="relative overflow-hidden pb-24 pt-4 md:pb-32 lg:pt-0">
         <div
           className="pointer-events-none absolute left-[22%] top-1/2 -z-10 h-[80vmin] w-[80vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(201_166_107/0.14),transparent_65%)]"
@@ -51,10 +46,15 @@ export default async function HomePage() {
             <h2 id="about-teaser-title" className="sr-only">
               {t('nav.about')}
             </h2>
-            {/* Monogram until a real portrait is shot (see PROJECT_BRIEF "חומרים"). */}
-            <Reveal className="mt-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/50 font-display text-4xl text-gilded">
-              <span aria-hidden="true">א</span>
-            </Reveal>
+            {PORTRAIT_SRC ? (
+              <Reveal className="relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/50 md:h-32 md:w-32">
+                <Image src={PORTRAIT_SRC} alt={t('home.portraitAlt')} fill sizes="128px" className="object-cover" />
+              </Reveal>
+            ) : (
+              <Reveal className="mt-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/50 font-display text-4xl text-gilded">
+                <span aria-hidden="true">א</span>
+              </Reveal>
+            )}
             <SplitText as="p" text={home.about.text} className="mt-8 font-display text-3xl font-light leading-snug md:text-5xl" />
             <Reveal className="mt-10">
               <Link href="/about" className="link text-lg">
@@ -67,6 +67,12 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      <DepthStory depth={home.depth} eyebrow={t('home.depthEyebrow')} ctaLabel={t('common.ctaTalk')} />
+
+      <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
+
+      <Proof testimonials={content.testimonials} eyebrow={t('home.proofEyebrow')} />
 
       <Faq
         section={home.faq}

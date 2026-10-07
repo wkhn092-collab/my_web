@@ -1,5 +1,5 @@
 import type { ReplyHours } from '@/lib/domain/reply-window';
-import type { AboutPage, Addon, Faq, HomePage, Niche, Project, Service, SiteSettings, Testimonial } from '@/lib/content/types';
+import type { AboutPage, Addon, Faq, HomePage, Niche, Project, ProjectImage, Service, SiteSettings, Testimonial } from '@/lib/content/types';
 
 /**
  * Approved copy from docs/copy-deck.md. Used by `npm run seed` to fill Sanity, and as the local fallback
@@ -30,7 +30,7 @@ export const SEED_HOURS: ReplyHours = {
 export const SEED_HOME: HomePage = {
   hero: {
     title: 'אתרים עם עומק.',
-    lead: 'סטודיו קטן מטבריה שבונה לעסקים אתרים מהירים, נגישים, וכתובים בשביל הלקוח שלהם. מדברים ישר עם מי שבונה.',
+    lead: 'אתרים לעורכי דין, רואי חשבון, קליניקות וקבלנים שרוצים להיראות כמו הגדולים בתחום, ולקבל פניות מלקוחות שכבר מוכנים לסגור.',
     reassurance: 'שיחת היכרות בחינם ובלי התחייבות.',
   },
   works: {
@@ -111,6 +111,23 @@ export const SEED_NICHES: Niche[] = [
 ];
 
 const niche = (slug: string) => SEED_NICHES.find((n) => n.slug === slug)!;
+
+/**
+ * Real screenshots of each build's first screen (1280×960, captured 8.10.2026). Used whenever a project has no
+ * cover of its own, including projects that come from Sanity.
+ */
+export const LOCAL_COVERS: Record<string, ProjectImage> = Object.fromEntries(
+  (
+    [
+      ['lalibakery', 'LALIBAKERY'],
+      ['spacehub', 'SpaceHub'],
+      ['tene-mashkaot', 'תנא משקאות'],
+      ['luxi', 'לוקסי'],
+      ['law-office', 'משרד עורכי דין'],
+      ['renovation', 'שיפוצים ואיטום'],
+    ] as const
+  ).map(([slug, title]) => [slug, { url: `/projects/${slug}.jpg`, alt: `המסך הראשון באתר ${title}`, width: 1280, height: 960 }]),
+);
 
 export const SEED_PROJECTS: Project[] = [
   {
