@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="t">
+  <title id="t">עומק: שמש מעל הכנרת והאות ע׳</title>
+  <defs>
+    <clipPath id="disc"><circle cx="60" cy="60" r="50"/></clipPath>
+  </defs>
+  <g clip-path="url(#disc)">
+    <rect width="120" height="120" fill="#EDE6D8"/>
+    <path d="M0 64 Q15 58 30 64 T60 64 T90 64 T120 64 V120 H0 Z" fill="#0F3B47"/>
+    <path d="M0 76 Q15 71 30 76 T60 76 T90 76 T120 76" fill="none" stroke="#2E7C8A" stroke-width="2"/>
+    <path d="M0 90 Q15 85 30 90 T60 90 T90 90 T120 90" fill="none" stroke="#2E7C8A" stroke-width="2" opacity="0.6"/>
+    <circle cx="60" cy="64" r="15" fill="#E07A3F"/>
+  </g>
+  <g fill="none" stroke="#1F2326" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M76 22 V46 Q76 56 66 56 H42"/>
+    <path d="M50 22 Q53 42 72 52"/>
+  </g>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="#1F2326" stroke-width="3"/>
+</svg>

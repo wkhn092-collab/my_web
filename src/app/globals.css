@@ -1,0 +1,816 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-abyss: #030608;
+  --color-ink: #091015;
+  --color-ink-2: #101a20;
+  --color-pearl: #efe9de;
+  --color-mist: #9ba7ab;
+  --color-gold: #c9a66b;
+  --color-gold-soft: #e8d4a8;
+  --color-lake: #3e9aa8;
+  --color-danger: #ff9585;
+
+  --font-display: var(--font-frank), 'Times New Roman', serif;
+  --font-sans: var(--font-heebo), system-ui, sans-serif;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-lux: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --animate-marquee: marquee 38s linear infinite;
+}
+
+/* Mirrors src/lib/motion-tokens.ts */
+:root {
+  --motion-instant: 100ms;
+  --motion-fast: 200ms;
+  --motion-base: 300ms;
+  --motion-slow: 600ms;
+  --motion-lux: 1100ms;
+  --motion-settle: 2000ms;
+  --motion-stagger: 60ms;
+  --motion-distance: 28px;
+  --motion-shake: 6px;
+  --intro-ms: 1300ms;
+
+  --sticky-cta-height: 0px;
+  --header-height: 4.5rem;
+  color-scheme: dark;
+}
+
+/* Base and component rules live in layers so Tailwind utilities (hidden, leading-*, outline-none…) can override them. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    background: var(--color-abyss);
+  }
+  html:not(.lenis) {
+    scroll-behavior: smooth;
+  }
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+  .lenis [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  body {
+    background: var(--color-abyss);
+    color: var(--color-pearl);
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.75;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-abyss);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-soft);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* Anchor targets clear the sticky header */
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  /* The router scrolls a new page's first element into view; keep it clear of the sticky header (and announcement bar). */
+  main > * {
+    scroll-margin-top: 8rem;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.8rem 1.9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--color-gold-soft) 0%, var(--color-gold) 55%, #a8854c 100%);
+    color: #120d05;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 10px 40px -12px rgb(201 166 107 / 0.55);
+    transition:
+      transform var(--motion-base) var(--ease-out),
+      box-shadow var(--motion-base) var(--ease-out);
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: -50% auto -50% -60%;
+    width: 40%;
+    z-index: -1;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.55), transparent);
+    transform: translateX(-120%) skewX(-18deg);
+    transition: transform 900ms var(--ease-out);
+  }
+  .btn-primary:hover {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.5),
+      0 14px 50px -10px rgb(201 166 107 / 0.75);
+  }
+  .btn-primary:hover::after {
+    transform: translateX(520%) skewX(-18deg);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .btn-primary:disabled {
+    cursor: progress;
+  }
+
+  .btn-secondary {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 52px;
+    padding: 0.8rem 1.9rem;
+    border-radius: 999px;
+    border: 1px solid rgb(239 233 222 / 0.28);
+    color: var(--color-pearl);
+    font-weight: 500;
+    backdrop-filter: blur(6px);
+    transition:
+      transform var(--motion-base) var(--ease-out),
+      border-color var(--motion-base) var(--ease-out),
+      color var(--motion-base) var(--ease-out),
+      background-color var(--motion-base) var(--ease-out);
+  }
+  .btn-secondary:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold-soft);
+    background: rgb(201 166 107 / 0.06);
+  }
+
+  .link {
+    text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 2px;
+    transition:
+      background-size var(--motion-slow) var(--ease-out),
+      color var(--motion-base) var(--ease-out);
+  }
+  .link:hover {
+    color: var(--color-gold-soft);
+  }
+  .link-reveal {
+    background-size: 0% 1px;
+    background-position: 0 100%;
+  }
+  .link-reveal:hover,
+  .link-reveal[aria-current='page'] {
+    background-size: 100% 1px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--color-gold);
+  }
+  .eyebrow::before {
+    content: '';
+    width: 2.5rem;
+    height: 1px;
+    background: linear-gradient(to left, var(--color-gold), transparent);
+  }
+
+  .text-gilded {
+    background: linear-gradient(180deg, #f5e6c4 0%, var(--color-gold) 60%, #8f6f3c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(239 233 222 / 0.32);
+  }
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(to left, transparent, rgb(239 233 222 / 0.18) 20%, rgb(239 233 222 / 0.18) 80%, transparent);
+  }
+
+  .glass {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.015));
+    border: 1px solid rgb(239 233 222 / 0.1);
+    backdrop-filter: blur(18px) saturate(140%);
+  }
+}
+
+/* ───────── Split text: words rise out of a mask ───────── */
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-block: 0.08em 0.14em;
+  margin-block: -0.08em -0.14em;
+}
+.split-word > span {
+  display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Above the fold: plays on load, no JavaScript needed. */
+  .split-now .split-word > span {
+    animation: word-rise var(--motion-lux) var(--ease-out) both;
+    animation-delay: calc(var(--split-delay, 0ms) + var(--i) * 70ms);
+  }
+  /* Below the fold: <Reveal> adds .is-visible. */
+  @media (scripting: enabled) {
+    .split-scroll:not(.is-visible) .split-word > span {
+      transform: translateY(110%);
+    }
+    .split-scroll .split-word > span {
+      transition: transform var(--motion-lux) var(--ease-out);
+      transition-delay: calc(var(--i) * 55ms);
+    }
+  }
+}
+@keyframes word-rise {
+  from {
+    transform: translateY(110%);
+  }
+}
+
+/* Generic reveal: opacity + 28px, once. */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(var(--motion-distance));
+  }
+  .reveal {
+    transition:
+      opacity var(--motion-lux) var(--ease-out),
+      transform var(--motion-lux) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+}
+
+/* Fades in after the intro, used on hero support copy. */
+@media (prefers-reduced-motion: no-preference) {
+  .rise-in {
+    animation: rise-in var(--motion-lux) var(--ease-out) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+/* ───────── Intro (first paint only; CSS-driven so it never blocks without JavaScript) ───────── */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--color-abyss);
+  pointer-events: none;
+  animation: intro-out 900ms var(--ease-lux) calc(var(--intro-ms) - 300ms) forwards;
+}
+.intro-mark {
+  animation: intro-mark 1200ms var(--ease-out) both;
+}
+.intro-line {
+  transform-origin: center;
+  animation: intro-line 1100ms var(--ease-lux) 200ms both;
+}
+/* Repeat visits skip the intro, so above-the-fold motion starts ~1s earlier. */
+html.intro-seen .split-now .split-word > span {
+  animation-delay: calc(max(0ms, var(--split-delay, 0ms) - 1000ms) + var(--i) * 70ms);
+}
+html.intro-seen .rise-in {
+  animation-delay: max(0ms, var(--rise-delay, 0ms) - 1000ms);
+}
+html.intro-seen .intro {
+  display: none;
+}
+@keyframes intro-out {
+  to {
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+  }
+}
+@keyframes intro-mark {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(8px);
+  }
+}
+@keyframes intro-line {
+  from {
+    transform: scaleX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+}
+
+/* ───────── Page transition (template.tsx remounts per route) ───────── */
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    /* backwards, not both: a lingering transform would break position: fixed (pinned scenes) inside. */
+    animation: page-enter 900ms var(--ease-out) 120ms backwards;
+  }
+  .page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 85;
+    pointer-events: none;
+    background: var(--color-ink);
+    transform-origin: top;
+    animation: curtain-up 800ms var(--ease-lux) forwards;
+  }
+  .page-curtain::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--color-gold), transparent);
+  }
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes curtain-up {
+  to {
+    transform: scaleY(0);
+    visibility: hidden;
+  }
+}
+
+/* ───────── Film grain + vignette ───────── */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: no-preference) {
+  .grain {
+    animation: grain 1.2s steps(6) infinite;
+  }
+}
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-3%, 2%);
+  }
+  40% {
+    transform: translate(2%, -4%);
+  }
+  60% {
+    transform: translate(-4%, -2%);
+  }
+  80% {
+    transform: translate(3%, 4%);
+  }
+}
+
+/* ───────── Hero poster: the scene's resting frame, also the fallback ───────── */
+.scene-poster {
+  background:
+    radial-gradient(70% 50% at 50% -10%, rgb(62 154 168 / 0.14), transparent 70%),
+    linear-gradient(to bottom, #061016 0%, #030608 70%);
+}
+/* The glow where the 3D object sits; it gives way once the live scene is drawing its own light. */
+.scene-poster::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(28% 34% at 30% 46%, rgb(232 212 168 / 0.22), transparent 70%),
+    radial-gradient(18% 22% at 26% 40%, rgb(255 244 220 / 0.18), transparent 70%),
+    radial-gradient(45% 55% at 34% 52%, rgb(62 154 168 / 0.16), transparent 72%);
+  transition: opacity 1.6s var(--ease-out);
+}
+.scene-poster:has(> canvas[data-live])::before {
+  opacity: 0;
+}
+@media (max-width: 767px) {
+  .scene-poster::before {
+    background:
+      radial-gradient(48% 26% at 50% 28%, rgb(232 212 168 / 0.2), transparent 70%),
+      radial-gradient(70% 36% at 50% 30%, rgb(62 154 168 / 0.16), transparent 72%);
+  }
+}
+
+/* ───────── Hero dive: a pinned stage scrolled through, into the pearl (HeroDive.tsx sets --dive 0..1) ───────── */
+.hero-dive.is-diving {
+  height: 260svh;
+}
+.hero-dive.is-diving .hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+.hero-dive .hero-content {
+  opacity: clamp(0, calc(1 - var(--dive, 0) * 4.5), 1);
+}
+.hero-dive .hero-lift {
+  translate: 0 calc(var(--dive, 0) * -16vh);
+}
+.hero-veil-light,
+.hero-veil-dark {
+  opacity: 0;
+}
+.hero-dive.is-diving .hero-veil-light {
+  /* A single breath of light as the camera touches the surface: rises, peaks, and is gone before the iris closes. */
+  background: radial-gradient(circle at 50% 50%, rgb(255 248 232 / 0.85), rgb(255 236 208 / 0.35) 30%, transparent 62%);
+  mix-blend-mode: screen;
+  opacity: clamp(0, min(calc((var(--dive, 0) - 0.68) / 0.12), calc((0.95 - var(--dive, 0)) / 0.1)), 1);
+  scale: calc(0.7 + var(--dive, 0) * 0.5);
+}
+.hero-dive.is-diving .hero-veil-dark {
+  /* Through the pearl into the dark: an iris closing from the edges to the centre (never a grey cross-fade). */
+  --iris: clamp(0, calc((var(--dive, 0) - 0.82) / 0.16), 1);
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent calc((1 - var(--iris)) * 80vmax - 22vmax),
+    var(--color-abyss) calc((1 - var(--iris)) * 80vmax)
+  );
+  opacity: 1;
+}
+
+/* ───────── Footer wordmark: polished gold, a slow band of light passing across it ───────── */
+.finale-word {
+  background: linear-gradient(
+    105deg,
+    #8f6f3c 0%,
+    var(--color-gold) 30%,
+    var(--color-gold) 42%,
+    #fff6e0 50%,
+    var(--color-gold) 58%,
+    var(--color-gold) 70%,
+    #8f6f3c 100%
+  );
+  background-size: 300% 100%;
+  background-position: 50% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 28px rgb(201 166 107 / 0.18));
+}
+.finale-line {
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .finale-word {
+    animation: finale-sheen 7s var(--ease-lux) infinite;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pulse-dot {
+    animation: pulse-dot 2.4s ease-out infinite;
+  }
+}
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgb(95 211 141 / 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px rgb(95 211 141 / 0);
+  }
+}
+@keyframes finale-sheen {
+  0%,
+  35% {
+    background-position: 100% 0;
+  }
+  75%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* Project art when there is no screenshot: per-project tint from --tint */
+.project-art {
+  background:
+    radial-gradient(60% 70% at 75% 20%, color-mix(in oklab, var(--tint) 70%, white 8%), transparent 70%),
+    radial-gradient(70% 60% at 15% 100%, color-mix(in oklab, var(--tint) 55%, black 20%), transparent 70%),
+    linear-gradient(160deg, color-mix(in oklab, var(--tint) 35%, #05090c) 0%, #05080b 100%);
+}
+
+/* ───────── Marquee ───────── */
+@keyframes marquee {
+  to {
+    transform: translateX(50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+/* ───────── Custom cursor ───────── */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+html.has-cursor input,
+html.has-cursor textarea {
+  cursor: text !important;
+}
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 95;
+  pointer-events: none;
+  border-radius: 999px;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--color-gold-soft);
+}
+.cursor-ring {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 1px solid rgb(232 212 168 / 0.55);
+  color: var(--color-abyss);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition:
+    width var(--motion-base) var(--ease-out),
+    height var(--motion-base) var(--ease-out),
+    margin var(--motion-base) var(--ease-out),
+    background-color var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out),
+    opacity var(--motion-base) var(--ease-out);
+}
+.cursor-ring[data-state='hover'] {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  border-color: var(--color-gold);
+  background: rgb(201 166 107 / 0.1);
+}
+.cursor-ring[data-state='view'] {
+  width: 96px;
+  height: 96px;
+  margin: -48px 0 0 -48px;
+  border-color: transparent;
+  background: var(--color-gold-soft);
+}
+.cursor-ring[data-state='text'] {
+  width: 4px;
+  height: 28px;
+  margin: -14px 0 0 -2px;
+  border-radius: 2px;
+  background: var(--color-gold-soft);
+}
+.cursor-hidden {
+  opacity: 0;
+}
+
+/* FAQ: opacity + 8px only, no height animation */
+@media (prefers-reduced-motion: no-preference) {
+  details[open] > .faq-answer {
+    animation: faq-in var(--motion-slow) var(--ease-out);
+  }
+}
+@keyframes faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Form error shake */
+@media (prefers-reduced-motion: no-preference) {
+  .shake {
+    animation: shake 300ms var(--ease-out);
+  }
+}
+@keyframes shake {
+  25% {
+    transform: translateX(calc(var(--motion-shake) * -1));
+  }
+  75% {
+    transform: translateX(var(--motion-shake));
+  }
+}
+
+/* Lead drawer: enters from the left (the "end" side in RTL) */
+dialog.drawer {
+  margin: 0;
+  max-height: 100dvh;
+  height: 100dvh;
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  padding: 0;
+  background:
+    radial-gradient(80% 40% at 50% 0%, rgb(62 154 168 / 0.12), transparent 70%),
+    var(--color-ink);
+  color: var(--color-pearl);
+}
+@media (min-width: 768px) {
+  dialog.drawer {
+    width: 32rem;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    border-inline-end: 1px solid rgb(239 233 222 / 0.08);
+  }
+}
+dialog.drawer::backdrop {
+  background: rgb(3 6 8 / 0.7);
+  backdrop-filter: blur(6px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  dialog.drawer[open] {
+    animation: drawer-in 700ms var(--ease-lux);
+  }
+  dialog.drawer[open]::backdrop {
+    animation: fade-in var(--motion-slow) var(--ease-out);
+  }
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Signature moment: ripple → check */
+@media (prefers-reduced-motion: no-preference) {
+  .sig-ripple {
+    animation: sig-ripple 600ms var(--ease-out) forwards;
+  }
+  .sig-check path {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    animation: sig-check 300ms var(--ease-out) 600ms forwards;
+  }
+}
+@keyframes sig-ripple {
+  from {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@keyframes sig-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Scroll cue in the hero */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-cue::after {
+    animation: scroll-cue 2.2s var(--ease-lux) infinite;
+  }
+}
+.scroll-cue {
+  position: relative;
+  overflow: hidden;
+}
+.scroll-cue::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-gold);
+  transform-origin: top;
+}
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* Sound bars */
+.sound-bar {
+  transform-origin: bottom;
+  transform: scaleY(0.3);
+  transition: transform var(--motion-base) var(--ease-out);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [aria-pressed='true'] .sound-bar {
+    animation: sound-bar 900ms ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -230ms);
+  }
+}
+@keyframes sound-bar {
+  from {
+    transform: scaleY(0.25);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

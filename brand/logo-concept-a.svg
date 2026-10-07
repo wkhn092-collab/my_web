@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="t">
+  <title id="t">עומק: האות ע׳ משתקפת במים</title>
+  <defs>
+    <clipPath id="below">
+      <path d="M0 68 Q15 63 30 68 T60 68 T90 68 T120 68 V120 H0 Z"/>
+    </clipPath>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E7C8A" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#2E7C8A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="30" cy="24" r="6" fill="#E07A3F"/>
+  <g id="ayin" fill="none" stroke="#1F2326" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M82 14 V48 Q82 62 68 62 H34"/>
+    <path d="M44 14 Q48 44 76 58"/>
+  </g>
+  <g clip-path="url(#below)">
+    <g transform="translate(0 132) scale(1 -1)" fill="none" stroke="url(#fade)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M82 14 V48 Q82 62 68 62 H34"/>
+      <path d="M44 14 Q48 44 76 58"/>
+    </g>
+  </g>
+  <path d="M8 68 Q19 64 30 68 T52 68 T74 68 T96 68 T112 68" fill="none" stroke="#2E7C8A" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
