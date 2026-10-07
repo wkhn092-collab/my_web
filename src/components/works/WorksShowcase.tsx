@@ -20,6 +20,30 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
   const progressRef = useRef<HTMLSpanElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const swipeProgressRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    const bar = swipeProgressRef.current;
+    if (!scroller || !bar) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      // RTL rows report scrollLeft from 0 down to -max.
+      const ratio = max > 0 ? Math.abs(scroller.scrollLeft) / max : 1;
+      bar.style.transform = `scaleX(${(0.12 + ratio * 0.88).toFixed(3)})`;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener('scroll', onScroll);
+    };
+  }, []);
 
   useEffect(() => {
     if (prefersReducedMotion() || !window.matchMedia(PIN_QUERY).matches) return;
@@ -69,32 +93,42 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
       ref={sectionRef}
       id="works"
       aria-labelledby="works-title"
-      className="group/works relative overflow-hidden py-24 md:py-32 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0 [&.is-pinned_.works-scroller]:overflow-visible"
+      className="group/works relative overflow-hidden py-20 md:py-32 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0 [&.is-pinned_.works-scroller]:overflow-visible"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 md:flex-row md:items-end md:justify-between md:px-10">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl" data-dive-landing="">
           <p className="eyebrow">{eyebrow}</p>
           <h2 id="works-title" className="mt-5 text-5xl font-light md:text-7xl lg:text-6xl xl:text-7xl">
             <SplitText text={title} />
           </h2>
-          <p className="mt-5 max-w-xl text-base text-mist md:text-lg lg:[@media(max-height:820px)]:hidden">{intro}</p>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-mist md:mt-5 md:text-lg lg:[@media(max-height:820px)]:hidden">{intro}</p>
         </div>
-        <div className="flex items-center gap-4 text-sm text-mist">
+        <div className="hidden items-center gap-4 text-sm text-mist md:flex">
           <bdi className="font-display text-3xl text-pearl">{String(projects.length).padStart(2, '0')}</bdi>
           <span>{t('home.projectsCount')}</span>
         </div>
       </div>
 
-      <div className="works-scroller mt-12 overflow-x-auto overscroll-x-contain [scrollbar-width:none] lg:mt-10 [&::-webkit-scrollbar]:hidden">
-        <ul ref={trackRef} className="flex w-max snap-x snap-mandatory gap-5 px-5 pb-4 md:gap-8 md:px-10">
+      <div className="mt-8 flex items-center gap-4 px-5 text-sm text-mist md:hidden" aria-hidden="true">
+        <span className="shrink-0">{t('works.swipeHint')} ←</span>
+        <span className="h-px flex-1 bg-pearl/10">
+          <span ref={swipeProgressRef} className="block h-px w-full origin-right scale-x-[0.12] bg-gold" />
+        </span>
+      </div>
+
+      <div
+        ref={scrollerRef}
+        className="works-scroller mt-5 scroll-px-5 overflow-x-auto overscroll-x-contain [scrollbar-width:none] md:mt-12 md:scroll-px-10 lg:mt-10 [&::-webkit-scrollbar]:hidden"
+      >
+        <ul ref={trackRef} className="flex w-max snap-x snap-mandatory gap-4 px-5 pb-4 md:gap-8 md:px-10">
           {projects.map((project, i) => (
-            <li key={project.id} className="w-[82vw] shrink-0 snap-center sm:w-[58vw] lg:w-[34vw]">
+            <li key={project.id} className="w-[70vw] max-w-80 shrink-0 snap-start sm:w-[46vw] sm:max-w-none lg:w-[34vw]">
               <article className="group relative" data-cursor="view">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] bg-ink ring-1 ring-pearl/10 lg:aspect-auto lg:h-[clamp(12rem,calc(100vh-31rem),34rem)]">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 sm:aspect-[4/5] md:rounded-[1.75rem] lg:aspect-auto lg:h-[clamp(12rem,calc(100vh-31rem),34rem)]">
                   <div data-art className="absolute -inset-x-[8%] inset-y-0">
-                    <ProjectArt project={project} sizes="(min-width: 1024px) 34vw, 82vw" />
+                    <ProjectArt project={project} sizes="(min-width: 1024px) 34vw, (min-width: 640px) 46vw, 70vw" />
                   </div>
-                  <div className="absolute inset-x-0 top-0 flex items-start justify-between p-5">
+                  <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 md:p-5">
                     <bdi className="font-display text-lg text-pearl/80">{String(i + 1).padStart(2, '0')}</bdi>
                     {project.isConcept && (
                       <span className="glass rounded-full px-3 py-1 text-xs text-pearl/90" title={t('common.conceptTooltip')}>
@@ -103,35 +137,35 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
                     )}
                   </div>
                 </div>
-                <div className="mt-5 flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs tracking-[0.2em] text-gold">
+                <div className="mt-4 flex items-start justify-between gap-3 md:mt-5 md:gap-4">
+                  <div className="min-w-0">
+                    <p className="truncate text-xs tracking-[0.2em] text-gold">
                       {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]}
                     </p>
-                    <h3 className="mt-2 text-3xl font-light md:text-4xl">
+                    <h3 className="mt-1.5 text-2xl font-light md:mt-2 md:text-4xl">
                       <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0 focus-visible:outline-none">
                         {project.title}
                       </Link>
                     </h3>
                   </div>
                   <span
-                    className="mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-pearl/20 text-lg transition-all duration-500 group-hover:-rotate-45 group-hover:border-gold group-hover:bg-gold group-hover:text-abyss"
+                    className="mt-1 inline-flex h-10 w-10 shrink-0 md:h-11 md:w-11 items-center justify-center rounded-full border border-pearl/20 text-lg transition-all duration-500 group-hover:-rotate-45 group-hover:border-gold group-hover:bg-gold group-hover:text-abyss"
                     aria-hidden="true"
                   >
                     ←
                   </span>
                 </div>
-                <p className="mt-3 line-clamp-2 max-w-md lg:line-clamp-1 text-base text-mist">{project.summary}</p>
+                <p className="mt-2 line-clamp-2 max-w-md text-sm text-mist md:mt-3 md:text-base lg:line-clamp-1">{project.summary}</p>
               </article>
             </li>
           ))}
-          <li className="flex w-[70vw] shrink-0 snap-center items-center justify-center sm:w-[40vw] lg:w-[24vw]">
+          <li className="flex w-[52vw] shrink-0 snap-start items-center justify-center sm:w-[40vw] lg:w-[24vw]">
             <Link
               href="/projects"
               data-magnetic=""
-              className="group flex aspect-square w-56 flex-col items-center justify-center gap-2 rounded-full border border-pearl/20 text-center transition-colors duration-500 hover:border-gold hover:bg-gold hover:text-abyss md:w-64"
+              className="group flex aspect-square w-40 flex-col items-center justify-center gap-2 rounded-full border border-pearl/20 text-center transition-colors duration-500 hover:border-gold hover:bg-gold hover:text-abyss sm:w-56 md:w-64"
             >
-              <span className="font-display text-3xl">{t('works.allWorks')}</span>
+              <span className="font-display text-2xl md:text-3xl">{t('works.allWorks')}</span>
               <span aria-hidden="true" className="text-2xl transition-transform duration-500 group-hover:-translate-x-2">
                 ←
               </span>

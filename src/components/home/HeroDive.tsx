@@ -46,7 +46,15 @@ export function HeroDive({ targetId }: { targetId: string }) {
 }
 
 function autoDiveOnTouch(section: HTMLElement): () => void {
-  const diveEnd = () => section.getBoundingClientRect().bottom + window.scrollY - window.innerHeight;
+  // Where the site begins: the hero has fully scrolled away under the header, so the glide never parks on the dark end of the dive.
+  const header = document.querySelector<HTMLElement>('header');
+  const landing = document.querySelector<HTMLElement>('[data-dive-landing]');
+  const diveEnd = () => {
+    const headerHeight = Math.min(header?.offsetHeight ?? 0, 120);
+    const heroExit = section.getBoundingClientRect().bottom + window.scrollY - headerHeight;
+    if (!landing) return heroExit;
+    return Math.max(heroExit, landing.getBoundingClientRect().top + window.scrollY - headerHeight - 24);
+  };
   let glideFrame = 0;
   let gliding = false;
   let startX = 0;
@@ -63,7 +71,7 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
     const from = window.scrollY;
     const distance = to - from;
     if (Math.abs(distance) < 2) return;
-    const duration = to > from ? 1500 : 1000;
+    const duration = to > from ? 1900 : 1200;
     const startedAt = performance.now();
     gliding = true;
     const step = (now: number) => {
@@ -77,7 +85,8 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
 
   const onTouchStart = (event: TouchEvent) => {
     touching = true;
-    decided = gliding || !section.contains(event.target as Node) || window.scrollY > diveEnd() + 4;
+    const inOverlay = (event.target as Element | null)?.closest?.('header, dialog, [role="dialog"], [data-lenis-prevent]');
+    decided = gliding || Boolean(inOverlay) || window.scrollY > diveEnd() + 4;
     startX = event.touches[0].clientX;
     startY = event.touches[0].clientY;
   };
