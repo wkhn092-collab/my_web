@@ -19,7 +19,7 @@ const heebo = Heebo({
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.siteUrl),
-  title: { default: 'עומק · סטודיו לאתרים מטבריה', template: '%s · עומק' },
+  title: { default: 'עומק · סטודיו לאתרים', template: '%s · עומק' },
   description: 'אתרים לעסקים שרוצים להיראות כמו הגדולים בתחום, ולקבל פניות מלקוחות שכבר מוכנים לסגור.',
   openGraph: { type: 'website', locale: 'he_IL', siteName: 'עומק' },
   formatDetection: { telephone: false },

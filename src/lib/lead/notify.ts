@@ -43,7 +43,7 @@ export function sendOwnerBackup(lead: LeadInput, addonTitles: string[], replyWin
     lead.utmSource ? `utm_source: ${lead.utmSource}` : null,
     lead.utmCampaign ? `utm_campaign: ${lead.utmCampaign}` : null,
     '',
-    `הובטח ללקוח: נחזור ${replyWindow}`,
+    `הובטח ללקוח: אחזור ${replyWindow}`,
     savedInSanity ? 'נשמר ב-Sanity (פניות).' : 'לא נשמר ב-Sanity. המייל הזה הוא העותק היחיד.',
   ].filter((line): line is string => line !== null);
   return send(env.OWNER_EMAIL, `פנייה חדשה מהאתר: ${lead.name}`, lines.join('\n'), 'lead.owner-email');

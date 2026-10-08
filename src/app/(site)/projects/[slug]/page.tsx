@@ -49,7 +49,7 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
           → {t('project.back')}
         </Link>
         <p className="rise-in mt-10 text-xs tracking-[0.25em] text-gold">
-          {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]} · <bdi>{t('works.tier', { tier: project.tier })}</bdi>
+          {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]}
           {project.isConcept && <> · {t('common.conceptLabel')}</>}
         </p>
         <h1 className="mt-5 text-[clamp(3.25rem,9vw,8rem)] font-light leading-[0.95]">
@@ -90,11 +90,9 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
         )}
       </div>
 
-      <section className="mx-auto mt-24 max-w-7xl px-5 md:px-10">
-        <h2 className="text-4xl font-light md:text-5xl">{t('project.metrics')}</h2>
-        {project.metrics.length === 0 ? (
-          <p className="mt-6 text-mist">{t('project.noMetrics')}</p>
-        ) : (
+      {project.metrics.length > 0 && (
+        <section className="mx-auto mt-24 max-w-7xl px-5 md:px-10">
+          <h2 className="text-4xl font-light md:text-5xl">{t('project.metrics')}</h2>
           <dl className="mt-10 grid gap-px overflow-hidden rounded-[1.5rem] bg-pearl/10 sm:grid-cols-2 lg:grid-cols-4">
             {project.metrics.map((metric) => (
               <div key={`${metric.label}-${metric.measuredAt}`} className="bg-abyss p-8">
@@ -108,8 +106,8 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
               </div>
             ))}
           </dl>
-        )}
-      </section>
+        </section>
+      )}
 
       <div className="mx-auto mt-24 max-w-7xl px-5 md:px-10">
         <div className="glass flex flex-col items-start gap-8 rounded-[2rem] p-8 md:flex-row md:items-center md:justify-between md:p-14">

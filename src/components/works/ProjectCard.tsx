@@ -31,7 +31,7 @@ export function ProjectCard({
       </div>
       <div className="flex flex-1 flex-col gap-2 pt-5">
         <p className="text-xs tracking-[0.2em] text-gold">
-          {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]} · <bdi>{t('works.tier', { tier: project.tier })}</bdi>
+          {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]}
         </p>
         <Heading className="text-3xl font-light">
           <Link href={`/projects/${project.slug}`} className="after:absolute after:inset-0 focus-visible:outline-none">

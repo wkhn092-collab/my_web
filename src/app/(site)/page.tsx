@@ -47,7 +47,7 @@ export default async function HomePage() {
       <Hero
         hero={home.hero}
         replyWindow={replyWindow}
-        eyebrow={`${t("footer.tagline")} · ${settings.city}`}
+        eyebrow={t("home.heroEyebrow")}
       />
 
       <Marquee items={t.raw("home.marquee") as string[]} />
