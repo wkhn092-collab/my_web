@@ -122,6 +122,8 @@ Settings → Environment Variables. כל משתנה מ-`.env.example`, עם ער
 - חובה (השרת לא יעלה בלעדיהם): `NEXT_PUBLIC_SANITY_PROJECT_ID`, `SANITY_WRITE_TOKEN`, `SANITY_WEBHOOK_SECRET`, `RESEND_API_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`, `LEAD_IP_SALT`.
 - חשוב: `NEXT_PUBLIC_SITE_URL` (ב-Production: הדומיין הקנוני עם `https://`), `SANITY_READ_TOKEN` (לתצוגה מקדימה), `EMAIL_FROM`, `OWNER_EMAIL`.
 - רשות: `NEXT_PUBLIC_GA4_ID`, `NEXT_PUBLIC_CLARITY_ID`. נטענים רק אחרי הסכמה לעוגיות.
+- מחיקה אוטומטית של פניות ישנות: `CRON_SECRET` (מחרוזת אקראית של 32+ תווים). בלעדיו המחיקה לא רצה.
+- התראת וואטסאפ על פנייה חדשה (כל הארבעה, אחרת ההתראה פשוט לא נשלחת): `WA_PHONE_NUMBER_ID`, `WA_ACCESS_TOKEN`, `OWNER_WHATSAPP` (ספרות בלבד, למשל `972503967230`), `LEAD_ALERT_TEMPLATE` (למשל `omek_new_lead`). רשות: `LEAD_ALERT_TEMPLATE_LANG` (ברירת מחדל `he`). ההסבר המלא ב-`docs/launch.md`.
 
 משתנה שמתחיל ב-`NEXT_PUBLIC_` נצרב בזמן ה-build, לכן אחרי שינוי שלו צריך Redeploy.
 
@@ -130,6 +132,7 @@ Settings → Environment Variables. כל משתנה מ-`.env.example`, עם ער
 1. Settings → Domains → מוסיפים את הדומיין ואת `www`.
 2. מגדירים אחד מהם כקנוני (מומלץ בלי `www`) והשני כ-Redirect 308 אליו.
 3. מעדכנים את `NEXT_PUBLIC_SITE_URL`, את ה-CORS ב-Sanity, את ה-Hostnames ב-Turnstile ואת ה-URL של ה-webhook.
+4. מעדכנים בקוד את כתובת ה-vercel הישנה: שורת `Canonical` ב-`public/.well-known/security.txt`, והקישורים בבוט (`omek-bot/src/business/knowledge.ts` ו-`bot.config.ts`, וגם הבדיקה ב-`tests/client.test.mts`). הרשימה המלאה ב-`docs/launch.md`.
 
 ### 6.5 תצוגה מקדימה (Presentation)
 
@@ -140,7 +143,7 @@ Settings → Environment Variables. כל משתנה מ-`.env.example`, עם ער
 ## 7. בדיקה אחרי העלייה
 
 - [ ] `https://<הדומיין>` נטען, בעברית ומימין לשמאל, עם התוכן מ-Sanity (לא תוכן ה-seed).
-- [ ] שליחת טופס עם הטלפון שלך: נפתח וואטסאפ עם הודעה מוכנה, הפנייה מופיעה ב-Studio ב"פניות", ומגיע מייל גיבוי.
+- [ ] שליחת טופס עם הטלפון שלך: נפתח וואטסאפ עם הודעה מוכנה, הפנייה מופיעה ב-Studio ב"פניות", מגיע מייל גיבוי, ואם הוגדרה, מגיעה גם התראת וואטסאפ.
 - [ ] שינוי טקסט ב-Studio ופרסום: האתר מתעדכן תוך כמה שניות (ה-webhook עובד). ב-Sanity → Webhooks → Attempts רואים 200.
 - [ ] כותרות אבטחה: [securityheaders.com](https://securityheaders.com) מראה CSP עם nonce, HSTS ו-X-Content-Type-Options.
 - [ ] Lighthouse במובייל על דף הבית ועל דף פרויקט.

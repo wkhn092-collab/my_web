@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
@@ -9,9 +10,12 @@ import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import { LiveLink } from '@/components/works/LiveLink';
 import { ProjectArt } from '@/components/works/ProjectArt';
 import { RememberProject } from '@/components/works/RecentlyViewed';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_TYPE_LABEL, leadSiteTypeFor } from '@/lib/content/labels';
 import { getProjectBySlug } from '@/lib/content/site-content';
+import { publicEnv } from '@/lib/env.public';
 import { formatDate } from '@/lib/format';
+import { projectLd } from '@/lib/seo/structured-data';
 
 const SLUG = /^[a-z0-9-]{1,64}$/;
 
@@ -27,7 +31,6 @@ export async function generateMetadata({ params }: PageProps<'/projects/[slug]'>
     title: project.title,
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
-    openGraph: project.cover ? { images: [{ url: project.cover.url, alt: project.cover.alt }] } : undefined,
   };
 }
 
@@ -35,10 +38,11 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
   const { slug } = await params;
   const project = await loadProject(slug);
   if (!project) notFound();
-  const t = await getTranslations();
+  const [t, requestHeaders] = await Promise.all([getTranslations(), headers()]);
 
   return (
     <article className="pb-28 md:pb-40">
+      <JsonLd nonce={requestHeaders.get('x-nonce') ?? undefined} data={projectLd(project, publicEnv.siteUrl)} />
       <RememberProject id={project.id} />
       <div className="mx-auto max-w-7xl px-5 pt-14 md:px-10 md:pt-20">
         <Link href="/projects" className="link link-reveal text-sm tracking-wide text-mist">

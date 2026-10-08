@@ -42,7 +42,7 @@ export const LEGAL_DRAFTS: LegalDraft[] = [
   {
     slug: 'privacy',
     title: 'מדיניות פרטיות',
-    updatedAt: '2026-10-07',
+    updatedAt: '2026-10-08',
     sections: [
       { paragraphs: ['האתר מופעל על ידי {legalName}, {businessId}, {city}.'] },
       {
@@ -60,7 +60,7 @@ export const LEGAL_DRAFTS: LegalDraft[] = [
       {
         heading: 'איפה המידע נשמר ומי מקבל אותו',
         paragraphs: [
-          'הפניות נשמרות במערכת הניהול Sanity, במאגר סגור. ספקים שמעבדים מידע עבורנו: Vercel (אחסון), Sanity (שמירה), Resend (שליחת מיילים), Cloudflare (הגנה מבוטים), Upstash (הגבלת שליחות), ו-Google ו-Microsoft (מדידה, בהסכמה בלבד). כשממשיכים לוואטסאפ, ההודעה נשלחת דרך WhatsApp ובאחריותו. המידע לא נמכר ולא מועבר לשיווק.',
+          'הפניות נשמרות במערכת הניהול Sanity, במאגר סגור. ספקים שמעבדים מידע עבורנו: Vercel (אחסון), Sanity (שמירה), Resend (שליחת מיילים), Meta (הודעת וואטסאפ אליי על פנייה חדשה, עם השם, סוג האתר והטלפון בלבד), Cloudflare (הגנה מבוטים), Upstash (הגבלת שליחות), ו-Google ו-Microsoft (מדידה, בהסכמה בלבד). כשממשיכים לוואטסאפ, ההודעה נשלחת דרך WhatsApp ובאחריותו. המידע לא נמכר ולא מועבר לשיווק.',
         ],
       },
       { heading: 'כמה זמן נשמר', paragraphs: ['פנייה שלא הבשילה לעבודה נמחקת אחרי 12 חודשים.'] },

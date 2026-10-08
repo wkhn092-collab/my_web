@@ -17,9 +17,12 @@ import { InlineLeadForm } from "@/components/lead/LazyLeadForm";
 import { Reveal } from "@/components/Reveal";
 import { SplitText } from "@/components/SplitText";
 import { WorksShowcase } from "@/components/works/WorksShowcase";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { getSiteContent } from "@/lib/content/site-content";
 import { formatIsraeliPhone, toWhatsAppNumber } from "@/lib/domain/phone";
 import { formatReplyWindow, getReplyWindow } from "@/lib/domain/reply-window";
+import { publicEnv } from "@/lib/env.public";
+import { businessLd, faqLd, servicesLd } from "@/lib/seo/structured-data";
 
 /** Square, about 512px, in public/. Set to null to fall back to the monogram. */
 const PORTRAIT_SRC: string | null = "/about/avishi.jpg";
@@ -174,6 +177,15 @@ export default async function HomePage() {
           </div>
         </section>
       </SurfaceZone>
+
+      <JsonLd
+        nonce={nonce}
+        data={[
+          businessLd(settings, content.hours, publicEnv.siteUrl),
+          servicesLd(content.services, publicEnv.siteUrl),
+          faqLd(content.faqs),
+        ]}
+      />
     </>
   );
 }

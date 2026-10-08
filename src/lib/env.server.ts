@@ -43,6 +43,30 @@ const serverEnvSchema = z.object({
   /** Vercel Cron sends it as a Bearer token; without it the retention job refuses to run. */
   CRON_SECRET: z.string().min(32).max(256).optional(),
 
+  /** WhatsApp Cloud API (same Meta app as omek-bot): a template alert to Avishi on every new lead. */
+  WA_PHONE_NUMBER_ID: z
+    .string()
+    .regex(/^\d{5,20}$/)
+    .optional(),
+  WA_ACCESS_TOKEN: optionalSecret,
+  WA_GRAPH_API_VERSION: z
+    .string()
+    .regex(/^v\d+\.\d+$/)
+    .default('v25.0'),
+  /** Digits only, international format (9725…). */
+  OWNER_WHATSAPP: z
+    .string()
+    .regex(/^[1-9]\d{7,14}$/)
+    .optional(),
+  LEAD_ALERT_TEMPLATE: z
+    .string()
+    .regex(/^[a-z0-9_]{1,512}$/)
+    .optional(),
+  LEAD_ALERT_TEMPLATE_LANG: z
+    .string()
+    .regex(/^[a-z]{2,3}(_[A-Z]{2})?$/)
+    .default('he'),
+
   NEXT_PUBLIC_GA4_ID: z
     .string()
     .regex(/^G-[A-Z0-9]{4,16}$/)
@@ -127,4 +151,5 @@ export const isConfigured = {
   resend: () => Boolean(env.RESEND_API_KEY),
   turnstile: () => Boolean(env.TURNSTILE_SECRET_KEY && env.NEXT_PUBLIC_TURNSTILE_SITE_KEY),
   redis: () => Boolean(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN),
+  whatsappAlert: () => Boolean(env.WA_PHONE_NUMBER_ID && env.WA_ACCESS_TOKEN && env.OWNER_WHATSAPP && env.LEAD_ALERT_TEMPLATE),
 };

@@ -10,6 +10,7 @@ import { buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
 import { isConfigured, leadsLocked } from '@/lib/env.server';
 import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
 import { sendCustomerConfirmation, sendOwnerBackup } from '@/lib/lead/notify';
+import { sendOwnerWhatsAppAlert } from '@/lib/lead/whatsapp-alert';
 import { logError, logInfo, logWarn } from '@/lib/logger';
 import { rateLimit } from '@/lib/security/rate-limit';
 import { getClientIp, hashIp, isSameOriginRequest } from '@/lib/security/request-meta';
@@ -92,10 +93,12 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
     }
   }
 
-  const [ownerNotified] = await Promise.all([
+  const [emailed, , whatsapped] = await Promise.all([
     sendOwnerBackup(lead, addonTitles, replyWindow, savedInSanity),
     sendCustomerConfirmation(lead, replyWindow),
+    sendOwnerWhatsAppAlert(lead),
   ]);
+  const ownerNotified = emailed || whatsapped;
 
   if (!savedInSanity && !ownerNotified && isConfigured.sanityWrite()) {
     // Nowhere holds this lead; tell the customer to use WhatsApp directly.
@@ -103,7 +106,7 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
   }
 
   const submissionId = randomUUID();
-  logInfo('lead', 'Lead received', { submissionId, savedInSanity, ownerNotified, siteType: lead.siteType, addons: addonTitles.length });
+  logInfo('lead', 'Lead received', { submissionId, savedInSanity, emailed, whatsapped, siteType: lead.siteType, addons: addonTitles.length });
 
   const text = buildLeadMessage({
     name: lead.name,
