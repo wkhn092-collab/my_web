@@ -2,11 +2,11 @@ import { getTranslations } from "next-intl/server";
 import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
+import { BusinessPicker } from "@/components/home/BusinessPicker";
 import { DepthStory } from "@/components/home/DepthStory";
 import { Faq } from "@/components/home/Faq";
 import { FitCheck } from "@/components/home/FitCheck";
 import { Hero } from "@/components/home/Hero";
-import { Marquee } from "@/components/home/Marquee";
 import { NextSteps } from "@/components/home/NextSteps";
 import { ProductShowcase } from "@/components/home/ProductShowcase";
 import { Proof } from "@/components/proof/Proof";
@@ -50,7 +50,7 @@ export default async function HomePage() {
         eyebrow={t("home.heroEyebrow")}
       />
 
-      <Marquee items={t.raw("home.marquee") as string[]} />
+      <BusinessPicker />
 
       <WorksShowcase
         projects={content.projects}

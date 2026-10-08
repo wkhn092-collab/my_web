@@ -3,7 +3,7 @@
     "brand": "עומק",
     "logoAlt": "עומק, לעמוד הבית",
     "skipToContent": "דילוג לתוכן",
-    "ctaTalk": "לשיחה על האתר שלך",
+    "ctaTalk": "לבקשת הדמיה בחינם",
     "ctaWorks": "לצפייה בעבודות",
     "replyPrefix": "אחזור",
     "conceptLabel": "פרויקט קונספט",
@@ -40,7 +40,16 @@
   },
   "home": {
     "heroEyebrow": "סטודיו לאתרים · בכל הארץ",
-    "marquee": ["דפי נחיתה", "אתרי תדמית", "אתרי פרימיום בתלת-ממד", "חנויות אונליין", "מהיר", "נגיש", "כתוב בשביל הלקוח שלך"],
+    "picker": {
+      "title": "איזה עסק יש לך?",
+      "choices": [
+        { "label": "מספרה, קליניקה או סטודיו", "href": "/projects/luxi" },
+        { "label": "קבלן או בעל מקצוע", "href": "/projects/renovation" },
+        { "label": "משרד: עורכי דין, רואי חשבון", "href": "/projects/law-office" },
+        { "label": "חנות או מותג", "href": "/projects/tene-mashkaot" },
+        { "label": "משהו אחר", "href": "/projects" }
+      ]
+    },
     "projectsCount": "פרויקטים",
     "worksEyebrow": "01 · עבודות",
     "aboutEyebrow": "02 · מי בונה",
@@ -124,9 +133,9 @@
     "retry": "לניסיון נוסף",
     "toWhatsApp": "לכתיבה בוואטסאפ",
     "honeypot": "לא למלא את השדה הזה",
-    "drawerTitle": "לשיחה על האתר שלך",
+    "drawerTitle": "הדמיה בחינם של האתר שלך",
     "lockedTitle": "הכי מהר: וואטסאפ",
-    "lockedBody": "הטופס לא זמין כרגע. אפשר לכתוב לי ישר בוואטסאפ, ההודעה כבר כתובה, רק לשלוח.",
+    "lockedBody": "ההודעה כבר כתובה. משלימים שלוש שורות על העסק ושולחים.",
     "lockedButton": "לכתיבה בוואטסאפ"
   },
   "wizard": {

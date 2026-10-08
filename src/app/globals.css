@@ -17,8 +17,6 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-lux: cubic-bezier(0.77, 0, 0.175, 1);
-
-  --animate-marquee: marquee 38s linear infinite;
 }
 
 /* Mirrors src/lib/motion-tokens.ts */
@@ -657,18 +655,6 @@ html.intro-seen .intro {
     radial-gradient(60% 70% at 75% 20%, color-mix(in oklab, var(--tint) 70%, white 8%), transparent 70%),
     radial-gradient(70% 60% at 15% 100%, color-mix(in oklab, var(--tint) 55%, black 20%), transparent 70%),
     linear-gradient(160deg, color-mix(in oklab, var(--tint) 35%, #0a1424) 0%, #09121f 100%);
-}
-
-/* ───────── Marquee ───────── */
-@keyframes marquee {
-  to {
-    transform: translateX(50%);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
 }
 
 /* ───────── Custom cursor ───────── */

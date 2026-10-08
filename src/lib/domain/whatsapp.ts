@@ -35,4 +35,11 @@ export function buildLeadMessage({ name, siteTypeLabel, goalLabel, message, addo
 /** Used only where content may have failed to load (error boundaries). Keep in sync with siteSettings. */
 export const FALLBACK_WHATSAPP_NUMBER = '972503967230';
 
-export const FAB_MESSAGE = 'היי, הגעתי מהאתר של עומק';
+/** Three blanks to fill, so the first message already says what the business needs. */
+export const FAB_MESSAGE = [
+  'היי אבישי, הגעתי מהאתר של עומק ואשמח להדמיה.',
+  '',
+  'העסק שלי: ',
+  'יש לי אתר היום: כן / לא',
+  'הכי חשוב לי שהאתר: ',
+].join('\n');
