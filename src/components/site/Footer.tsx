@@ -11,6 +11,7 @@ import { FAB_MESSAGE, whatsappUrl } from '@/lib/domain/whatsapp';
 import { BackToTop } from './BackToTop';
 import { CookieSettingsButton } from './CookieBanner';
 import { OpenDrawerButton } from './OpenDrawerButton';
+import { PhoneLink } from './PhoneLink';
 
 export async function Footer({ content }: { content: SiteContent }) {
   const t = await getTranslations();
@@ -91,9 +92,9 @@ export async function Footer({ content }: { content: SiteContent }) {
               <p className="eyebrow">{t('footer.contact')}</p>
               <p className="pt-3">
                 {t('footer.phone')}{' '}
-                <a href={`tel:${settings.phoneE164}`} className="link">
+                <PhoneLink phoneE164={settings.phoneE164} location="footer" className="link">
                   <bdi>{phone}</bdi>
-                </a>
+                </PhoneLink>
               </p>
               <p>
                 {t('footer.email')}{' '}

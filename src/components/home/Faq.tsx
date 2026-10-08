@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { SplitText } from '@/components/SplitText';
+import { PhoneLink } from '@/components/site/PhoneLink';
 import { WhatsAppLink } from '@/components/site/WhatsAppLink';
 import type { Faq as FaqItem, HomePage } from '@/lib/content/types';
 
@@ -43,9 +44,9 @@ export async function Faq({ section, faqs, eyebrow, contact }: { section: HomePa
               </WhatsAppLink>
               <p className="text-sm text-mist">
                 {t('home.faqAside.call')}{' '}
-                <a href={`tel:${contact.phoneE164}`} className="link text-pearl">
+                <PhoneLink phoneE164={contact.phoneE164} location="faq-aside" className="link text-pearl">
                   <bdi>{contact.phoneDisplay}</bdi>
-                </a>
+                </PhoneLink>
               </p>
             </div>
           </aside>
