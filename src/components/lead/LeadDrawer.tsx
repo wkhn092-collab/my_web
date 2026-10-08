@@ -25,7 +25,7 @@ export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: 
     if (open && !dialog.open) {
       returnFocus.current = document.activeElement as HTMLElement | null;
       dialog.showModal();
-      dialog.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+      dialog.querySelector<HTMLElement>('[data-wizard-heading]')?.focus();
     } else if (!open && dialog.open) {
       dialog.close();
     }

@@ -6,6 +6,8 @@ export type SiteType = (typeof SITE_TYPES)[number];
 
 export const LEAD_SITE_TYPES = ['landing', 'brand', 'premium3d', 'unsure'] as const;
 export type LeadSiteType = (typeof LEAD_SITE_TYPES)[number];
+export const LEAD_GOALS = ['premium', 'leads', 'questions'] as const;
+export type LeadGoal = (typeof LEAD_GOALS)[number];
 
 export type SiteSettings = {
   brandName: string;

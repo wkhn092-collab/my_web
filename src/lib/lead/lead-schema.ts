@@ -1,5 +1,5 @@
 import { z } from '@/lib/zod';
-import { LEAD_SITE_TYPES } from '@/lib/content/types';
+import { LEAD_GOALS, LEAD_SITE_TYPES } from '@/lib/content/types';
 import { parseAddonIds } from '@/lib/domain/addons';
 import { normalizeIsraeliPhone } from '@/lib/domain/phone';
 import { MESSAGE_MAX, NAME_MAX, sanitizeText } from '@/lib/domain/whatsapp';
@@ -40,6 +40,11 @@ export const leadInputSchema = z.object({
       return e164;
     }),
   siteType: z.enum(LEAD_SITE_TYPES, LEAD_ERRORS.siteType),
+  // Asked by the wizard; optional so a lead is never lost over it.
+  goal: z
+    .enum(LEAD_GOALS)
+    .optional()
+    .or(z.literal('').transform(() => undefined)),
   message: z
     .string()
     .optional()
@@ -73,4 +78,4 @@ export type LeadActionState =
   | { status: 'invalid'; fieldErrors: Partial<Record<LeadField, string>> }
   | { status: 'rate-limited' }
   | { status: 'error' }
-  | { status: 'success'; name: string; whatsappUrl: string; submissionId: string; addons: string[] };
+  | { status: 'success'; name: string; whatsappUrl: string; submissionId: string; addons: string[]; replyWindow: string };

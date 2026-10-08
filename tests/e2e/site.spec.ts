@@ -33,47 +33,57 @@ test.describe('home', () => {
 });
 
 test.describe('lead form', () => {
-  test('shows the approved microcopy for invalid input and focuses the first error', async ({ page }) => {
+  test('walks one question at a time and shows the approved microcopy for invalid input', async ({ page }) => {
     await page.goto('/#contact');
     const form = page.locator('#contact form');
-    await form.getByRole('button', { name: 'להמשך בוואטסאפ' }).click();
+    await form.getByRole('button', { name: /אתר תדמית/ }).click();
+    await expect(form.getByRole('heading', { name: 'מה הכי חשוב לך שהאתר יעשה?' })).toBeFocused();
+    await form.getByRole('button', { name: 'חזרה' }).click();
+    await expect(form.getByRole('button', { name: /אתר תדמית/ })).toHaveAttribute('aria-pressed', 'true');
+    await form.getByRole('button', { name: /אתר תדמית/ }).click();
+    await form.getByRole('button', { name: 'לקבל יותר פניות' }).click();
+    await expect(form.getByRole('heading', { name: 'לאן לחזור אליך?' })).toBeFocused();
+
+    await form.getByRole('button', { name: 'לשליחה' }).click();
     await expect(form.getByText('צריך שם, כדי שאדע איך לפנות')).toBeVisible();
     await expect(form.getByLabel('שם')).toBeFocused();
 
     await form.getByLabel('שם').fill('דנה');
     await form.getByLabel('טלפון').fill('123');
-    await form.getByRole('button', { name: 'להמשך בוואטסאפ' }).click();
+    await form.getByRole('button', { name: 'לשליחה' }).click();
     await expect(form.getByText('כדאי לבדוק את המספר. למשל: 050-1234567')).toBeVisible();
     await expect(form.getByLabel('טלפון')).toBeFocused();
   });
 
-  test('a valid lead opens WhatsApp with the prefilled message and lands on /thanks', async ({ page, context }) => {
+  test('a valid lead shows a calm confirmation with a prefilled WhatsApp link', async ({ page, context }) => {
     // Never hit the real WhatsApp from tests.
     await context.route('https://wa.me/**', (route) => route.fulfill({ status: 200, body: 'ok' }));
     await page.goto('/#contact');
-    const popup = context.waitForEvent('page');
     const form = page.locator('#contact form');
+    await form.getByRole('button', { name: /אתר תדמית/ }).click();
+    await form.getByRole('button', { name: 'לקבל יותר פניות' }).click();
     await form.getByLabel('שם').fill('דנה');
     await form.getByLabel('טלפון').fill('050-1234567');
-    await form.getByLabel('אתר תדמית').check();
-    await form.getByRole('button', { name: 'להמשך בוואטסאפ' }).click();
+    await form.getByRole('button', { name: 'לשליחה' }).click();
 
+    await expect(form.getByRole('heading', { name: 'קיבלתי, דנה.' })).toBeFocused();
+    await expect(page).toHaveURL(/\/#contact$/);
+
+    const popup = context.waitForEvent('page');
+    await form.getByRole('link', { name: 'להמשיך בוואטסאפ' }).click();
     const whatsapp = await popup;
     await whatsapp.waitForURL(/^https:\/\/wa\.me\//);
     const url = new URL(whatsapp.url());
     expect(url.pathname).toBe('/972503967230');
-    expect(url.searchParams.get('text')).toBe('היי, אני דנה, פניתי אליך מהאתר של עומק.\nסוג אתר: אתר תדמית');
-
-    await expect(page).toHaveURL(/\/thanks$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('תודה, דנה. הפנייה אצלי.');
+    expect(url.searchParams.get('text')).toBe('היי, אני דנה, פניתי אליך מהאתר של עומק.\nסוג אתר: אתר תדמית\nהכי חשוב לי: לקבל יותר פניות');
   });
 
-  test('the drawer loads the form on demand and focuses the name field', async ({ page }) => {
+  test('the drawer loads the wizard on demand and focuses the first question', async ({ page }) => {
     await page.goto('/');
     await page.locator('#hero-cta').click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByLabel('שם')).toBeFocused();
+    await expect(dialog.getByRole('heading', { name: 'איזה אתר העסק שלך צריך?' })).toBeFocused();
   });
 
   test('a direct visit to /thanks shows no personal data', async ({ page }) => {

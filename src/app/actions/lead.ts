@@ -1,7 +1,7 @@
 'use server';
 
 import { randomUUID } from 'node:crypto';
-import { LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
+import { LEAD_GOAL_LABEL, LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { getSiteContent } from '@/lib/content/site-content';
 import { resolveAddons } from '@/lib/domain/addons';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
@@ -16,7 +16,7 @@ import { getClientIp, hashIp } from '@/lib/security/request-meta';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 import { getSanityLeadsWriteClient } from '@/sanity/lib/client';
 
-const FIELDS = ['name', 'phone', 'siteType', 'message', 'email', 'addons', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
+const FIELDS = ['name', 'phone', 'siteType', 'goal', 'message', 'email', 'addons', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
 const LEAD_FIELDS = new Set<string>(['name', 'phone', 'siteType', 'message', 'email']);
 
 function readForm(formData: FormData): Record<string, string | undefined> {
@@ -74,6 +74,7 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
         phone: lead.phone,
         email: lead.email,
         siteType: lead.siteType,
+        goal: lead.goal ? LEAD_GOAL_LABEL[lead.goal] : undefined,
         // A snapshot of the titles, so the lead still reads right after an extra is renamed or retired.
         addons: addonTitles,
         message: lead.message,
@@ -103,6 +104,7 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
   const text = buildLeadMessage({
     name: lead.name,
     siteTypeLabel: LEAD_SITE_TYPE_LABEL[lead.siteType],
+    goalLabel: lead.goal ? LEAD_GOAL_LABEL[lead.goal] : undefined,
     message: lead.message,
     addons: addonTitles,
   });
@@ -112,5 +114,6 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
     whatsappUrl: whatsappUrl(toWhatsAppNumber(content.settings.whatsappE164), text),
     submissionId,
     addons: addonTitles,
+    replyWindow,
   };
 }

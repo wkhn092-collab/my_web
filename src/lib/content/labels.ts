@@ -1,4 +1,10 @@
-import type { LeadSiteType, SiteType } from './types';
+import type { LeadGoal, LeadSiteType, SiteType } from './types';
+
+export const LEAD_GOAL_LABEL: Record<LeadGoal, string> = {
+  premium: 'להיראות כמו הגדולים בתחום',
+  leads: 'לקבל יותר פניות',
+  questions: 'להפסיק לענות על אותן שאלות',
+};
 
 export const SITE_TYPE_LABEL: Record<SiteType, string> = {
   landing: 'דף נחיתה',

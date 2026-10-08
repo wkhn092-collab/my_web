@@ -6,6 +6,7 @@ export type AnalyticsEvent =
   | 'whatsapp_click'
   | 'phone_click'
   | 'form_start'
+  | 'form_step'
   | 'form_submit'
   | 'generate_lead'
   | 'live_demo_click'

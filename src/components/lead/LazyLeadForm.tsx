@@ -8,7 +8,7 @@ const loadLeadForm = () => import('./LeadForm').then((m) => m.LeadForm);
 /** The form (validation, Turnstile, server action) stays out of the first-load bundle. */
 export const LazyLeadForm = dynamic(loadLeadForm, {
   ssr: false,
-  loading: () => <div className="min-h-[65rem] sm:min-h-[56.5rem]" aria-busy="true" />,
+  loading: () => <div className="min-h-[37rem] sm:min-h-[33rem]" aria-busy="true" />,
 });
 
 /** Warms the chunk once the page has loaded and gone idle, so opening the drawer feels instant. */
@@ -60,5 +60,5 @@ export function InlineLeadForm(props: ComponentProps<typeof LazyLeadForm>) {
     };
   }, []);
 
-  return <div ref={ref}>{near ? <LazyLeadForm {...props} /> : <div className="min-h-[65rem] sm:min-h-[56.5rem]" aria-busy="true" />}</div>;
+  return <div ref={ref}>{near ? <LazyLeadForm {...props} /> : <div className="min-h-[37rem] sm:min-h-[33rem]" aria-busy="true" />}</div>;
 }

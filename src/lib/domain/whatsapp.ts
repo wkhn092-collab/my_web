@@ -16,13 +16,15 @@ export function whatsappUrl(number: string | null, text: string): string {
 export type LeadMessageInput = {
   name: string;
   siteTypeLabel: string;
+  goalLabel?: string;
   message?: string;
   /** Titles resolved on the server, never raw form input. */
   addons?: string[];
 };
 
-export function buildLeadMessage({ name, siteTypeLabel, message, addons = [] }: LeadMessageInput): string {
+export function buildLeadMessage({ name, siteTypeLabel, goalLabel, message, addons = [] }: LeadMessageInput): string {
   const lines = [`היי, אני ${sanitizeText(name, NAME_MAX)}, פניתי אליך מהאתר של עומק.`, `סוג אתר: ${sanitizeText(siteTypeLabel, 40)}`];
+  if (goalLabel) lines.push(`הכי חשוב לי: ${sanitizeText(goalLabel, 60)}`);
   const extras = addons.map((a) => sanitizeText(a, 40)).filter(Boolean);
   if (extras.length) lines.push(`מעניין אותי גם: ${extras.join(', ')}`);
   const details = message ? sanitizeText(message, MESSAGE_MAX) : '';

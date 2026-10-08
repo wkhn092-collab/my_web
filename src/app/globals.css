@@ -802,6 +802,31 @@ dialog.drawer::backdrop {
   }
 }
 
+/* Lead wizard: the frame eases to each step's height; steps leave upward and arrive from below */
+@media (prefers-reduced-motion: no-preference) {
+  .wizard-frame.is-ready {
+    transition: height 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wizard-step {
+    animation: wizard-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .wizard-step.is-leaving {
+    animation: wizard-out 160ms ease-in forwards;
+  }
+}
+@keyframes wizard-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes wizard-out {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
 /* Scroll cue in the hero */
 @media (prefers-reduced-motion: no-preference) {
   .scroll-cue::after {

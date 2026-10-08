@@ -34,6 +34,12 @@ describe('leadInputSchema', () => {
     expect(leadInputSchema.parse(valid).addons).toEqual([]);
   });
 
+  it('accepts a known goal, treats an empty one as unanswered, and rejects anything else', () => {
+    expect(leadInputSchema.parse({ ...valid, goal: 'leads' }).goal).toBe('leads');
+    expect(leadInputSchema.parse({ ...valid, goal: '' }).goal).toBeUndefined();
+    expect(leadInputSchema.safeParse({ ...valid, goal: '<script>' }).success).toBe(false);
+  });
+
   it('rejects an oversized extras field', () => {
     expect(leadInputSchema.safeParse({ ...valid, addons: 'a,'.repeat(300) }).success).toBe(false);
   });

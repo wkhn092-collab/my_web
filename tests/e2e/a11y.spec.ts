@@ -32,6 +32,6 @@ test('a project page meets WCAG 2.2 AA (axe)', async ({ page }) => {
 test('the open lead drawer meets WCAG 2.2 AA (axe)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#hero-cta').click();
-  await expect(page.getByRole('dialog').getByLabel('שם')).toBeFocused();
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'איזה אתר העסק שלך צריך?' })).toBeFocused();
   await expectNoViolations(page);
 });

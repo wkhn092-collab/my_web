@@ -1,6 +1,6 @@
 import 'server-only';
 import { Resend } from 'resend';
-import { LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
+import { LEAD_GOAL_LABEL, LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { formatIsraeliPhone } from '@/lib/domain/phone';
 import { env, isConfigured } from '@/lib/env.server';
 import { logError, logWarn } from '@/lib/logger';
@@ -34,6 +34,7 @@ export function sendOwnerBackup(lead: LeadInput, addonTitles: string[], replyWin
     `שם: ${lead.name}`,
     `טלפון: ${formatIsraeliPhone(lead.phone)}`,
     `סוג אתר: ${LEAD_SITE_TYPE_LABEL[lead.siteType]}`,
+    lead.goal ? `הכי חשוב לו: ${LEAD_GOAL_LABEL[lead.goal]}` : null,
     addonTitles.length ? `מעניין אותו גם: ${addonTitles.join(', ')}` : null,
     lead.email ? `מייל: ${lead.email}` : null,
     lead.message ? `הודעה: ${lead.message}` : null,
