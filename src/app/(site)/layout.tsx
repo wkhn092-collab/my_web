@@ -18,6 +18,7 @@ import { StickyCta } from '@/components/site/StickyCta';
 import { WhatsAppFab } from '@/components/site/WhatsAppFab';
 import { getSiteContent } from '@/lib/content/site-content';
 import { publicEnv } from '@/lib/env.public';
+import { leadsLocked } from '@/lib/env.server';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 
@@ -47,7 +48,7 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
       <Footer content={content} />
       <StickyCta replyWindow={replyWindow} whatsappNumber={whatsappNumber} />
       <WhatsAppFab whatsappNumber={whatsappNumber} />
-      <LeadDrawer whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} />
+      <LeadDrawer whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} locked={leadsLocked} />
       <CookieBanner />
       <div className="grain" aria-hidden="true" />
       <SmoothScroll />

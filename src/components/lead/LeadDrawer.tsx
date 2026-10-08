@@ -5,9 +5,20 @@ import { useEffect, useId, useRef } from 'react';
 import type { Addon } from '@/lib/content/types';
 import { useSession } from '@/lib/store/visitor';
 import { LazyLeadForm, preloadLeadFormWhenIdle } from './LazyLeadForm';
+import { LeadFormLocked } from './LeadFormLocked';
 
 /** Native <dialog>: focus trap, Escape and inert background come from the platform. */
-export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: string; addons: Addon[]; nonce?: string }) {
+export function LeadDrawer({
+  whatsappNumber,
+  addons,
+  nonce,
+  locked = false,
+}: {
+  whatsappNumber: string;
+  addons: Addon[];
+  nonce?: string;
+  locked?: boolean;
+}) {
   const t = useTranslations('form');
   const tc = useTranslations('common');
   const titleId = useId();
@@ -17,7 +28,7 @@ export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: 
   const closeDrawer = useSession((s) => s.closeDrawer);
   const returnFocus = useRef<HTMLElement | null>(null);
 
-  useEffect(() => preloadLeadFormWhenIdle(), []);
+  useEffect(() => (locked ? undefined : preloadLeadFormWhenIdle()), [locked]);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -49,7 +60,7 @@ export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: 
           <div>
             <p className="eyebrow">{t('titleHint')}</p>
             <h2 id={titleId} className="mt-3 text-4xl font-light">
-              {t('title')}
+              {locked ? t('lockedTitle') : t('title')}
             </h2>
           </div>
           <button
@@ -63,7 +74,12 @@ export function LeadDrawer({ whatsappNumber, addons, nonce }: { whatsappNumber: 
             </svg>
           </button>
         </div>
-        {open && <LazyLeadForm whatsappNumber={whatsappNumber} addons={addons} presetSiteType={siteType} nonce={nonce} location="drawer" />}
+        {open &&
+          (locked ? (
+            <LeadFormLocked whatsappNumber={whatsappNumber} location="drawer" />
+          ) : (
+            <LazyLeadForm whatsappNumber={whatsappNumber} addons={addons} presetSiteType={siteType} nonce={nonce} location="drawer" />
+          ))}
       </div>
     </dialog>
   );

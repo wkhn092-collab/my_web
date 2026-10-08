@@ -14,6 +14,7 @@ import { ProductStage } from "@/components/scene/ProductStage";
 import { Services } from "@/components/home/Services";
 import { SurfaceZone } from "@/components/home/SurfaceZone";
 import { InlineLeadForm } from "@/components/lead/LazyLeadForm";
+import { LeadFormLocked } from "@/components/lead/LeadFormLocked";
 import { Reveal } from "@/components/Reveal";
 import { SplitText } from "@/components/SplitText";
 import { WorksShowcase } from "@/components/works/WorksShowcase";
@@ -22,6 +23,7 @@ import { getSiteContent } from "@/lib/content/site-content";
 import { formatIsraeliPhone, toWhatsAppNumber } from "@/lib/domain/phone";
 import { formatReplyWindow, getReplyWindow } from "@/lib/domain/reply-window";
 import { publicEnv } from "@/lib/env.public";
+import { leadsLocked } from "@/lib/env.server";
 import { businessLd, faqLd, servicesLd } from "@/lib/seo/structured-data";
 
 /** Square, about 512px, in public/. Set to null to fall back to the monogram. */
@@ -157,7 +159,9 @@ export default async function HomePage() {
               >
                 <SplitText text={home.closing.title} />
               </h2>
-              <p className="mt-6 text-lg text-mist">{t("form.title")}</p>
+              {!leadsLocked && (
+                <p className="mt-6 text-lg text-mist">{t("form.title")}</p>
+              )}
 
               {/* Beside the form on desktop; after it on phones, so the form comes first. */}
               <NextSteps
@@ -166,12 +170,19 @@ export default async function HomePage() {
               />
             </div>
             <div className="glass glass-deep rounded-[2rem] p-6 md:p-10 lg:self-start">
-              <InlineLeadForm
-                whatsappNumber={whatsappNumber}
-                addons={content.addons}
-                nonce={nonce}
-                location="inline"
-              />
+              {leadsLocked ? (
+                <LeadFormLocked
+                  whatsappNumber={whatsappNumber}
+                  location="inline"
+                />
+              ) : (
+                <InlineLeadForm
+                  whatsappNumber={whatsappNumber}
+                  addons={content.addons}
+                  nonce={nonce}
+                  location="inline"
+                />
+              )}
             </div>
             <NextSteps replyWindow={replyWindow} className="lg:hidden" />
           </div>

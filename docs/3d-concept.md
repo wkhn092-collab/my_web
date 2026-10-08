@@ -36,9 +36,11 @@
 
 | קובץ | גודל | הערה |
 |---|---|---|
-| `public/models/oyster.glb` | 642KB (493KB דחוס ברשת) | טקסטורות 512, פישוט ל-30K משולשים. בלי הבדל נראה לעין מגרסת 1.45MB |
-| `public/models/perfume.glb` | 193KB | **התווית המקורית ("M p") נמחקה:** זה לוגו של מותג אמיתי (סימן מסחר) |
-| `public/models/diamond.glb` | 6KB | |
+| `public/models/oyster.glb` | 327KB (289KB ברשת, br). נמדד 8.10.2026 | טקסטורות 512, פישוט ל-30K משולשים, ואחר כך Meshopt (סקריפט 2, מודול ב'). מעל תקציב ה-200KB לדגם |
+| `public/models/perfume.glb` | 76KB (53KB ברשת, br). נמדד 8.10.2026 | **התווית המקורית ("M p") נמחקה:** זה לוגו של מותג אמיתי (סימן מסחר). Meshopt |
+| `public/models/diamond.glb` | 6KB (3KB ברשת) | |
+
+עדכון (8.10.2026): הפסקה שלמעלה ("בלי Draco ובלי meshopt") נכונה לעיבוד הראשון. בסקריפט 2, מודול ב' נוספה דחיסת Meshopt, ו-`'wasm-unsafe-eval'` נוסף ל-CSP בשביל המפענח.
 
 ה-CSP קיבל `blob:` ב-`connect-src`, כי GLTFLoader טוען את הטקסטורות המוטמעות דרך blob URL.
 

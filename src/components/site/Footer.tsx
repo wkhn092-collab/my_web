@@ -18,6 +18,11 @@ export async function Footer({ content }: { content: SiteContent }) {
   const { settings, hours, legalPages } = content;
   const phone = formatIsraeliPhone(settings.phoneE164);
   const replyWindow = formatReplyWindow(getReplyWindow(new Date(), hours));
+  // Consumer-protection identity line; shown only once the business file is open and all three fields are filled.
+  const businessLine =
+    settings.legalName && settings.businessType && settings.businessNumber
+      ? `${settings.legalName} · ${settings.businessType} ${settings.businessNumber}`
+      : null;
   const navLinks = [
     { href: '/projects', label: t('nav.works') },
     { href: '/#services', label: t('nav.services') },
@@ -154,6 +159,12 @@ export async function Footer({ content }: { content: SiteContent }) {
         <p className="text-center md:text-start">
           © {new Date().getFullYear()} {settings.brandName} · {t('footer.tagline')}, {settings.city}
           {settings.remoteNote ? ` · ${settings.remoteNote}` : ''} · {t('footer.rights')}
+          {businessLine ? (
+            <>
+              <br />
+              <bdi>{businessLine}</bdi>
+            </>
+          ) : null}
         </p>
         <BackToTop label={t('footer.backToTop')} />
       </div>

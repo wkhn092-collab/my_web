@@ -51,3 +51,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Audit screenshots stay local (about 28MB); only the key evidence images are committed.
+docs/audit/screens/*
+!docs/audit/screens/375_.png
+!docs/audit/screens/375__scrolled.png
+!docs/audit/screens/bidi_footer_hours_375.png
+!docs/audit/screens/live_lead_submit_375.png
