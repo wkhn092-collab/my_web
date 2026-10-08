@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { DepthStory } from '@/components/home/DepthStory';
 import { Faq } from '@/components/home/Faq';
+import { FitCheck } from '@/components/home/FitCheck';
 import { Hero } from '@/components/home/Hero';
 import { Marquee } from '@/components/home/Marquee';
 import { NextSteps } from '@/components/home/NextSteps';
@@ -74,6 +75,8 @@ export default async function HomePage() {
       <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
 
       <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
+
+      <FitCheck eyebrow={t('home.fitEyebrow')} />
 
       <Proof testimonials={content.testimonials} eyebrow={t('home.proofEyebrow')} />
 
