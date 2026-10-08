@@ -23,6 +23,12 @@ describe('buildAppCsp', () => {
     expect(buildAppCsp('n', {}, { ...prod, NEXT_PUBLIC_GA4_ID: "G-1; script-src *" })).not.toContain('google-analytics');
   });
 
+  it('reports violations to our own endpoint', () => {
+    const csp = buildAppCsp('n', {}, prod);
+    expect(csp).toContain('report-uri /api/csp-report');
+    expect(csp).toContain('report-to csp');
+  });
+
   it('opens Sanity hosts only in preview', () => {
     expect(buildAppCsp('n', {}, prod)).not.toContain('sanity.io wss');
     expect(buildAppCsp('n', { preview: true }, prod)).toContain('wss://*.sanity.io');

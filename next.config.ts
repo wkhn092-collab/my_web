@@ -14,7 +14,12 @@ const securityHeaders = [
     value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(), usb=()',
   },
   { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+  // Other sites cannot embed our responses; link-preview crawlers fetch server-side and are unaffected.
+  { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
   { key: 'X-DNS-Prefetch-Control', value: 'off' },
+  { key: 'X-Permitted-Cross-Domain-Policies', value: 'none' },
+  // Where browsers send CSP violation reports (the CSP's report-to points here).
+  { key: 'Reporting-Endpoints', value: 'csp="/api/csp-report"' },
 ];
 
 const nextConfig: NextConfig = {

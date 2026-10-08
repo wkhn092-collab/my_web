@@ -25,6 +25,12 @@ describe('leadInputSchema', () => {
     expect(issue?.message).toBe(message);
   });
 
+  it('keeps the name and campaign fields on one line, so they cannot start a new email header', () => {
+    const result = leadInputSchema.parse({ ...valid, name: 'דנה\r\nBcc: x@evil.test', utmSource: 'a\nb' });
+    expect(result.name).toBe('דנה Bcc: x@evil.test');
+    expect(result.utmSource).toBe('a b');
+  });
+
   it('strips bidi controls from the name', () => {
     expect(leadInputSchema.parse({ ...valid, name: 'דנה\u202E' }).name).toBe('דנה');
   });

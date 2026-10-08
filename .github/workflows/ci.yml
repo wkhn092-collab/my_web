@@ -43,5 +43,5 @@ jobs:
           path: test-results/
           retention-days: 7
 
-      - name: Audit production dependencies
-        run: npm audit --omit=dev --audit-level=critical
+      - name: Audit production dependencies (fails on unreviewed high or critical)
+        run: node scripts/audit-gate.mjs

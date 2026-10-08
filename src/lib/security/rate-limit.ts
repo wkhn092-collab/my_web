@@ -4,7 +4,7 @@ import { Redis } from '@upstash/redis';
 import { env, isConfigured, isDeployed } from '@/lib/env.server';
 import { logWarn } from '@/lib/logger';
 
-export type LimiterName = 'leadIp' | 'leadPhone' | 'revalidate';
+export type LimiterName = 'leadIp' | 'leadPhone' | 'revalidate' | 'draftMode' | 'cspReport';
 
 type Window = `${number} ${'s' | 'm' | 'h' | 'd'}`;
 
@@ -12,6 +12,8 @@ const SPECS: Record<LimiterName, { tokens: number; window: Window }> = {
   leadIp: { tokens: 3, window: '10 m' },
   leadPhone: { tokens: 5, window: '1 d' },
   revalidate: { tokens: 60, window: '1 m' },
+  draftMode: { tokens: 10, window: '1 m' },
+  cspReport: { tokens: 20, window: '1 m' },
 };
 
 let redis: Redis | null = null;

@@ -12,7 +12,7 @@ import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lea
 import { sendCustomerConfirmation, sendOwnerBackup } from '@/lib/lead/notify';
 import { logError, logInfo, logWarn } from '@/lib/logger';
 import { rateLimit } from '@/lib/security/rate-limit';
-import { getClientIp, hashIp } from '@/lib/security/request-meta';
+import { getClientIp, hashIp, isSameOriginRequest } from '@/lib/security/request-meta';
 import { verifyTurnstile } from '@/lib/security/turnstile';
 import { getSanityLeadsWriteClient } from '@/sanity/lib/client';
 
@@ -30,6 +30,10 @@ function readForm(formData: FormData): Record<string, string | undefined> {
 
 export async function submitLead(_prev: LeadActionState, formData: FormData): Promise<LeadActionState> {
   if (leadsLocked) return { status: 'error' };
+  if (!(await isSameOriginRequest())) {
+    logWarn('lead', 'Origin mismatch');
+    return { status: 'error' };
+  }
 
   const parsed = leadInputSchema.safeParse(readForm(formData));
   if (!parsed.success) {

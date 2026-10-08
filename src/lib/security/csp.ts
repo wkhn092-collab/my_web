@@ -53,6 +53,9 @@ export function buildAppCsp(nonce: string, options: { preview?: boolean } = {}, 
     'form-action': ["'self'"],
     // Same-origin only: the Presentation tool at /studio.
     'frame-ancestors': ["'self'"],
+    // report-uri for browsers without the Reporting API; report-to (Reporting-Endpoints in next.config) for the rest.
+    'report-uri': ['/api/csp-report'],
+    'report-to': ['csp'],
   };
   if (!isDev) policy['upgrade-insecure-requests'] = [];
   return compact(policy);

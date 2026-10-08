@@ -45,6 +45,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Sanity dataset exports (contain lead personal data — never commit)
+/backups/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

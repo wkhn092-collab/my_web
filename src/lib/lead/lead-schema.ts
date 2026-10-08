@@ -15,18 +15,21 @@ export const LEAD_ERRORS: Record<LeadField, string> = {
   email: 'כדאי לבדוק את המייל, או להשאיר את השדה ריק',
 };
 
+/** Fields that end up in an email subject or a log line: no line breaks or tabs, so nothing can start a new header. */
+const singleLine = (v: string) => v.replace(/[\r\n\t\v\f]+/g, ' ');
+
 const optionalTrimmed = (max: number) =>
   z
     .string()
     .max(max * 2)
     .optional()
-    .transform((v) => sanitizeText(v ?? '', max) || undefined);
+    .transform((v) => sanitizeText(singleLine(v ?? ''), max) || undefined);
 
 export const leadInputSchema = z.object({
   name: z
     .string()
     .max(NAME_MAX * 2, LEAD_ERRORS.name)
-    .transform((v) => sanitizeText(v, NAME_MAX))
+    .transform((v) => sanitizeText(singleLine(v), NAME_MAX))
     .pipe(z.string().min(1, LEAD_ERRORS.name)),
   phone: z
     .string()

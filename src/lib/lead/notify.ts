@@ -16,7 +16,7 @@ async function send(to: string, subject: string, text: string, scope: string): P
     return false;
   }
   try {
-    const { error } = await client().emails.send({ from: env.EMAIL_FROM, to, subject, text });
+    const { error } = await client().emails.send({ from: env.EMAIL_FROM, to, subject: subject.replace(/[\r\n]+/g, ' '), text });
     if (error) {
       logError(scope, new Error(error.message));
       return false;

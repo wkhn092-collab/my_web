@@ -13,6 +13,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "backup": "node scripts/backup.mjs",
+    "audit:gate": "node scripts/audit-gate.mjs",
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {

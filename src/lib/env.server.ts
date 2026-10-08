@@ -40,6 +40,8 @@ const serverEnvSchema = z.object({
   UPSTASH_REDIS_REST_TOKEN: optionalSecret,
 
   LEAD_IP_SALT: z.string().min(32).max(256).optional(),
+  /** Vercel Cron sends it as a Bearer token; without it the retention job refuses to run. */
+  CRON_SECRET: z.string().min(32).max(256).optional(),
 
   NEXT_PUBLIC_GA4_ID: z
     .string()
