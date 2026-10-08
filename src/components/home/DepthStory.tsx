@@ -17,6 +17,8 @@ const PIN_QUERY = '(min-width: 1024px)';
 export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['depth']; eyebrow: string; ctaLabel: string }) {
   const sectionRef = useRef<HTMLElement>(null);
 
+  useEffect(() => surfaceOnScroll(sectionRef.current), []);
+
   useEffect(() => {
     if (prefersReducedMotion() || !window.matchMedia(PIN_QUERY).matches) return;
     let cancelled = false;
@@ -77,7 +79,7 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
     <section
       ref={sectionRef}
       aria-labelledby="depth-title"
-      className="relative isolate overflow-hidden lg:flex lg:h-screen lg:items-center [&.is-pinned_[data-layer]]:[grid-area:1/1]"
+      className="depth-surface relative isolate overflow-hidden lg:flex lg:h-screen lg:items-center [&.is-pinned_[data-layer]]:[grid-area:1/1]"
     >
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_50%_at_70%_30%,rgb(62_154_168/0.14),transparent_70%)]" aria-hidden="true" />
       <div
@@ -85,6 +87,8 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(70%_60%_at_30%_80%,rgb(201_166_107/0.12),transparent_70%),linear-gradient(to_bottom,transparent,rgb(12_22_38/0.9))] opacity-0"
         aria-hidden="true"
       />
+      <div className="depth-pearl pointer-events-none absolute inset-0 -z-10" aria-hidden="true" />
+      <div className="depth-ring pointer-events-none absolute -z-10" aria-hidden="true" />
 
       <div className="mx-auto grid w-full max-w-7xl gap-14 px-5 py-28 md:px-10 lg:grid-cols-[1fr_1.25fr] lg:items-center lg:py-0">
         <div>
@@ -94,7 +98,7 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
           </h2>
 
           <div className="mt-12 hidden gap-6 lg:flex" aria-hidden="true">
-            <div className="relative w-px bg-pearl/15">
+            <div data-gauge-track className="relative w-px bg-pearl/15">
               <span data-gauge className="absolute inset-0 block origin-top scale-y-0 bg-gradient-to-b from-gold-soft to-gold" />
             </div>
             <ol className="space-y-5">
@@ -131,4 +135,47 @@ export function DepthStory({ depth, eyebrow, ctaLabel }: { depth: HomePage['dept
       </div>
     </section>
   );
+}
+
+const smoothstep = (t: number) => t * t * (3 - 2 * t);
+
+/**
+ * Surfacing into the light: as the section arrives, a pearl iris opens from the middle of the screen until the
+ * section is all pearl, and closes back into the dark as it leaves (CSS: .depth-pearl reads --surface and
+ * --iris-y). With reduced motion the section is simply pearl, without the iris.
+ */
+function surfaceOnScroll(section: HTMLElement | null) {
+  if (!section) return;
+  if (prefersReducedMotion()) {
+    section.classList.add('is-surfaced', 'is-still');
+    return () => section.classList.remove('is-surfaced', 'is-still');
+  }
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    // While pinned, the section sits still inside GSAP's spacer, which is what actually scrolls.
+    const track = section.parentElement?.classList.contains('pin-spacer') ? section.parentElement : section;
+    const vh = window.innerHeight;
+    const rect = track.getBoundingClientRect();
+    const span = vh * 0.7;
+    const progress = Math.min(1, Math.max(0, Math.min((vh - rect.top) / span, rect.bottom / span)));
+    const surface = smoothstep(progress);
+    section.style.setProperty('--surface', surface.toFixed(4));
+    section.style.setProperty('--iris-y', `${(vh / 2 - section.getBoundingClientRect().top).toFixed(1)}px`);
+    section.classList.toggle('is-surfaced', surface > 0.45);
+  };
+  const onScroll = () => {
+    if (!frame) frame = requestAnimationFrame(update);
+  };
+  update();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  return () => {
+    cancelAnimationFrame(frame);
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onScroll);
+    section.classList.remove('is-surfaced');
+    section.style.removeProperty('--surface');
+    section.style.removeProperty('--iris-y');
+  };
 }

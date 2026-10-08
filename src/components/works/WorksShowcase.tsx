@@ -71,7 +71,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
         gsap.to(track, { x: () => distance(), ease: 'none', scrollTrigger: { ...scrollTrigger, pin: true, anticipatePin: 1 } });
         if (progressRef.current) gsap.fromTo(progressRef.current, { scaleX: 0 }, { scaleX: 1, ease: 'none', scrollTrigger });
         gsap.utils.toArray<HTMLElement>('[data-art]', track).forEach((art) => {
-          gsap.fromTo(art, { xPercent: -3 }, { xPercent: 3, ease: 'none', scrollTrigger });
+          gsap.fromTo(art, { xPercent: -2 }, { xPercent: 2, ease: 'none', scrollTrigger });
         });
       }, section);
       ScrollTrigger.refresh();
@@ -122,11 +122,14 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
       >
         <ul ref={trackRef} className="flex w-max snap-x snap-mandatory gap-4 px-5 pb-4 md:gap-8 md:px-10">
           {projects.map((project, i) => (
-            <li key={project.id} className="w-[70vw] max-w-80 shrink-0 snap-start sm:w-[46vw] sm:max-w-none lg:w-[34vw]">
+            <li
+              key={project.id}
+              className="w-[82vw] max-w-96 shrink-0 snap-start sm:w-[52vw] sm:max-w-none lg:w-[clamp(16rem,calc((100vh-31rem)*4/3),40vw)]"
+            >
               <article className="group relative" data-cursor="view">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-gold-soft sm:aspect-[4/5] md:rounded-[1.75rem] lg:aspect-auto lg:h-[clamp(12rem,calc(100vh-31rem),34rem)]">
-                  <div data-art className="absolute -inset-x-[8%] inset-y-0">
-                    <ProjectArt project={project} sizes="(min-width: 1024px) 34vw, (min-width: 640px) 46vw, 70vw" />
+                <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-gold-soft md:rounded-[1.75rem]">
+                  <div data-art className="absolute -inset-x-[3%] inset-y-0">
+                    <ProjectArt project={project} sizes="(min-width: 1024px) 40vw, (min-width: 640px) 52vw, 82vw" />
                   </div>
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 md:p-5">
                     <bdi className="font-display text-lg text-pearl/80">{String(i + 1).padStart(2, '0')}</bdi>

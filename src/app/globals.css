@@ -469,6 +469,78 @@ html.intro-seen .intro {
     height: 190svh;
   }
 }
+
+/* ───────── Abalone: the method section opens into the colours of the inside of a shell, then closes back (DepthStory sets --surface 0..1) ───────── */
+.depth-pearl {
+  --iris-r: calc(var(--surface, 0) * 90vmax);
+  --drift: calc(var(--surface, 0) * 18%);
+  background:
+    radial-gradient(38% 32% at calc(82% - var(--drift)) 18%, rgb(232 212 168 / 0.28), transparent 70%),
+    radial-gradient(55% 50% at calc(10% + var(--drift)) 85%, rgb(62 154 168 / 0.55), transparent 70%),
+    radial-gradient(50% 45% at 55% calc(70% - var(--drift)), rgb(140 80 165 / 0.45), transparent 70%),
+    radial-gradient(60% 55% at calc(75% - var(--drift)) 40%, rgb(30 70 140 / 0.6), transparent 70%),
+    linear-gradient(160deg, #0c3a48 0%, #16305f 45%, #2e2560 75%, #3b2658 100%);
+  /* A soft-edged iris, never a hard circle, that also fades into the dark sections above and below. */
+  -webkit-mask-image:
+    radial-gradient(circle at 50% var(--iris-y, 50%), #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
+    linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(circle at 50% var(--iris-y, 50%), #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
+    linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+  mask-composite: intersect;
+}
+/* Nacre sheen: a band of pastel colour that slides across as you scroll. */
+.depth-pearl::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgb(120 220 210 / 0.22) 35%,
+    rgb(190 150 235 / 0.22) 45%,
+    rgb(240 200 150 / 0.2) 55%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: calc(100% - var(--surface, 0) * 100%) 0;
+  mix-blend-mode: soft-light;
+}
+.depth-ring {
+  inset-inline-start: 50%;
+  top: var(--iris-y, 50%);
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  border-radius: 50%;
+  box-shadow:
+    0 0 60px 10px rgb(232 212 168 / 0.25),
+    0 0 140px 40px rgb(62 154 168 / 0.25);
+  scale: calc(var(--surface, 0) * 0.94);
+  /* Only while the iris is moving: gone when fully closed or fully open. */
+  opacity: clamp(0, calc(min(var(--surface, 0), 1 - var(--surface, 0)) * 4), 1);
+}
+.depth-surface.is-still .depth-pearl {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+}
+.depth-surface.is-still .depth-ring {
+  display: none;
+}
+.depth-surface .eyebrow,
+.depth-surface [data-mark] {
+  transition: color 500ms var(--ease-out);
+}
+.depth-surface.is-surfaced .eyebrow {
+  color: var(--color-gold-soft);
+}
+.depth-surface.is-surfaced [data-mark] {
+  color: rgb(239 233 222 / 0.65);
+}
+.depth-surface.is-surfaced [data-mark][data-active] {
+  color: var(--color-pearl);
+}
 .hero-dive.is-diving .hero-stage {
   position: sticky;
   top: 0;

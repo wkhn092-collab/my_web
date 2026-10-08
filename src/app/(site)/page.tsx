@@ -7,6 +7,7 @@ import { Faq } from '@/components/home/Faq';
 import { Hero } from '@/components/home/Hero';
 import { Marquee } from '@/components/home/Marquee';
 import { NextSteps } from '@/components/home/NextSteps';
+import { ProductShowcase } from '@/components/home/ProductShowcase';
 import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
@@ -69,6 +70,8 @@ export default async function HomePage() {
       </section>
 
       <DepthStory depth={home.depth} eyebrow={t('home.depthEyebrow')} ctaLabel={t('common.ctaTalk')} />
+
+      <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
 
       <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
 
