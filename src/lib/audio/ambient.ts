@@ -5,6 +5,8 @@
  */
 
 const MASTER_LEVEL = 0.11;
+/** Phone speakers roll off below ~300 Hz, so the bed needs more level and an octave-up layer to be heard at all. */
+const PHONE_MASTER_LEVEL = 0.24;
 const FADE_S = 2.5;
 /** One full A → B → A cycle of the chord crossfade. */
 const CHORD_CYCLE_S = 28;
@@ -23,18 +25,37 @@ let sources: AudioScheduledSourceNode[] = [];
 let cycleStart = 0;
 let enabled = false;
 let chimeTimer: number | undefined;
+let phone = false;
 
-function impulse(context: AudioContext, seconds: number, decay: number): AudioBuffer {
+const isPhone = () => window.matchMedia("(pointer: coarse)").matches;
+
+/** iOS mutes Web Audio under the silent switch unless the page declares itself as playback. */
+function preferPlaybackSession() {
+  const session = (navigator as Navigator & { audioSession?: { type: string } })
+    .audioSession;
+  if (session) session.type = "playback";
+}
+
+function impulse(
+  context: AudioContext,
+  seconds: number,
+  decay: number,
+): AudioBuffer {
   const length = Math.floor(context.sampleRate * seconds);
   const buffer = context.createBuffer(2, length, context.sampleRate);
   for (let channel = 0; channel < 2; channel++) {
     const data = buffer.getChannelData(channel);
-    for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+    for (let i = 0; i < length; i++)
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
   }
   return buffer;
 }
 
-function padGroup(context: AudioContext, notes: number[], destination: AudioNode): GainNode {
+function padGroup(
+  context: AudioContext,
+  notes: number[],
+  destination: AudioNode,
+): GainNode {
   const group = context.createGain();
   group.gain.value = 0.5;
   group.connect(destination);
@@ -43,16 +64,18 @@ function padGroup(context: AudioContext, notes: number[], destination: AudioNode
     // Bass softer than the middle, top note quietest.
     voice.gain.value = [0.22, 0.2, 0.16, 0.13, 0.08][i] ?? 0.1;
     voice.connect(group);
-    for (const [type, detune] of [
-      ['sine', -4],
-      ['triangle', 5],
-    ] as [OscillatorType, number][]) {
+    const layers: [OscillatorType, number, number, number][] = [
+      ["sine", -4, 1, 0.7],
+      ["triangle", 5, 1, 0.3],
+    ];
+    if (phone) layers.push(["sine", 3, 2, 0.45], ["sine", -3, 4, 0.12]);
+    for (const [type, detune, octave, amount] of layers) {
       const osc = context.createOscillator();
       osc.type = type;
-      osc.frequency.value = freq;
+      osc.frequency.value = freq * octave;
       osc.detune.value = detune;
       const level = context.createGain();
-      level.gain.value = type === 'sine' ? 0.7 : 0.3;
+      level.gain.value = amount;
       osc.connect(level).connect(voice);
       sources.push(osc);
     }
@@ -78,8 +101,8 @@ function build(context: AudioContext): GainNode {
 
   // Pads go through a slowly breathing low-pass, half dry, half into the reverb.
   const filter = context.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.value = 950;
+  filter.type = "lowpass";
+  filter.frequency.value = phone ? 1800 : 950;
   filter.Q.value = 0.4;
   filter.connect(out);
   filter.connect(reverbIn);
@@ -121,7 +144,7 @@ function chime(context: AudioContext, freq: number, level: number) {
     [2.76, 0.18],
   ]) {
     const osc = context.createOscillator();
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.value = freq * ratio;
     const partial = context.createGain();
     partial.gain.value = amount;
@@ -133,7 +156,9 @@ function chime(context: AudioContext, freq: number, level: number) {
 
 /** Which chord is louder right now, so chimes always fit it. */
 function currentChimes(context: AudioContext): number[] {
-  const phase = Math.sin((2 * Math.PI * (context.currentTime - cycleStart)) / CHORD_CYCLE_S);
+  const phase = Math.sin(
+    (2 * Math.PI * (context.currentTime - cycleStart)) / CHORD_CYCLE_S,
+  );
   return phase >= 0 ? CHIMES_A : CHIMES_B;
 }
 
@@ -141,9 +166,13 @@ function scheduleChime() {
   window.clearTimeout(chimeTimer);
   chimeTimer = window.setTimeout(
     () => {
-      if (!enabled || !ctx || ctx.state !== 'running') return;
+      if (!enabled || !ctx || ctx.state !== "running") return;
       const notes = currentChimes(ctx);
-      chime(ctx, notes[Math.floor(Math.random() * notes.length)], 0.05);
+      chime(
+        ctx,
+        notes[Math.floor(Math.random() * notes.length)],
+        phone ? 0.08 : 0.05,
+      );
       scheduleChime();
     },
     3500 + Math.random() * 5000,
@@ -151,15 +180,25 @@ function scheduleChime() {
 }
 
 export async function startAmbient(): Promise<boolean> {
-  if (typeof window === 'undefined' || !('AudioContext' in window)) return false;
+  if (typeof window === "undefined" || !("AudioContext" in window))
+    return false;
   try {
-    ctx ??= new AudioContext();
+    preferPlaybackSession();
+    if (!ctx) {
+      phone = isPhone();
+      ctx = new AudioContext();
+    }
+    // Resume inside the tap itself: building the graph first can push it past the gesture on iOS.
+    const resumed = ctx.resume();
     master ??= build(ctx);
-    await ctx.resume();
+    await resumed;
     const now = ctx.currentTime;
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(master.gain.value, now);
-    master.gain.linearRampToValueAtTime(MASTER_LEVEL, now + FADE_S);
+    master.gain.linearRampToValueAtTime(
+      phone ? PHONE_MASTER_LEVEL : MASTER_LEVEL,
+      now + FADE_S,
+    );
     enabled = true;
     scheduleChime();
     return true;
@@ -192,9 +231,12 @@ export function setAmbientHidden(hidden: boolean) {
 
 /** A very soft chime for hovers, in tune with the bed, only while it is on. */
 export function playTick(pitch = 1) {
-  if (!enabled || !ctx || ctx.state !== 'running') return;
+  if (!enabled || !ctx || ctx.state !== "running") return;
   const notes = currentChimes(ctx);
-  const index = Math.min(notes.length - 1, Math.max(0, Math.round((pitch - 0.8) * 6)));
+  const index = Math.min(
+    notes.length - 1,
+    Math.max(0, Math.round((pitch - 0.8) * 6)),
+  );
   chime(ctx, notes[index] * 2, 0.012);
 }
 

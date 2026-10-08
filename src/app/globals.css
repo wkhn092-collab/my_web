@@ -541,64 +541,31 @@ html.intro-seen .intro {
 .surface-zone.is-surfaced [data-mark][data-active] {
   color: var(--color-pearl);
 }
-/* ───────── Sunrise: the contact section surfaces into a sunset over the Kinneret (Sunrise.tsx sets --rise 0..1) ───────── */
-/* The scene is taller than the open band below the copy: its upper part is only a deep dusk behind the text. */
-.has-sunrise {
-  --sunrise-band: 58svh;
-  padding-bottom: var(--sunrise-band);
-}
-.sunrise {
-  --horizon: 74%;
-  height: calc(var(--sunrise-band) + 45svh);
-}
-.sunrise-sky {
-  height: var(--horizon);
+/* ───────── Sunset: the same iris at the end of the page, in the colours of the Kinneret at dusk (SurfaceZone tone="sunset") ───────── */
+.surface-zone--sunset .surface-color {
   background:
-    radial-gradient(70% 40% at 50% 100%, rgb(255 214 150 / 0.55), transparent 70%),
-    linear-gradient(to top, #f2a65e 0%, #d9706a 9%, #9c4a7c 22%, #4b3170 40%, rgb(12 22 38 / 0) 75%);
-  opacity: calc(0.35 + var(--rise, 0) * 0.65);
+    radial-gradient(38% 32% at calc(80% - var(--drift)) 20%, rgb(255 210 140 / 0.3), transparent 70%),
+    radial-gradient(55% 50% at calc(12% + var(--drift)) 82%, rgb(236 122 84 / 0.4), transparent 70%),
+    radial-gradient(50% 45% at 55% calc(68% - var(--drift)), rgb(205 78 128 / 0.38), transparent 70%),
+    radial-gradient(60% 55% at calc(72% - var(--drift)) 42%, rgb(112 48 128 / 0.55), transparent 70%),
+    linear-gradient(160deg, #2c1a44 0%, #4a2148 40%, #5c2a3f 70%, #2e1c46 100%);
 }
-.sunrise-sun {
-  left: 50%;
-  top: var(--horizon);
-  --sun: min(34vmin, 18rem);
-  width: var(--sun);
-  height: var(--sun);
-  margin-left: calc(var(--sun) / -2);
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff4dc 0%, #ffd791 45%, #f4a55c 75%, #e8854f 100%);
+.surface-zone--sunset .surface-color::after {
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgb(255 205 140 / 0.24) 35%,
+    rgb(255 150 165 / 0.2) 45%,
+    rgb(250 225 170 / 0.22) 55%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: calc(100% - var(--surface, 0) * 100%) 0;
+}
+.surface-zone--sunset .surface-ring {
   box-shadow:
-    0 0 60px 20px rgb(255 200 130 / 0.45),
-    0 0 180px 80px rgb(240 140 90 / 0.3);
-  /* Starts fully under the water, ends with two thirds of the disc above the horizon. */
-  transform: translateY(calc(10% - var(--rise, 0) * 76%));
-}
-.sunrise-water {
-  top: var(--horizon);
-  background:
-    radial-gradient(14vmin 70% at 50% 0%, rgb(255 210 150 / calc(var(--rise, 0) * 0.6)), transparent 100%),
-    linear-gradient(to bottom, #b8616a 0%, #5a2f5c 18%, #24203f 45%, var(--color-abyss) 85%);
-  box-shadow: 0 -1px 0 rgb(255 220 170 / calc(var(--rise, 0) * 0.5));
-}
-/* Ripples: thin light lines on the water, drifting toward the viewer. */
-.sunrise-water::before {
-  content: '';
-  position: absolute;
-  inset: -12px 0 0;
-  background: repeating-linear-gradient(to bottom, rgb(255 225 180 / 0.16) 0 1px, transparent 1px 12px);
-  -webkit-mask-image: radial-gradient(45% 60% at 50% 0%, #000, transparent 75%);
-  mask-image: radial-gradient(45% 60% at 50% 0%, #000, transparent 75%);
-  opacity: var(--rise, 0);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .sunrise-water::before {
-    animation: sunrise-ripple 4s linear infinite;
-  }
-}
-@keyframes sunrise-ripple {
-  to {
-    transform: translateY(12px);
-  }
+    0 0 60px 10px rgb(255 205 140 / 0.3),
+    0 0 140px 40px rgb(236 122 84 / 0.25);
 }
 /* Over the warm light the glass needs more body, or the copy inside it loses contrast. */
 .glass-deep {
@@ -641,8 +608,19 @@ html.intro-seen .intro {
 }
 .hero-dive.is-diving .hero-veil-light {
   /* A single breath of light as the camera touches the surface: rises, peaks, and is gone before the iris closes. */
-  background: radial-gradient(circle at 50% 50%, rgb(255 248 232 / 0.85), rgb(255 236 208 / 0.35) 30%, transparent 62%);
-  mix-blend-mode: screen;
+  /* Mother-of-pearl: a bright core inside a slowly turning ring of nacre colours. */
+  background:
+    radial-gradient(circle at 50% 50%, rgb(255 250 240 / 0.7), rgb(255 240 215 / 0.2) 14%, transparent 30%),
+    conic-gradient(
+      from calc(var(--dive, 0) * 260deg) at 50% 50%,
+      rgb(60 210 170 / 0.55),
+      rgb(90 150 245 / 0.5),
+      rgb(180 105 230 / 0.5),
+      rgb(250 180 120 / 0.45),
+      rgb(60 210 170 / 0.55)
+    );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
   opacity: clamp(0, min(calc((var(--dive, 0) - 0.68) / 0.12), calc((0.95 - var(--dive, 0)) / 0.1)), 1);
   scale: calc(0.7 + var(--dive, 0) * 0.5);
 }
@@ -652,6 +630,8 @@ html.intro-seen .intro {
   background: radial-gradient(
     circle at 50% 50%,
     transparent calc((1 - var(--iris)) * 80vmax - 22vmax),
+    rgb(50 170 150 / 0.4) calc((1 - var(--iris)) * 80vmax - 13vmax),
+    rgb(90 60 150 / 0.6) calc((1 - var(--iris)) * 80vmax - 6vmax),
     var(--color-abyss) calc((1 - var(--iris)) * 80vmax)
   );
   opacity: 1;
