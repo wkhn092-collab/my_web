@@ -123,7 +123,7 @@ Settings → Environment Variables. כל משתנה מ-`.env.example`, עם ער
 - חשוב: `NEXT_PUBLIC_SITE_URL` (ב-Production: הדומיין הקנוני עם `https://`), `SANITY_READ_TOKEN` (לתצוגה מקדימה), `EMAIL_FROM`, `OWNER_EMAIL`.
 - רשות: `NEXT_PUBLIC_GA4_ID`, `NEXT_PUBLIC_CLARITY_ID`. נטענים רק אחרי הסכמה לעוגיות.
 - מחיקה אוטומטית של פניות ישנות: `CRON_SECRET` (מחרוזת אקראית של 32+ תווים). בלעדיו המחיקה לא רצה.
-- התראת וואטסאפ על פנייה חדשה (כל הארבעה, אחרת ההתראה פשוט לא נשלחת): `WA_PHONE_NUMBER_ID`, `WA_ACCESS_TOKEN`, `OWNER_WHATSAPP` (ספרות בלבד, למשל `972503967230`), `LEAD_ALERT_TEMPLATE` (למשל `omek_new_lead`). רשות: `LEAD_ALERT_TEMPLATE_LANG` (ברירת מחדל `he`). ההסבר המלא ב-`docs/launch.md`.
+- התראת וואטסאפ על פנייה חדשה (כל הארבעה, אחרת ההתראה פשוט לא נשלחת): `WA_PHONE_NUMBER_ID`, `WA_ACCESS_TOKEN`, `OWNER_WHATSAPP` (ספרות בלבד, למשל `972503967230`), `LEAD_ALERT_TEMPLATE` (למשל `omek_new_lead`). רשות: `LEAD_ALERT_TEMPLATE_LANG` (ברירת מחדל `he`). לניתוב לפי שעות: `OWNER_WHATSAPP=972587012726` (058, אמצע השבוע), `OWNER_WHATSAPP_WEEKEND=972503967230` (050, מחמישי 14:00 עד ראשון 19:00), ו-`ALERT_MODE_REDIS_REST_URL` + `ALERT_MODE_REDIS_REST_TOKEN` (מסד ההגדרות הנפרד של הבוט, `SETTINGS_REDIS_*` שם, עם **טוקן לקריאה בלבד**. לא המסד הראשי של הבוט, כי בו שמורות שיחות של לקוחות). ההסבר המלא ב-`docs/launch.md`.
 
 משתנה שמתחיל ב-`NEXT_PUBLIC_` נצרב בזמן ה-build, לכן אחרי שינוי שלו צריך Redeploy.
 

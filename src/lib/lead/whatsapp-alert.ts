@@ -1,8 +1,10 @@
 import 'server-only';
+import { Redis } from '@upstash/redis';
 import { LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { formatIsraeliPhone } from '@/lib/domain/phone';
 import { env, isConfigured } from '@/lib/env.server';
 import { logError, logWarn } from '@/lib/logger';
+import { alertModeKey, orderAlertNumbers, parseAlertMode, type AlertMode } from './alert-routing';
 import type { LeadInput } from './lead-schema';
 
 /**
@@ -24,12 +26,39 @@ export function buildLeadAlertParams(lead: Pick<LeadInput, 'name' | 'phone' | 's
   return [toParam(lead.name), toParam(LEAD_SITE_TYPE_LABEL[lead.siteType]), toParam(formatIsraeliPhone(lead.phone))];
 }
 
+let modeRedis: Redis | null = null;
+
+/** Avishi's override from the bot; the schedule ("auto") whenever it can't be read. */
+async function readAlertMode(): Promise<AlertMode> {
+  if (!env.ALERT_MODE_REDIS_REST_URL || !env.ALERT_MODE_REDIS_REST_TOKEN || !env.WA_PHONE_NUMBER_ID) return 'auto';
+  try {
+    modeRedis ??= new Redis({
+      url: env.ALERT_MODE_REDIS_REST_URL,
+      token: env.ALERT_MODE_REDIS_REST_TOKEN,
+      signal: () => AbortSignal.timeout(2_000),
+      retry: { retries: 1, backoff: () => 100 },
+    });
+    return parseAlertMode(await modeRedis.get<unknown>(alertModeKey(env.WA_PHONE_NUMBER_ID)));
+  } catch (error) {
+    logWarn('lead.owner-whatsapp', 'Could not read the alert setting; using the schedule', { error: String(error) });
+    return 'auto';
+  }
+}
+
 /** WhatsApp alert to Avishi. Never throws and never blocks the lead: the email and Sanity copy remain the record. */
 export async function sendOwnerWhatsAppAlert(lead: LeadInput): Promise<boolean> {
   if (!isConfigured.whatsappAlert()) {
     logWarn('lead.owner-whatsapp', 'WhatsApp alert not configured; skipped');
     return false;
   }
+  if (!env.OWNER_WHATSAPP_WEEKEND || env.OWNER_WHATSAPP_WEEKEND === env.OWNER_WHATSAPP) return sendAlertTo(env.OWNER_WHATSAPP!, lead);
+
+  const numbers = { weekday: env.OWNER_WHATSAPP!, weekend: env.OWNER_WHATSAPP_WEEKEND };
+  const [first, second] = orderAlertNumbers(numbers, await readAlertMode(), new Date());
+  return (await sendAlertTo(first, lead)) || sendAlertTo(second, lead);
+}
+
+async function sendAlertTo(to: string, lead: LeadInput): Promise<boolean> {
   try {
     const response = await fetch(`https://graph.facebook.com/${env.WA_GRAPH_API_VERSION}/${env.WA_PHONE_NUMBER_ID}/messages`, {
       method: 'POST',
@@ -37,7 +66,7 @@ export async function sendOwnerWhatsAppAlert(lead: LeadInput): Promise<boolean> 
       body: JSON.stringify({
         messaging_product: 'whatsapp',
         recipient_type: 'individual',
-        to: env.OWNER_WHATSAPP,
+        to,
         type: 'template',
         template: {
           name: env.LEAD_ALERT_TEMPLATE,

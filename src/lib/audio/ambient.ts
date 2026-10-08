@@ -6,7 +6,7 @@
 
 const MASTER_LEVEL = 0.11;
 /** Phone speakers roll off below ~300 Hz, so the bed needs more level and an octave-up layer to be heard at all. */
-const PHONE_MASTER_LEVEL = 0.24;
+const PHONE_MASTER_LEVEL = 0.5;
 const FADE_S = 2.5;
 /** One full A → B → A cycle of the chord crossfade. */
 const CHORD_CYCLE_S = 28;
@@ -68,7 +68,7 @@ function padGroup(
       ["sine", -4, 1, 0.7],
       ["triangle", 5, 1, 0.3],
     ];
-    if (phone) layers.push(["sine", 3, 2, 0.45], ["sine", -3, 4, 0.12]);
+    if (phone) layers.push(["sine", 3, 2, 0.8], ["sine", -3, 4, 0.25]);
     for (const [type, detune, octave, amount] of layers) {
       const osc = context.createOscillator();
       osc.type = type;
@@ -89,7 +89,19 @@ function build(context: AudioContext): GainNode {
   const compressor = context.createDynamicsCompressor();
   compressor.threshold.value = -18;
   compressor.ratio.value = 3;
-  out.connect(compressor).connect(context.destination);
+  out.connect(compressor);
+  if (phone) {
+    // The louder phone mix must never clip the small speaker.
+    const limiter = context.createDynamicsCompressor();
+    limiter.threshold.value = -6;
+    limiter.knee.value = 0;
+    limiter.ratio.value = 12;
+    limiter.attack.value = 0.003;
+    limiter.release.value = 0.25;
+    compressor.connect(limiter).connect(context.destination);
+  } else {
+    compressor.connect(context.destination);
+  }
 
   const reverb = context.createConvolver();
   reverb.buffer = impulse(context, 4, 2.6);
@@ -102,7 +114,7 @@ function build(context: AudioContext): GainNode {
   // Pads go through a slowly breathing low-pass, half dry, half into the reverb.
   const filter = context.createBiquadFilter();
   filter.type = "lowpass";
-  filter.frequency.value = phone ? 1800 : 950;
+  filter.frequency.value = phone ? 2600 : 950;
   filter.Q.value = 0.4;
   filter.connect(out);
   filter.connect(reverbIn);
@@ -171,7 +183,7 @@ function scheduleChime() {
       chime(
         ctx,
         notes[Math.floor(Math.random() * notes.length)],
-        phone ? 0.08 : 0.05,
+        phone ? 0.16 : 0.05,
       );
       scheduleChime();
     },
@@ -237,7 +249,7 @@ export function playTick(pitch = 1) {
     notes.length - 1,
     Math.max(0, Math.round((pitch - 0.8) * 6)),
   );
-  chime(ctx, notes[index] * 2, 0.012);
+  chime(ctx, notes[index] * 2, phone ? 0.03 : 0.012);
 }
 
 export function disposeAmbient() {

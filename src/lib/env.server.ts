@@ -53,11 +53,19 @@ const serverEnvSchema = z.object({
     .string()
     .regex(/^v\d+\.\d+$/)
     .default('v25.0'),
-  /** Digits only, international format (9725…). */
+  /** Digits only, international format (9725…). With OWNER_WHATSAPP_WEEKEND set, this is the weekday number. */
   OWNER_WHATSAPP: z
     .string()
     .regex(/^[1-9]\d{7,14}$/)
     .optional(),
+  /** Optional: alerts go here from Thursday 14:00 to Sunday 19:00 (src/lib/lead/alert-routing.ts). */
+  OWNER_WHATSAPP_WEEKEND: z
+    .string()
+    .regex(/^[1-9]\d{7,14}$/)
+    .optional(),
+  /** Optional: omek-bot's settings-only Upstash (SETTINGS_REDIS_* there) with a READ-ONLY token, to follow Avishi's "התראות" switch. */
+  ALERT_MODE_REDIS_REST_URL: z.url().optional(),
+  ALERT_MODE_REDIS_REST_TOKEN: optionalSecret,
   LEAD_ALERT_TEMPLATE: z
     .string()
     .regex(/^[a-z0-9_]{1,512}$/)
