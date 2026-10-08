@@ -12,6 +12,7 @@ import { ProductShowcase } from '@/components/home/ProductShowcase';
 import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
+import { SurfaceZone } from '@/components/home/SurfaceZone';
 import { InlineLeadForm } from '@/components/lead/LazyLeadForm';
 import { Reveal } from '@/components/Reveal';
 import { SplitText } from '@/components/SplitText';
@@ -70,9 +71,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <DepthStory depth={home.depth} eyebrow={t('home.depthEyebrow')} ctaLabel={t('common.ctaTalk')} />
+      <SurfaceZone>
+        <DepthStory depth={home.depth} eyebrow={t('home.depthEyebrow')} ctaLabel={t('common.ctaTalk')} />
 
-      <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
+        <ProductShowcase eyebrow={t('home.showcaseEyebrow')} />
+      </SurfaceZone>
 
       <Services section={home.services} services={content.services} eyebrow={t('home.servicesEyebrow')} />
 

@@ -470,8 +470,8 @@ html.intro-seen .intro {
   }
 }
 
-/* ───────── Abalone: the method section opens into the colours of the inside of a shell, then closes back (DepthStory sets --surface 0..1) ───────── */
-.depth-pearl {
+/* ───────── Abalone: the method and 3D sections open into the colours of the inside of a shell, then close back (SurfaceZone sets --surface 0..1) ───────── */
+.surface-color {
   --iris-r: calc(var(--surface, 0) * 90vmax);
   --drift: calc(var(--surface, 0) * 18%);
   background:
@@ -480,18 +480,18 @@ html.intro-seen .intro {
     radial-gradient(50% 45% at 55% calc(70% - var(--drift)), rgb(140 80 165 / 0.45), transparent 70%),
     radial-gradient(60% 55% at calc(75% - var(--drift)) 40%, rgb(30 70 140 / 0.6), transparent 70%),
     linear-gradient(160deg, #0c3a48 0%, #16305f 45%, #2e2560 75%, #3b2658 100%);
-  /* A soft-edged iris, never a hard circle, that also fades into the dark sections above and below. */
+  /* A soft-edged iris, never a hard circle, with the screen edges melting into the dark. */
   -webkit-mask-image:
-    radial-gradient(circle at 50% var(--iris-y, 50%), #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
-    linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+    radial-gradient(circle at 50% 50%, #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
+    linear-gradient(to bottom, transparent, #000 10vh, #000 calc(100% - 10vh), transparent);
   -webkit-mask-composite: source-in;
   mask-image:
-    radial-gradient(circle at 50% var(--iris-y, 50%), #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
-    linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+    radial-gradient(circle at 50% 50%, #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
+    linear-gradient(to bottom, transparent, #000 10vh, #000 calc(100% - 10vh), transparent);
   mask-composite: intersect;
 }
 /* Nacre sheen: a band of pastel colour that slides across as you scroll. */
-.depth-pearl::after {
+.surface-color::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -507,9 +507,9 @@ html.intro-seen .intro {
   background-position: calc(100% - var(--surface, 0) * 100%) 0;
   mix-blend-mode: soft-light;
 }
-.depth-ring {
+.surface-ring {
   inset-inline-start: 50%;
-  top: var(--iris-y, 50%);
+  top: 50%;
   width: 180vmax;
   height: 180vmax;
   margin: -90vmax 0 0 -90vmax;
@@ -521,25 +521,44 @@ html.intro-seen .intro {
   /* Only while the iris is moving: gone when fully closed or fully open. */
   opacity: clamp(0, calc(min(var(--surface, 0), 1 - var(--surface, 0)) * 4), 1);
 }
-.depth-surface.is-still .depth-pearl {
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 14vh, #000 calc(100% - 14vh), transparent);
+.surface-zone.is-still .surface-color {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10vh, #000 calc(100% - 10vh), transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10vh, #000 calc(100% - 10vh), transparent);
 }
-.depth-surface.is-still .depth-ring {
+.surface-zone.is-still .surface-ring {
   display: none;
 }
-.depth-surface .eyebrow,
-.depth-surface [data-mark] {
+.surface-zone .eyebrow,
+.surface-zone [data-mark] {
   transition: color 500ms var(--ease-out);
 }
-.depth-surface.is-surfaced .eyebrow {
+.surface-zone.is-surfaced .eyebrow {
   color: var(--color-gold-soft);
 }
-.depth-surface.is-surfaced [data-mark] {
+.surface-zone.is-surfaced [data-mark] {
   color: rgb(239 233 222 / 0.65);
 }
-.depth-surface.is-surfaced [data-mark][data-active] {
+.surface-zone.is-surfaced [data-mark][data-active] {
   color: var(--color-pearl);
+}
+/* Touch: the swipe glides through the dive too fast for the scroll-tied light, so it plays as one timed flash. */
+.hero-dive.is-flashing .hero-veil-light {
+  z-index: 1;
+  animation: dive-flash 1300ms var(--ease-out) forwards;
+}
+@keyframes dive-flash {
+  0% {
+    opacity: 0;
+    scale: 0.7;
+  }
+  30% {
+    opacity: 1;
+    scale: 1.05;
+  }
+  100% {
+    opacity: 0;
+    scale: 1.7;
+  }
 }
 .hero-dive.is-diving .hero-stage {
   position: sticky;

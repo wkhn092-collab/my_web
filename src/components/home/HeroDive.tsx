@@ -66,17 +66,35 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
   let direction = 0;
   let settleTimer = 0;
 
+  const flash = () => {
+    section.classList.remove('is-flashing');
+    void section.offsetWidth;
+    section.classList.add('is-flashing');
+  };
+  const onAnimationEnd = (event: AnimationEvent) => {
+    if (event.animationName === 'dive-flash') section.classList.remove('is-flashing');
+  };
+  section.addEventListener('animationend', onAnimationEnd);
+
   const glide = (to: number) => {
     cancelAnimationFrame(glideFrame);
     const from = window.scrollY;
     const distance = to - from;
     if (Math.abs(distance) < 2) return;
-    const duration = to > from ? 1900 : 1200;
+    const down = to > from;
+    const duration = down ? 1900 : 1200;
+    // Where the light breathes in the scroll-tied dive (CSS .hero-veil-light peaks around --dive 0.8).
+    const flashAt = (section.offsetHeight - window.innerHeight) * 0.55;
+    let flashed = !down || from >= flashAt;
     const startedAt = performance.now();
     gliding = true;
     const step = (now: number) => {
       const t = Math.min(1, (now - startedAt) / duration);
       window.scrollTo(0, from + distance * easeInOut(t));
+      if (!flashed && window.scrollY >= flashAt) {
+        flashed = true;
+        flash();
+      }
       if (t < 1) glideFrame = requestAnimationFrame(step);
       else gliding = false;
     };
@@ -151,6 +169,8 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
   return () => {
     cancelAnimationFrame(glideFrame);
     window.clearTimeout(settleTimer);
+    section.removeEventListener('animationend', onAnimationEnd);
+    section.classList.remove('is-flashing');
     window.removeEventListener('touchstart', onTouchStart);
     window.removeEventListener('touchmove', onTouchMove);
     window.removeEventListener('touchend', onTouchEnd);
