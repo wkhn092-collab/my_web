@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { BidiText } from '@/components/BidiText';
 import { Reveal } from '@/components/Reveal';
@@ -18,8 +19,8 @@ export default async function AboutPage() {
   return (
     <div className="mx-auto max-w-7xl px-5 pb-28 md:px-10 md:pb-40">
       <PageHeader eyebrow={t('home.aboutEyebrow')} title={about.title}>
-        <div className="rise-in mt-10 flex h-24 w-24 items-center justify-center rounded-full border border-gold/50 font-display text-5xl" aria-hidden="true">
-          <span className="text-gilded">א</span>
+        <div className="rise-in relative mt-10 h-32 w-32 overflow-hidden rounded-full border border-gold/50 md:h-40 md:w-40">
+          <Image src="/about/avishi.jpg" alt={t('home.portraitAlt')} fill sizes="160px" priority className="object-cover" />
         </div>
       </PageHeader>
 

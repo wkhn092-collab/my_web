@@ -21,8 +21,8 @@ import { getSiteContent } from '@/lib/content/site-content';
 import { formatIsraeliPhone, toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 
-/** Set to '/about/avishi.jpg' (square, about 512px, in public/) once the portrait is shot; until then the monogram stands in. */
-const PORTRAIT_SRC: string | null = null;
+/** Square, about 512px, in public/. Set to null to fall back to the monogram. */
+const PORTRAIT_SRC: string | null = '/about/avishi.jpg';
 
 export default async function HomePage() {
   const [content, t, requestHeaders] = await Promise.all([getSiteContent(), getTranslations(), headers()]);
