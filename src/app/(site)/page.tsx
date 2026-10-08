@@ -12,6 +12,7 @@ import { ProductShowcase } from '@/components/home/ProductShowcase';
 import { Proof } from '@/components/proof/Proof';
 import { ProductStage } from '@/components/scene/ProductStage';
 import { Services } from '@/components/home/Services';
+import { Sunrise } from '@/components/home/Sunrise';
 import { SurfaceZone } from '@/components/home/SurfaceZone';
 import { InlineLeadForm } from '@/components/lead/LazyLeadForm';
 import { Reveal } from '@/components/Reveal';
@@ -95,11 +96,8 @@ export default async function HomePage() {
         }}
       />
 
-      <section id="contact" aria-labelledby="contact-title" className="relative isolate overflow-hidden py-28 md:py-40">
-        <div
-          className="pointer-events-none absolute -right-40 top-0 -z-10 h-[80vmin] w-[80vmin] rounded-full bg-[radial-gradient(circle,rgb(62_154_168/0.16),transparent_65%)]"
-          aria-hidden="true"
-        />
+      <section id="contact" aria-labelledby="contact-title" className="has-sunrise relative isolate overflow-clip pt-28 md:pt-40">
+        <Sunrise />
         <div className="mx-auto grid max-w-7xl gap-14 px-5 md:px-10 lg:grid-cols-[1fr_1.1fr]">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <p className="eyebrow">{t('home.contactEyebrow')}</p>
@@ -111,7 +109,7 @@ export default async function HomePage() {
             {/* Beside the form on desktop; after it on phones, so the form comes first. */}
             <NextSteps replyWindow={replyWindow} className="mt-12 hidden lg:block" />
           </div>
-          <div className="glass rounded-[2rem] p-6 md:p-10">
+          <div className="glass glass-deep rounded-[2rem] p-6 md:p-10 lg:self-start">
             <InlineLeadForm whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} location="inline" />
           </div>
           <NextSteps replyWindow={replyWindow} className="lg:hidden" />
