@@ -6,7 +6,10 @@
 
 const MASTER_LEVEL = 0.11;
 /** Phone speakers roll off below ~300 Hz, so the bed needs more level and an octave-up layer to be heard at all. */
-const PHONE_MASTER_LEVEL = 0.5;
+const PHONE_MASTER_LEVEL = 0.4;
+/** A 4 s stereo convolution plus ~40 oscillators starves a phone's audio thread next to WebGL, so it crackles. */
+const REVERB_S = 4;
+const PHONE_REVERB_S = 1.6;
 const FADE_S = 2.5;
 /** One full A → B → A cycle of the chord crossfade. */
 const CHORD_CYCLE_S = 28;
@@ -64,11 +67,16 @@ function padGroup(
     // Bass softer than the middle, top note quietest.
     voice.gain.value = [0.22, 0.2, 0.16, 0.13, 0.08][i] ?? 0.1;
     voice.connect(group);
-    const layers: [OscillatorType, number, number, number][] = [
-      ["sine", -4, 1, 0.7],
-      ["triangle", 5, 1, 0.3],
-    ];
-    if (phone) layers.push(["sine", 3, 2, 0.8], ["sine", -3, 4, 0.25]);
+    // Phones: two voices per note (the fundamental and the octave the speaker can actually play), half the load.
+    const layers: [OscillatorType, number, number, number][] = phone
+      ? [
+          ["sine", -4, 1, 0.7],
+          ["sine", 3, 2, 0.9],
+        ]
+      : [
+          ["sine", -4, 1, 0.7],
+          ["triangle", 5, 1, 0.3],
+        ];
     for (const [type, detune, octave, amount] of layers) {
       const osc = context.createOscillator();
       osc.type = type;
@@ -87,24 +95,15 @@ function build(context: AudioContext): GainNode {
   const out = context.createGain();
   out.gain.value = 0;
   const compressor = context.createDynamicsCompressor();
-  compressor.threshold.value = -18;
-  compressor.ratio.value = 3;
-  out.connect(compressor);
-  if (phone) {
-    // The louder phone mix must never clip the small speaker.
-    const limiter = context.createDynamicsCompressor();
-    limiter.threshold.value = -6;
-    limiter.knee.value = 0;
-    limiter.ratio.value = 12;
-    limiter.attack.value = 0.003;
-    limiter.release.value = 0.25;
-    compressor.connect(limiter).connect(context.destination);
-  } else {
-    compressor.connect(context.destination);
-  }
+  // Phones: one soft-knee stage keeps the louder mix off the speaker's ceiling without pumping.
+  compressor.threshold.value = phone ? -10 : -18;
+  compressor.knee.value = phone ? 12 : 30;
+  compressor.ratio.value = phone ? 4 : 3;
+  compressor.release.value = phone ? 0.6 : 0.25;
+  out.connect(compressor).connect(context.destination);
 
   const reverb = context.createConvolver();
-  reverb.buffer = impulse(context, 4, 2.6);
+  reverb.buffer = impulse(context, phone ? PHONE_REVERB_S : REVERB_S, 2.6);
   const wet = context.createGain();
   wet.gain.value = 0.55;
   reverb.connect(wet).connect(out);
@@ -198,7 +197,8 @@ export async function startAmbient(): Promise<boolean> {
     preferPlaybackSession();
     if (!ctx) {
       phone = isPhone();
-      ctx = new AudioContext();
+      // "playback" asks for larger audio buffers: a little more latency, no dropouts when the page is busy.
+      ctx = new AudioContext({ latencyHint: phone ? "playback" : "interactive" });
     }
     // Resume inside the tap itself: building the graph first can push it past the gesture on iOS.
     const resumed = ctx.resume();
