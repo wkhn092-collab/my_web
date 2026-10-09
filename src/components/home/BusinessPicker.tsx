@@ -9,7 +9,7 @@ export async function BusinessPicker() {
   const choices = t.raw('choices') as Choice[];
 
   return (
-    <nav aria-labelledby="picker-title" className="relative border-y border-pearl/[0.07] py-10 md:py-14">
+    <nav aria-labelledby="picker-title" data-dive-landing="" className="relative border-y border-pearl/[0.07] py-10 md:py-14">
       <div className="mx-auto max-w-7xl px-5 md:px-10">
         <h2 id="picker-title" className="font-display text-3xl font-light md:text-4xl">
           {t('title')}

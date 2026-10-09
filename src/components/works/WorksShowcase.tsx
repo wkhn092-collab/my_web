@@ -96,7 +96,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
       className="group/works relative overflow-hidden py-20 md:py-32 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0 [&.is-pinned_.works-scroller]:overflow-visible"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-5 md:flex-row md:items-end md:justify-between md:px-10">
-        <div className="max-w-2xl" data-dive-landing="">
+        <div className="max-w-2xl">
           <p className="eyebrow">{eyebrow}</p>
           <h2 id="works-title" className="mt-5 text-5xl font-light md:text-7xl lg:text-6xl xl:text-7xl">
             <SplitText text={title} />
