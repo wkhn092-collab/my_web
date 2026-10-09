@@ -65,7 +65,7 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
       ref={sectionRef}
       id="showcase"
       aria-labelledby="showcase-title"
-      className="group/showcase relative isolate overflow-hidden py-24 md:py-32 lg:flex lg:h-screen lg:items-center lg:py-0"
+      className="group/showcase relative isolate overflow-hidden py-24 md:py-32 lg:flex lg:h-screen lg:items-center lg:pb-0 lg:pt-[var(--header-height)]"
     >
       <div
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_60%_at_30%_55%,rgb(201_166_107/0.1),transparent_70%)]"
@@ -74,19 +74,19 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 md:px-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-6">
         <div>
           <p className="eyebrow">{eyebrow}</p>
-          <h2 id="showcase-title" className="mt-5 text-5xl font-light md:text-7xl lg:text-6xl xl:text-7xl">
+          <h2 id="showcase-title" className="mt-5 text-5xl font-light md:text-7xl lg:text-6xl xl:text-7xl lg:[@media(max-height:860px)]:mt-3 lg:[@media(max-height:860px)]:text-5xl">
             <SplitText text={t('title')} accent={['תלת-ממד']} />
           </h2>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-pearl/75">{t('lead')}</p>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-pearl/75 lg:[@media(max-height:860px)]:mt-4 lg:[@media(max-height:860px)]:text-base">{t('lead')}</p>
 
-          <div className="mt-10 hidden gap-6 lg:flex" data-fact-list="">
+          <div className="mt-10 hidden gap-6 lg:flex lg:[@media(max-height:860px)]:mt-6" data-fact-list="">
             <div className="relative w-px shrink-0 bg-pearl/15" aria-hidden="true">
               <span data-showcase-line className="absolute inset-0 block origin-top bg-gradient-to-b from-gold-soft to-gold" />
             </div>
             <FactList facts={facts} />
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-5">
+          <div className="mt-10 flex flex-wrap items-center gap-5 lg:[@media(max-height:860px)]:mt-6">
             <OpenDrawerButton siteType="premium3d" location="showcase">
               {t('cta')}
             </OpenDrawerButton>
@@ -125,7 +125,7 @@ function lightFactsInView(section: HTMLElement | null) {
 
 function FactList({ facts }: { facts: Fact[] }) {
   return (
-    <ol className="space-y-6">
+    <ol className="space-y-6 lg:[@media(max-height:860px)]:space-y-3">
       {facts.map((fact, i) => (
         <li
           key={fact.title}
@@ -135,7 +135,7 @@ function FactList({ facts }: { facts: Fact[] }) {
           <bdi className="font-display text-sm text-gold">{String(i + 1).padStart(2, '0')}</bdi>
           <div>
             <h3 className="text-xl font-normal text-pearl">{fact.title}</h3>
-            <p className="mt-1 max-w-md text-base text-mist">{fact.body}</p>
+            <p className="mt-1 max-w-md text-base text-mist lg:[@media(max-height:860px)]:text-sm lg:[@media(max-height:700px)]:hidden">{fact.body}</p>
           </div>
         </li>
       ))}
