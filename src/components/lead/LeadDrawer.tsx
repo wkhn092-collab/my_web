@@ -5,7 +5,6 @@ import { useEffect, useId, useRef } from 'react';
 import type { Addon } from '@/lib/content/types';
 import { useSession } from '@/lib/store/visitor';
 import { LazyLeadForm, preloadLeadFormWhenIdle } from './LazyLeadForm';
-import { LeadFormLocked } from './LeadFormLocked';
 
 /** Native <dialog>: focus trap, Escape and inert background come from the platform. */
 export function LeadDrawer({
@@ -28,7 +27,7 @@ export function LeadDrawer({
   const closeDrawer = useSession((s) => s.closeDrawer);
   const returnFocus = useRef<HTMLElement | null>(null);
 
-  useEffect(() => (locked ? undefined : preloadLeadFormWhenIdle()), [locked]);
+  useEffect(() => preloadLeadFormWhenIdle(), []);
 
   useEffect(() => {
     const dialog = ref.current;
@@ -60,7 +59,7 @@ export function LeadDrawer({
           <div>
             <p className="eyebrow">{t('titleHint')}</p>
             <h2 id={titleId} className="mt-3 text-4xl font-light">
-              {locked ? t('lockedTitle') : t('title')}
+              {t('title')}
             </h2>
           </div>
           <button
@@ -74,12 +73,16 @@ export function LeadDrawer({
             </svg>
           </button>
         </div>
-        {open &&
-          (locked ? (
-            <LeadFormLocked whatsappNumber={whatsappNumber} location="drawer" />
-          ) : (
-            <LazyLeadForm whatsappNumber={whatsappNumber} addons={addons} presetSiteType={siteType} nonce={nonce} location="drawer" />
-          ))}
+        {open && (
+          <LazyLeadForm
+            whatsappNumber={whatsappNumber}
+            addons={addons}
+            presetSiteType={siteType}
+            nonce={nonce}
+            location="drawer"
+            whatsappOnly={locked}
+          />
+        )}
       </div>
     </dialog>
   );

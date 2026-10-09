@@ -8,7 +8,7 @@ import { track } from '@/lib/analytics';
 import { LEAD_GOAL_LABEL, LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { LEAD_GOALS, LEAD_SITE_TYPES, type Addon, type LeadGoal, type LeadSiteType } from '@/lib/content/types';
 import { addonsForSiteType } from '@/lib/domain/addons';
-import { FAB_MESSAGE, MESSAGE_MAX, whatsappUrl } from '@/lib/domain/whatsapp';
+import { FAB_MESSAGE, MESSAGE_MAX, buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
 import { publicEnv } from '@/lib/env.public';
 import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
 import { useSession, useVisitor } from '@/lib/store/visitor';
@@ -20,10 +20,13 @@ type Step = 1 | 2 | 3;
 
 const FIELD_ORDER: LeadField[] = ['name', 'phone', 'siteType', 'message', 'email'];
 const LEAVE_MS = 160;
+const whatsappOnlySchema = leadInputSchema.omit({ phone: true });
 
 /**
  * One question per screen: site type, then what matters most, then name and phone. The rest is optional and folded
  * away. Every step lives inside one <form>, so the server receives exactly what the old single-page form sent.
+ * `whatsappOnly` (while the server refuses leads) asks the same questions but stores nothing: the answers go out as
+ * a ready WhatsApp message, and the phone is not asked because WhatsApp already carries it.
  */
 export function LeadForm({
   whatsappNumber,
@@ -31,12 +34,14 @@ export function LeadForm({
   presetSiteType = null,
   nonce,
   location,
+  whatsappOnly = false,
 }: {
   whatsappNumber: string;
   addons: Addon[];
   presetSiteType?: LeadSiteType | null;
   nonce?: string;
   location: 'drawer' | 'inline';
+  whatsappOnly?: boolean;
 }) {
   const t = useTranslations('form');
   const w = useTranslations('wizard');
@@ -74,7 +79,8 @@ export function LeadForm({
   const stepChanged = useRef(false);
 
   const [state, formAction, pending] = useActionState<LeadActionState, FormData>(submitLead, { status: 'idle' });
-  const done = state.status === 'success';
+  const [handoff, setLocalHandoff] = useState<{ name: string; whatsappUrl: string } | null>(null);
+  const done = state.status === 'success' || handoff !== null;
 
   // Derived-state updates happen during render (not in effects) when the preset or the server answer changes.
   const [prevPreset, setPrevPreset] = useState(presetSiteType);
@@ -196,7 +202,7 @@ export function LeadForm({
     setBanner(null);
     const formData = new FormData(event.currentTarget);
     appendSource(formData);
-    const check = leadInputSchema.safeParse(Object.fromEntries(formData));
+    const check = (whatsappOnly ? whatsappOnlySchema : leadInputSchema).safeParse(Object.fromEntries(formData));
     if (!check.success) {
       const fieldErrors: Partial<Record<LeadField, string>> = {};
       for (const issue of check.error.issues) {
@@ -206,6 +212,25 @@ export function LeadForm({
       setErrors(fieldErrors);
       if (fieldErrors.siteType) goTo(1);
       else focusFirstError(fieldErrors);
+      return;
+    }
+    if (whatsappOnly) {
+      const lead = check.data;
+      const url = whatsappUrl(
+        whatsappNumber,
+        buildLeadMessage({
+          name: lead.name,
+          siteTypeLabel: LEAD_SITE_TYPE_LABEL[lead.siteType],
+          goalLabel: lead.goal ? LEAD_GOAL_LABEL[lead.goal] : undefined,
+          message: lead.message,
+          addons: visibleAddons.filter((a) => sentAddons.includes(a.slug)).map((a) => a.title),
+        }),
+      );
+      track('form_submit', { location });
+      track('whatsapp_click', { location: `form-${location}` });
+      window.open(url, '_blank', 'noopener,noreferrer');
+      stepChanged.current = true;
+      setLocalHandoff({ name: lead.name, whatsappUrl: url });
       return;
     }
     if (!navigator.onLine) {
@@ -262,7 +287,29 @@ export function LeadForm({
 
       <div ref={frameRef} className="wizard-frame -m-1 overflow-hidden">
         <div ref={contentRef} className="p-1">
-          {state.status === 'success' ? (
+          {handoff ? (
+            <div className="wizard-step py-2 text-center" role="status">
+              <div className="relative mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 text-gold">
+                <span className="sig-ripple pointer-events-none absolute inset-0 m-auto h-10 w-10 rounded-full bg-gold/40" aria-hidden="true" />
+                <WhatsAppIcon className="h-7 w-7" />
+              </div>
+              <h3 ref={headingRef} tabIndex={-1} data-wizard-heading="" className={headingClass}>
+                {w('doneTitleWhatsApp', { name: handoff.name })}
+              </h3>
+              <p className="mt-3 text-lg text-pearl/80">{w('doneBodyWhatsApp')}</p>
+              <p className="mt-8 text-base text-mist">{w('doneHintWhatsApp')}</p>
+              <a
+                href={handoff.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary mt-4 w-full"
+                onClick={() => track('whatsapp_click', { location: 'lead-done' })}
+              >
+                <WhatsAppIcon className="h-5 w-5" />
+                {w('doneButtonWhatsApp')}
+              </a>
+            </div>
+          ) : state.status === 'success' ? (
             <div className="wizard-step py-2 text-center" role="status">
               <div className="relative mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-gold/50 text-gold">
                 <span className="sig-ripple pointer-events-none absolute inset-0 m-auto h-10 w-10 rounded-full bg-gold/40" aria-hidden="true" />
@@ -340,9 +387,9 @@ export function LeadForm({
                 <div className="space-y-5">
                   <div>
                     <h3 ref={headingRef} tabIndex={-1} data-wizard-heading="" className={headingClass}>
-                      {w('step3Title')}
+                      {whatsappOnly ? w('step3TitleWhatsApp') : w('step3Title')}
                     </h3>
-                    <p className="mt-2 text-base text-mist">{w('step3Hint')}</p>
+                    <p className="mt-2 text-base text-mist">{whatsappOnly ? w('step3HintWhatsApp') : w('step3Hint')}</p>
                   </div>
 
                   <div>
@@ -367,6 +414,7 @@ export function LeadForm({
                     )}
                   </div>
 
+                  {!whatsappOnly && (
                   <div>
                     <label htmlFor={id('phone')} className="font-medium text-pearl">
                       {t('phone')}
@@ -394,6 +442,7 @@ export function LeadForm({
                       </p>
                     )}
                   </div>
+                  )}
 
                   <details ref={extrasRef} className="group/extras rounded-2xl border border-pearl/10">
                     <summary className="flex min-h-[3.25rem] cursor-pointer list-none items-center justify-between gap-3 px-4 text-base text-pearl/85 [&::-webkit-details-marker]:hidden">
@@ -458,6 +507,7 @@ export function LeadForm({
                         )}
                       </div>
 
+                      {!whatsappOnly && (
                       <div>
                         <label htmlFor={id('email')} className="font-medium text-pearl">
                           {t('email')}
@@ -484,6 +534,7 @@ export function LeadForm({
                           </p>
                         )}
                       </div>
+                      )}
                     </div>
                   </details>
 
@@ -520,6 +571,11 @@ export function LeadForm({
                         <span className="h-5 w-5 animate-spin rounded-full border-2 border-abyss border-t-transparent motion-reduce:animate-none" aria-hidden="true" />
                         {t('submitting')}
                       </>
+                    ) : whatsappOnly ? (
+                      <>
+                        <WhatsAppIcon className="h-5 w-5" />
+                        {t('submit')}
+                      </>
                     ) : (
                       w('submit')
                     )}
@@ -542,14 +598,14 @@ export function LeadForm({
       </div>
 
       {/* Mounted from the first step, so the challenge is usually solved before the visitor reaches the last one. */}
-      {publicEnv.turnstileSiteKey && !done && (
+      {publicEnv.turnstileSiteKey && !done && !whatsappOnly && (
         <div className="mt-4">
           <Turnstile siteKey={publicEnv.turnstileSiteKey} action="lead" nonce={nonce} onToken={setToken} resetKey={resetKey} />
         </div>
       )}
 
       <p id={id('privacy')} className="mt-5 text-sm text-mist">
-        {t('privacy')}
+        {whatsappOnly ? t('privacyWhatsApp') : t('privacy')}
       </p>
     </form>
   );

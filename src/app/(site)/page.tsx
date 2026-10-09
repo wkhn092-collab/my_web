@@ -14,7 +14,6 @@ import { ProductStage } from "@/components/scene/ProductStage";
 import { Services } from "@/components/home/Services";
 import { SurfaceZone } from "@/components/home/SurfaceZone";
 import { InlineLeadForm } from "@/components/lead/LazyLeadForm";
-import { LeadFormLocked } from "@/components/lead/LeadFormLocked";
 import { Reveal } from "@/components/Reveal";
 import { SplitText } from "@/components/SplitText";
 import { WorksShowcase } from "@/components/works/WorksShowcase";
@@ -159,9 +158,7 @@ export default async function HomePage() {
               >
                 <SplitText text={home.closing.title} />
               </h2>
-              {!leadsLocked && (
-                <p className="mt-6 text-lg text-mist">{t("form.title")}</p>
-              )}
+              <p className="mt-6 text-lg text-mist">{t("form.title")}</p>
 
               {/* Beside the form on desktop; after it on phones, so the form comes first. */}
               <NextSteps
@@ -170,19 +167,13 @@ export default async function HomePage() {
               />
             </div>
             <div className="glass glass-deep rounded-[2rem] p-6 md:p-10 lg:self-start">
-              {leadsLocked ? (
-                <LeadFormLocked
-                  whatsappNumber={whatsappNumber}
-                  location="inline"
-                />
-              ) : (
-                <InlineLeadForm
-                  whatsappNumber={whatsappNumber}
-                  addons={content.addons}
-                  nonce={nonce}
-                  location="inline"
-                />
-              )}
+              <InlineLeadForm
+                whatsappNumber={whatsappNumber}
+                addons={content.addons}
+                nonce={nonce}
+                location="inline"
+                whatsappOnly={leadsLocked}
+              />
             </div>
             <NextSteps replyWindow={replyWindow} className="lg:hidden" />
           </div>

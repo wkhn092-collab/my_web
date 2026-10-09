@@ -134,9 +134,7 @@
     "toWhatsApp": "לכתיבה בוואטסאפ",
     "honeypot": "לא למלא את השדה הזה",
     "drawerTitle": "הדמיה בחינם של האתר שלך",
-    "lockedTitle": "הכי מהר: וואטסאפ",
-    "lockedBody": "ההודעה כבר כתובה. משלימים שלוש שורות על העסק ושולחים.",
-    "lockedButton": "לכתיבה בוואטסאפ"
+    "privacyWhatsApp": "שום דבר לא נשמר באתר. הפרטים מגיעים אליי רק כשלוחצים שליחה בוואטסאפ"
   },
   "wizard": {
     "progress": "שלב {step} מתוך 3",
@@ -158,7 +156,13 @@
     "doneTitle": "קיבלתי, {name}.",
     "doneBody": "אחזור אליך {reply}.",
     "doneWhatsApp": "לא רוצה לחכות? ההודעה כבר כתובה בוואטסאפ, רק לשלוח.",
-    "doneButton": "להמשיך בוואטסאפ"
+    "doneButton": "להמשיך בוואטסאפ",
+    "step3TitleWhatsApp": "איך קוראים לך?",
+    "step3HintWhatsApp": "ומשם ממשיכים בוואטסאפ. ההודעה תיפתח כתובה עם כל מה שבחרת.",
+    "doneTitleWhatsApp": "כמעט שם, {name}.",
+    "doneBodyWhatsApp": "ההודעה נפתחה בוואטסאפ עם כל מה שבחרת. נשאר רק ללחוץ שליחה.",
+    "doneHintWhatsApp": "וואטסאפ לא נפתח?",
+    "doneButtonWhatsApp": "לפתיחת וואטסאפ"
   },
   "fit": {
     "title": "למי זה מתאים",
