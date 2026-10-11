@@ -18,11 +18,10 @@ export async function Footer({ content }: { content: SiteContent }) {
   const { settings, hours, legalPages } = content;
   const phone = formatIsraeliPhone(settings.phoneE164);
   const replyWindow = formatReplyWindow(getReplyWindow(new Date(), hours));
-  // Consumer-protection identity line; shown only once the business file is open and all three fields are filled.
-  const businessLine =
-    settings.legalName && settings.businessType && settings.businessNumber
-      ? `${settings.legalName} · ${settings.businessType} ${settings.businessNumber}`
-      : null;
+  const studioName = t('footer.studioName', { brand: settings.brandName });
+  // Consumer-protection identity; each part appears only once it is filled in settings.
+  const ownerName = settings.legalName ? `${studioName} / ${settings.legalName}` : studioName;
+  const registration = settings.businessType && settings.businessNumber ? { type: settings.businessType, number: settings.businessNumber } : null;
   const navLinks = [
     { href: '/projects', label: t('nav.works') },
     { href: '/#services', label: t('nav.services') },
@@ -152,22 +151,50 @@ export async function Footer({ content }: { content: SiteContent }) {
           </div>
         </div>
 
-        <div className="hairline" />
+        {/* Who stands behind the site: name, registration and an address for formal requests. */}
+        <Reveal className="glass grid gap-6 rounded-[1.75rem] p-6 text-sm md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:p-8">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+            <div className="shrink-0">
+              <p className="font-display text-2xl text-pearl">{studioName}</p>
+              <p className="mt-1 text-mist">
+                {t('footer.tagline')}, {settings.city}
+                {settings.remoteNote ? ` · ${settings.remoteNote}` : ''}
+              </p>
+            </div>
+            <dl className="grid gap-1.5 text-mist sm:border-r sm:border-pearl/10 sm:pr-8">
+              {settings.legalName && (
+                <div className="flex flex-wrap gap-x-2">
+                  <dt>{t('footer.businessName')}</dt>
+                  <dd className="text-pearl/85">
+                    <bdi>{ownerName}</bdi>
+                  </dd>
+                </div>
+              )}
+              {registration && (
+                <div className="flex flex-wrap gap-x-2">
+                  <dt>{registration.type}:</dt>
+                  <dd className="text-pearl/85">
+                    <bdi>{registration.number}</bdi>
+                  </dd>
+                </div>
+              )}
+              <div className="flex flex-wrap gap-x-2">
+                <dt>{t('footer.officialEmail')}</dt>
+                <dd>
+                  <a href={`mailto:${settings.email}`} className="link text-pearl/85">
+                    <bdi>{settings.email}</bdi>
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <BackToTop label={t('footer.backToTop')} />
+        </Reveal>
       </div>
 
-      <div className="mx-auto mt-8 flex max-w-7xl flex-col items-center justify-between gap-6 px-5 text-sm text-mist md:flex-row md:px-10">
-        <p className="text-center md:text-start">
-          © {new Date().getFullYear()} {settings.brandName} · {t('footer.tagline')}, {settings.city}
-          {settings.remoteNote ? ` · ${settings.remoteNote}` : ''} · {t('footer.rights')}
-          {businessLine ? (
-            <>
-              <br />
-              <bdi>{businessLine}</bdi>
-            </>
-          ) : null}
-        </p>
-        <BackToTop label={t('footer.backToTop')} />
-      </div>
+      <p className="mx-auto mt-6 max-w-7xl px-5 text-center text-sm text-mist md:px-10 md:text-start">
+        © {new Date().getFullYear()} {studioName}. {t('footer.rights')}.
+      </p>
     </footer>
   );
 }
