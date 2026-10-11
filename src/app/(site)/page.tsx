@@ -40,13 +40,18 @@ export default async function HomePage() {
   );
   const nonce = requestHeaders.get("x-nonce") ?? undefined;
   const whatsappNumber = toWhatsAppNumber(settings.whatsappE164);
+  const liveCount = content.projects.filter((p) => p.liveUrl).length;
 
   return (
     <>
       <Hero
         hero={home.hero}
         replyWindow={replyWindow}
-        eyebrow={t("home.heroEyebrow")}
+        eyebrow={
+          liveCount >= 2
+            ? t("home.heroEyebrowLive", { count: liveCount })
+            : t("home.heroEyebrow")
+        }
       />
 
       <BusinessPicker />

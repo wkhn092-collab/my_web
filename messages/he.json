@@ -40,6 +40,7 @@
   },
   "home": {
     "heroEyebrow": "סטודיו לאתרים · בכל הארץ",
+    "heroEyebrowLive": "סטודיו לאתרים · {count} אתרים חיים שאפשר לנסות",
     "picker": {
       "title": "איזה עסק יש לך?",
       "choices": [
