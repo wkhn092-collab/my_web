@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { LEAD_ERRORS, leadInputSchema } from './lead-schema';
 
-const valid = { name: 'דנה', phone: '050-396-7230', siteType: 'landing' };
+const valid = { name: 'דנה', phone: '050-396-7230', siteType: 'landing', consent: 'on' };
 
 describe('leadInputSchema', () => {
   it('normalizes phone and trims optional fields', () => {
@@ -18,6 +18,8 @@ describe('leadInputSchema', () => {
     ['message', { ...valid, message: 'א'.repeat(501) }, LEAD_ERRORS.message],
     ['email', { ...valid, email: 'not-an-email' }, LEAD_ERRORS.email],
     ['siteType', { ...valid, siteType: 'store' }, LEAD_ERRORS.siteType],
+    ['consent', { ...valid, consent: undefined }, LEAD_ERRORS.consent],
+    ['consent', { ...valid, consent: 'true' }, LEAD_ERRORS.consent],
   ])('rejects bad %s with the approved copy', (field, input, message) => {
     const result = leadInputSchema.safeParse(input);
     expect(result.success).toBe(false);

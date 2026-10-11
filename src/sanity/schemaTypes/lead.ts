@@ -37,6 +37,16 @@ export const lead = defineType({
     defineField({ name: 'message', title: 'הודעה', type: 'text', readOnly: true }),
     defineField({ name: 'createdAt', title: 'התקבלה', type: 'datetime', readOnly: true }),
     defineField({
+      name: 'consent',
+      title: 'אישור פרטיות ותנאים',
+      type: 'object',
+      readOnly: true,
+      fields: [
+        defineField({ name: 'acceptedAt', title: 'אושר ב', type: 'datetime' }),
+        defineField({ name: 'legalVersion', title: 'גרסת המסמכים', type: 'string' }),
+      ],
+    }),
+    defineField({
       name: 'source',
       title: 'מקור',
       type: 'object',

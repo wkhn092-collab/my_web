@@ -8,7 +8,7 @@ import { toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 import { buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
 import { isConfigured, leadsLocked } from '@/lib/env.server';
-import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
+import { LEGAL_VERSION, leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
 import { sendCustomerConfirmation, sendOwnerBackup } from '@/lib/lead/notify';
 import { sendOwnerWhatsAppAlert } from '@/lib/lead/whatsapp-alert';
 import { logError, logInfo, logWarn } from '@/lib/logger';
@@ -17,8 +17,8 @@ import { getClientIp, hashIp, isSameOriginRequest } from '@/lib/security/request
 import { verifyTurnstile } from '@/lib/security/turnstile';
 import { getSanityLeadsWriteClient } from '@/sanity/lib/client';
 
-const FIELDS = ['name', 'phone', 'siteType', 'goal', 'message', 'email', 'addons', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
-const LEAD_FIELDS = new Set<string>(['name', 'phone', 'siteType', 'message', 'email']);
+const FIELDS = ['name', 'phone', 'siteType', 'goal', 'message', 'email', 'consent', 'addons', 'website', 'turnstileToken', 'page', 'utmSource', 'utmMedium', 'utmCampaign'] as const;
+const LEAD_FIELDS = new Set<string>(['name', 'phone', 'siteType', 'message', 'email', 'consent']);
 
 function readForm(formData: FormData): Record<string, string | undefined> {
   const out: Record<string, string | undefined> = {};
@@ -72,6 +72,7 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
   let savedInSanity = false;
   if (isConfigured.sanityWrite()) {
     try {
+      const now = new Date().toISOString();
       await getSanityLeadsWriteClient().create({
         _type: 'lead',
         status: 'new',
@@ -83,7 +84,8 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
         // A snapshot of the titles, so the lead still reads right after an extra is renamed or retired.
         addons: addonTitles,
         message: lead.message,
-        createdAt: new Date().toISOString(),
+        createdAt: now,
+        consent: { acceptedAt: now, legalVersion: LEGAL_VERSION },
         source: { page: lead.page, utmSource: lead.utmSource, utmMedium: lead.utmMedium, utmCampaign: lead.utmCampaign },
         ipHash,
       });

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { submitLead } from '@/app/actions/lead';
@@ -14,13 +15,14 @@ import { leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lea
 import { useSession, useVisitor } from '@/lib/store/visitor';
 import { Turnstile } from './Turnstile';
 
-type Values = { name: string; phone: string; siteType: LeadSiteType | ''; goal: LeadGoal | ''; message: string; email: string };
+type Values = { name: string; phone: string; siteType: LeadSiteType | ''; goal: LeadGoal | ''; message: string; email: string; consent: boolean };
 type Banner = 'rate-limited' | 'error' | 'offline' | null;
 type Step = 1 | 2 | 3;
 
-const FIELD_ORDER: LeadField[] = ['name', 'phone', 'siteType', 'message', 'email'];
+const FIELD_ORDER: LeadField[] = ['name', 'phone', 'siteType', 'message', 'email', 'consent'];
 const LEAVE_MS = 160;
-const whatsappOnlySchema = leadInputSchema.omit({ phone: true });
+// Nothing reaches the server in WhatsApp-only mode, so there is nothing to consent to storing.
+const whatsappOnlySchema = leadInputSchema.omit({ phone: true, consent: true });
 
 /**
  * One question per screen: site type, then what matters most, then name and phone. The rest is optional and folded
@@ -66,6 +68,7 @@ export function LeadForm({
     goal: '',
     message: '',
     email: '',
+    consent: false,
   });
   const [chosenAddons, setChosenAddons] = useState<string[]>(draftAddons);
   const visibleAddons = addonsForSiteType(addons, values.siteType);
@@ -538,6 +541,46 @@ export function LeadForm({
                     </div>
                   </details>
 
+                  {!whatsappOnly && (
+                    <div>
+                      <label
+                        className={`flex min-h-12 cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 text-base text-pearl/85 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-gold-soft ${
+                          errors.consent ? 'border-danger' : 'border-pearl/15'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          name="consent"
+                          value="on"
+                          required
+                          checked={values.consent}
+                          onChange={(e) => update('consent', e.target.checked)}
+                          aria-invalid={Boolean(errors.consent)}
+                          aria-describedby={describedBy('consent')}
+                          className="mt-1 h-5 w-5 shrink-0 accent-[#C9A66B]"
+                        />
+                        <span>
+                          {t('consentBefore')}
+                          <Link href="/legal/privacy" target="_blank" className="link text-pearl">
+                            {t('privacyLink')}
+                            <span className="sr-only">, {t('newTab')}</span>
+                          </Link>
+                          {t('consentMiddle')}
+                          <Link href="/legal/terms" target="_blank" className="link text-pearl">
+                            {t('termsLink')}
+                            <span className="sr-only">, {t('newTab')}</span>
+                          </Link>
+                          {t('consentAfter')}
+                        </span>
+                      </label>
+                      {errors.consent && (
+                        <p id={id('consent-error')} className="mt-1 text-base text-danger">
+                          {errors.consent}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div aria-live="polite" aria-atomic="true">
                     {banner && (
                       <div className="rounded-xl border border-danger/30 bg-danger/5 p-4 text-base">
@@ -605,7 +648,11 @@ export function LeadForm({
       )}
 
       <p id={id('privacy')} className="mt-5 text-sm text-mist">
-        {whatsappOnly ? t('privacyWhatsApp') : t('privacy')}
+        {whatsappOnly ? t('privacyWhatsApp') : t('privacy')}{' '}
+        <Link href="/legal/privacy" target="_blank" className="link">
+          {t('privacyDetails')}
+          <span className="sr-only">, {t('newTab')}</span>
+        </Link>
       </p>
     </form>
   );

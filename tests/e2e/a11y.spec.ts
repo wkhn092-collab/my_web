@@ -12,7 +12,7 @@ async function expectNoViolations(page: Page) {
   expect(summary).toEqual([]);
 }
 
-const PAGES = ['/', '/about', '/projects', '/thanks', '/legal/accessibility', '/legal/privacy', '/no-such-page'];
+const PAGES = ['/', '/about', '/projects', '/thanks', '/legal/accessibility', '/legal/privacy', '/legal/terms', '/legal/credits', '/no-such-page'];
 
 for (const path of PAGES) {
   test(`${path} meets WCAG 2.2 AA (axe)`, async ({ page }) => {

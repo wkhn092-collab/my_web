@@ -53,6 +53,13 @@ test.describe('lead form', () => {
     await form.getByRole('button', { name: 'לשליחה' }).click();
     await expect(form.getByText('כדאי לבדוק את המספר. למשל: 050-1234567')).toBeVisible();
     await expect(form.getByLabel('טלפון')).toBeFocused();
+
+    const consent = form.getByRole('checkbox', { name: /מדיניות הפרטיות/ });
+    await expect(consent).not.toBeChecked();
+    await form.getByLabel('טלפון').fill('050-1234567');
+    await form.getByRole('button', { name: 'לשליחה' }).click();
+    await expect(form.getByText('כדי לשלוח צריך לאשר את מדיניות הפרטיות ואת תנאי השימוש')).toBeVisible();
+    await expect(consent).toBeFocused();
   });
 
   test('a valid lead shows a calm confirmation with a prefilled WhatsApp link', async ({ page, context }) => {
@@ -64,6 +71,7 @@ test.describe('lead form', () => {
     await form.getByRole('button', { name: 'לקבל יותר פניות' }).click();
     await form.getByLabel('שם').fill('דנה');
     await form.getByLabel('טלפון').fill('050-1234567');
+    await form.getByRole('checkbox', { name: /מדיניות הפרטיות/ }).check();
     await form.getByRole('button', { name: 'לשליחה' }).click();
 
     await expect(form.getByRole('heading', { name: 'קיבלתי, דנה.' })).toBeFocused();

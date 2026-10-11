@@ -4,7 +4,7 @@ import { parseAddonIds } from '@/lib/domain/addons';
 import { normalizeIsraeliPhone } from '@/lib/domain/phone';
 import { MESSAGE_MAX, NAME_MAX, sanitizeText } from '@/lib/domain/whatsapp';
 
-export type LeadField = 'name' | 'phone' | 'siteType' | 'message' | 'email';
+export type LeadField = 'name' | 'phone' | 'siteType' | 'message' | 'email' | 'consent';
 
 /** Error copy from docs/microcopy-map.md. */
 export const LEAD_ERRORS: Record<LeadField, string> = {
@@ -13,7 +13,11 @@ export const LEAD_ERRORS: Record<LeadField, string> = {
   siteType: 'צריך לבחור סוג אתר. אפשר "עדיין לא ברור לי"',
   message: 'עד 500 תווים. אפשר לקצר ולהמשיך את השאר בוואטסאפ',
   email: 'כדאי לבדוק את המייל, או להשאיר את השדה ריק',
+  consent: 'כדי לשלוח צריך לאשר את מדיניות הפרטיות ואת תנאי השימוש',
 };
+
+/** Bumped whenever the privacy policy or terms change, so each stored consent points at the wording it accepted. */
+export const LEGAL_VERSION = '2026-10-11';
 
 /** Fields that end up in an email subject or a log line: no line breaks or tabs, so nothing can start a new header. */
 const singleLine = (v: string) => v.replace(/[\r\n\t\v\f]+/g, ' ');
@@ -59,6 +63,8 @@ export const leadInputSchema = z.object({
     .optional()
     .transform((v) => v?.trim() || undefined)
     .pipe(z.email(LEAD_ERRORS.email).optional()),
+  // Unticked by default; the server refuses a lead without it.
+  consent: z.literal('on', LEAD_ERRORS.consent),
   // Extra IDs only, comma-separated. What they mean is decided on the server.
   addons: z.string().max(400).optional().transform(parseAddonIds),
   // Hidden from people; bots fill it.
