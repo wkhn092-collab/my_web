@@ -129,7 +129,11 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
               <article className="group relative" data-cursor="view">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-ink ring-1 ring-pearl/10 group-has-[a:focus-visible]:ring-2 group-has-[a:focus-visible]:ring-gold-soft md:rounded-[1.75rem]">
                   <div data-art className="absolute -inset-x-[3%] inset-y-0">
-                    <ProjectArt project={project} sizes="(min-width: 1024px) 40vw, (min-width: 640px) 52vw, 82vw" />
+                    <ProjectArt
+                      project={project}
+                      sizes="(min-width: 1024px) 40vw, (min-width: 640px) 52vw, 82vw"
+                      priority={i < 2}
+                    />
                   </div>
                   <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4 md:p-5">
                     <bdi className="font-display text-lg text-pearl/80">{String(i + 1).padStart(2, '0')}</bdi>

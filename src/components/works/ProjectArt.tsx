@@ -13,9 +13,14 @@ function tintFor(slug: string) {
 /**
  * The project's screenshot, or (until there is one) a typographic tile in the project's own tint.
  * Never a stock or invented image.
+ *
+ * Local covers skip the /_next/image optimizer: Vercel serves those with
+ * Content-Disposition: attachment, and iOS Safari often leaves the card blank.
+ * Same-origin /projects/*.jpg is already small and cached, so unoptimized is fine.
  */
 export function ProjectArt({ project, sizes, priority = false }: { project: Project; sizes: string; priority?: boolean }) {
   if (project.cover) {
+    const local = project.cover.url.startsWith('/');
     return (
       <Image
         src={project.cover.url}
@@ -23,6 +28,9 @@ export function ProjectArt({ project, sizes, priority = false }: { project: Proj
         fill
         sizes={sizes}
         priority={priority}
+        // Horizontal swipe rows + loading=lazy is a known Safari miss: first cards stay empty.
+        loading={priority ? undefined : 'eager'}
+        unoptimized={local}
         className="object-cover transition-transform duration-[1200ms] ease-[var(--ease-out)] group-hover:scale-[1.04] motion-reduce:transition-none"
         placeholder={project.cover.lqip ? 'blur' : 'empty'}
         blurDataURL={project.cover.lqip}

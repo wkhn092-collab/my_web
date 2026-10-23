@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io', pathname: '/images/**' }],
     formats: ['image/avif', 'image/webp'],
+    // Drop the default 3840 width — phones with high DPR were requesting it and sometimes getting a blank frame.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
   },
   async headers() {
     return [
@@ -44,6 +46,14 @@ const nextConfig: NextConfig = {
       { source: '/thanks', headers: [{ key: 'Cache-Control', value: 'private, no-store, max-age=0' }] },
       // 3D models: unhashed names, so a week of caching with background revalidation rather than immutable.
       { source: '/models/:file*', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' }] },
+      // Static covers must stay inline so Safari paints them in <img>, not as downloads.
+      {
+        source: '/projects/:file*',
+        headers: [
+          { key: 'Content-Disposition', value: 'inline' },
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+        ],
+      },
     ];
   },
 };
