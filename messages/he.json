@@ -100,7 +100,8 @@
     "swipeHint": "החליקו לעוד עבודות",
     "resume": "להמשיך מאיפה שעצרת",
     "clear": "לניקוי",
-    "measured": "נמדד ב-{date}, {source}"
+    "measured": "נמדד ב-{date}, {source}",
+    "backHome": "חזרה לעמוד הבית"
   },
   "project": {
     "live": "לאתר החי ↗",
@@ -108,7 +109,7 @@
     "solution": "מה בניתי",
     "metrics": "מה מדדתי",
     "cta": "לשיחה על אתר כזה לעסק שלך",
-    "back": "לכל העבודות"
+    "back": "חזרה לעבודות"
   },
   "services": {
     "includes": "כולל:"

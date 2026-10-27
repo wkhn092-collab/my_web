@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { BidiText } from '@/components/BidiText';
 import { Reveal } from '@/components/Reveal';
 import { SplitText } from '@/components/SplitText';
+import { BackNav } from '@/components/site/BackNav';
 import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import { LiveLink } from '@/components/works/LiveLink';
 import { ProjectArt } from '@/components/works/ProjectArt';
@@ -47,9 +47,7 @@ export default async function ProjectPage({ params }: PageProps<'/projects/[slug
       <JsonLd nonce={requestHeaders.get('x-nonce') ?? undefined} data={projectLd(project, publicEnv.siteUrl)} />
       <RememberProject id={project.id} />
       <div className="mx-auto max-w-7xl px-5 pt-10 md:px-10 md:pt-20">
-        <Link href="/projects" className="link link-reveal text-sm tracking-wide text-mist">
-          → {t('project.back')}
-        </Link>
+        <BackNav label={t('project.back')} fallbackHref="/projects" />
         <p className="rise-in mt-6 text-xs tracking-[0.25em] text-gold md:mt-10">
           {project.niche.title} · {SITE_TYPE_LABEL[project.siteType]}
           {project.isConcept && <> · {t('common.conceptLabel')}</>}
