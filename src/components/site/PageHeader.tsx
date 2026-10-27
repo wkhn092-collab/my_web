@@ -2,15 +2,32 @@ import type { ReactNode } from 'react';
 import { SplitText } from '@/components/SplitText';
 
 /** Inner-page opening: eyebrow, a large rising title, and an optional lead. */
-export function PageHeader({ eyebrow, title, lead, children }: { eyebrow?: string; title: string; lead?: string; children?: ReactNode }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  lead,
+  children,
+  compact = false,
+}: {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  children?: ReactNode;
+  /** Shorter top/bottom padding — About and other short pages. */
+  compact?: boolean;
+}) {
   return (
-    <header className="relative pb-12 pt-16 md:pb-16 md:pt-24">
+    <header className={`relative ${compact ? 'pb-8 pt-10 md:pb-10 md:pt-14' : 'pb-12 pt-16 md:pb-16 md:pt-24'}`}>
       <div
         className="pointer-events-none absolute -top-40 left-0 -z-10 h-[60vmin] w-[60vmin] rounded-full bg-[radial-gradient(circle,rgb(62_154_168/0.14),transparent_65%)]"
         aria-hidden="true"
       />
       {eyebrow && <p className="eyebrow rise-in">{eyebrow}</p>}
-      <h1 className="mt-5 max-w-5xl text-[clamp(3rem,8vw,7rem)] font-light leading-[0.98]">
+      <h1
+        className={`max-w-5xl font-light leading-[0.98] ${
+          compact ? 'mt-4 text-[clamp(2.5rem,6vw,4.75rem)]' : 'mt-5 text-[clamp(3rem,8vw,7rem)]'
+        }`}
+      >
         <SplitText text={title} mode="now" delayMs={150} />
       </h1>
       {lead && (

@@ -15,14 +15,14 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const [{ about }, t] = await Promise.all([getSiteContent(), getTranslations()]);
   return (
-    <div className="mx-auto max-w-7xl px-5 pb-28 md:px-10 md:pb-40">
-      <PageHeader eyebrow={t('home.aboutEyebrow')} title={about.title}>
-        <div className="rise-in relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/40 bg-ink md:mt-10 md:h-36 md:w-36">
+    <div className="mx-auto max-w-7xl px-5 pb-24 md:px-10 md:pb-28">
+      <PageHeader eyebrow={t('home.aboutEyebrow')} title={about.title} compact>
+        <div className="rise-in relative mt-5 h-24 w-24 overflow-hidden rounded-full border border-gold/40 bg-ink md:mt-6 md:h-28 md:w-28">
           <Image
             src="/about/avishi.jpg"
             alt={t('home.portraitAlt')}
             fill
-            sizes="144px"
+            sizes="112px"
             priority
             unoptimized
             className="object-cover"
@@ -30,8 +30,8 @@ export default async function AboutPage() {
         </div>
       </PageHeader>
 
-      <div className="grid items-start gap-8 md:gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
-        <div className="space-y-5 text-lg leading-[1.75] text-pearl/85 md:text-xl">
+      <div className="grid items-start gap-6 md:gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10">
+        <div className="space-y-4 text-lg leading-[1.7] text-pearl/85 md:space-y-5 md:text-xl md:leading-[1.75]">
           {about.paragraphs.map((p, i) => (
             <Reveal as="p" key={p} delay={i * 80} className="text-pretty">
               {p}
@@ -39,12 +39,12 @@ export default async function AboutPage() {
           ))}
         </div>
 
-        <div className="flex flex-col gap-5">
-          <Reveal as="section" className="glass rounded-3xl p-6 md:p-7">
+        <div className="flex flex-col gap-4 md:gap-5">
+          <Reveal as="section" className="glass rounded-3xl p-5 md:p-6">
             <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{about.processTitle}</h2>
             <p className="mt-3 text-base leading-relaxed text-pretty text-pearl/80 md:text-[1.05rem]">{about.process}</p>
           </Reveal>
-          <Reveal as="section" delay={80} className="glass rounded-3xl p-6 md:p-7">
+          <Reveal as="section" delay={80} className="glass rounded-3xl p-5 md:p-6">
             <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{t('about.hoursTitle')}</h2>
             <p className="mt-3 text-base leading-relaxed text-pearl/80 md:text-[1.05rem]">{t('about.hoursByAppointment')}</p>
           </Reveal>
