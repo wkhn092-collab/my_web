@@ -143,16 +143,19 @@ export async function Footer({ content }: { content: SiteContent }) {
           </div>
         </div>
 
-        {/* Identity — one compact strip; email lives only under contact above. */}
-        <div className="border-t border-pearl/10 pt-5 md:border-0 md:pt-0">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6 md:rounded-2xl md:border md:border-pearl/10 md:bg-[linear-gradient(160deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] md:px-6 md:py-4 md:shadow-[var(--shadow-contact-sm)] md:backdrop-blur-[18px]">
-            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-              <div className="shrink-0">
-                <p className="font-display text-lg text-pearl md:text-xl">{studioName}</p>
-                {placeLine ? <p className="mt-0.5 text-sm text-mist">{placeLine}</p> : null}
-              </div>
+        {/*
+          Dense closing row — no full-width glass capsule (that read as empty runway on desktop).
+          Studio + place + © sit together; back-to-top stays beside them.
+        */}
+        <div className="border-t border-pearl/10 pt-5 pb-1 md:pt-6 md:pb-2">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
+            <div className="min-w-0 space-y-1">
+              <p className="font-display text-base text-pearl md:text-lg">{studioName}</p>
+              <p className="text-sm text-mist">
+                {[placeLine, `© ${new Date().getFullYear()} ${studioName}`, t('footer.rights')].filter(Boolean).join(' · ')}
+              </p>
               {(settings.legalName || registration) && (
-                <dl className="grid gap-1 text-sm text-mist sm:border-r sm:border-pearl/10 sm:pr-6">
+                <dl className="mt-2 grid gap-1 text-sm text-mist">
                   {settings.legalName && (
                     <div className="flex flex-wrap gap-x-2">
                       <dt>{t('footer.businessName')}</dt>
@@ -172,19 +175,12 @@ export async function Footer({ content }: { content: SiteContent }) {
                 </dl>
               )}
             </div>
-            <div className="flex items-center justify-between gap-4 border-t border-pearl/10 pt-4 md:border-0 md:justify-end md:pt-0">
-              <p className="text-sm text-mist md:hidden">
-                © {new Date().getFullYear()} {studioName}
-              </p>
+            <div className="flex shrink-0 items-center justify-end border-t border-pearl/10 pt-4 md:border-0 md:pt-0">
               <BackToTop label={t('footer.backToTop')} />
             </div>
           </div>
         </div>
       </div>
-
-      <p className="mx-auto mt-4 hidden max-w-7xl px-5 pb-1 text-sm text-mist md:mt-4 md:block md:px-10 md:text-start">
-        © {new Date().getFullYear()} {studioName}. {t('footer.rights')}.
-      </p>
     </footer>
   );
 }
