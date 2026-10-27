@@ -7,6 +7,7 @@ import { formatIsraeliPhone, toWhatsAppNumber } from '@/lib/domain/phone';
 import { FAB_MESSAGE, whatsappUrl } from '@/lib/domain/whatsapp';
 import { BackToTop } from './BackToTop';
 import { CookieSettingsButton } from './CookieBanner';
+import { HoursCard } from './HoursCard';
 import { OpenDrawerButton } from './OpenDrawerButton';
 import { PhoneLink } from './PhoneLink';
 
@@ -78,10 +79,7 @@ export async function Footer({ content }: { content: SiteContent }) {
         */}
         <div className="grid gap-8 py-8 text-base md:grid-cols-2 md:gap-16 md:py-16 lg:gap-24">
           <div className="order-2 space-y-6 md:order-1 md:space-y-10">
-            <div className="glass rounded-2xl p-4 md:rounded-[1.75rem] md:p-7">
-              <p className="eyebrow">{t('footer.hours')}</p>
-              <p className="pt-3 text-pearl/85 md:pt-4">{t('about.hoursByAppointment')}</p>
-            </div>
+            <HoursCard />
 
             <div className="space-y-2.5 px-1 md:space-y-3">
               <p className="eyebrow">{t('footer.contact')}</p>

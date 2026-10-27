@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Reveal } from '@/components/Reveal';
+import { HoursCard } from '@/components/site/HoursCard';
 import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import { PageHeader } from '@/components/site/PageHeader';
 import { getSiteContent } from '@/lib/content/site-content';
@@ -44,9 +45,8 @@ export default async function AboutPage() {
             <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{about.processTitle}</h2>
             <p className="mt-3 text-base leading-relaxed text-pretty text-pearl/80 md:text-[1.05rem]">{about.process}</p>
           </Reveal>
-          <Reveal as="section" delay={80} className="glass rounded-3xl p-5 md:p-6">
-            <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{t('about.hoursTitle')}</h2>
-            <p className="mt-3 text-base leading-relaxed text-pearl/80 md:text-[1.05rem]">{t('about.hoursByAppointment')}</p>
+          <Reveal delay={80}>
+            <HoursCard className="rounded-3xl" />
           </Reveal>
           <OpenDrawerButton location="about">{t('common.ctaTalk')}</OpenDrawerButton>
         </div>

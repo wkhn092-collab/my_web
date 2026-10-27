@@ -270,7 +270,9 @@
   },
   "about": {
     "hoursTitle": "שעות מענה",
+    "hoursOpen": "פתוח",
     "hoursByAppointment": "בתיאום מראש",
+    "hoursNote": "קובעים יחד שעה שנוחה — בוואטסאפ או בשיחה.",
     "more": "עוד עליי",
     "photoAlt": "אבישי"
   }
