@@ -92,6 +92,7 @@ export function WorksShowcase({ projects, title, intro, eyebrow }: { projects: P
     <section
       ref={sectionRef}
       id="works"
+      data-dive-landing=""
       aria-labelledby="works-title"
       className="group/works relative overflow-hidden py-20 md:py-32 lg:flex lg:h-screen lg:flex-col lg:justify-center lg:py-0 [&.is-pinned_.works-scroller]:overflow-visible"
     >

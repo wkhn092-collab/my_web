@@ -46,14 +46,17 @@ export function HeroDive({ targetId }: { targetId: string }) {
 }
 
 function autoDiveOnTouch(section: HTMLElement): () => void {
-  // Where the site begins: the hero has fully scrolled away under the header, so the glide never parks on the dark end of the dive.
+  // Land just past the hero (works). Never Math.max against a later section — that used to yank mid-page.
   const header = document.querySelector<HTMLElement>('header');
   const landing = document.querySelector<HTMLElement>('[data-dive-landing]');
   const diveEnd = () => {
     const headerHeight = Math.min(header?.offsetHeight ?? 0, 120);
     const heroExit = section.getBoundingClientRect().bottom + window.scrollY - headerHeight;
     if (!landing) return heroExit;
-    return Math.max(heroExit, landing.getBoundingClientRect().top + window.scrollY - headerHeight - 24);
+    const landingTop = landing.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+    // Only pull forward to the first section after the hero; ignore anything farther down.
+    if (landingTop > heroExit + window.innerHeight) return heroExit;
+    return Math.max(heroExit, landingTop);
   };
   let glideFrame = 0;
   let gliding = false;

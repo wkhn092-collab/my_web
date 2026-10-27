@@ -29,12 +29,12 @@ export async function Hero({ hero }: { hero: HomePage['hero'] }) {
         <div className="hero-content hero-lift relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-14 pt-36 md:px-10 md:pb-28 md:pt-40">
           <h1
             id="hero-title"
-            className="max-w-5xl text-[clamp(2.35rem,7.2vw,4.75rem)] font-light leading-[1.12] tracking-[-0.02em] max-md:[@media(max-height:740px)]:text-[2.1rem] lg:max-w-[min(28rem,46vw)]"
+            className="max-w-5xl text-[clamp(2.6rem,8vw,4.75rem)] font-light leading-[1.12] tracking-[-0.02em] max-md:[@media(max-height:740px)]:text-[2.35rem] lg:max-w-[min(28rem,46vw)]"
           >
             <SplitText text={hero.title} mode="now" delayMs={900} accent={['חזק']} />
           </h1>
           <p
-            className="rise-in mt-5 max-w-xl text-lg leading-relaxed text-pearl/80 max-md:[@media(max-height:740px)]:mt-3 max-md:[@media(max-height:740px)]:text-base md:mt-6 md:text-xl lg:max-w-[min(36rem,48vw)]"
+            className="rise-in mt-5 max-w-xl text-xl leading-relaxed text-pearl/80 max-md:[@media(max-height:740px)]:mt-3 max-md:[@media(max-height:740px)]:text-lg md:mt-6 md:text-xl lg:max-w-[min(36rem,48vw)]"
             style={delay(1250)}
           >
             {hero.lead}
