@@ -476,13 +476,13 @@ html.intro-seen .intro {
 }
 
 /* ───────── Hero dive: a pinned stage scrolled through, into the pearl (HeroDive.tsx sets --dive 0..1) ───────── */
-/* Tall enough to feel the dive; not so tall that proof never arrives. */
+/* Desktop: long dive so the pearl breath is felt. Phone: short one-swipe dive (does not stick). */
 .hero-dive.is-diving {
   height: 240svh;
 }
 @media (max-width: 767px) {
   .hero-dive.is-diving {
-    height: 200svh;
+    height: 130svh;
   }
 }
 
@@ -591,20 +591,21 @@ html.intro-seen .intro {
 /* Touch: the swipe glides through the dive too fast for the scroll-tied light, so it plays as one timed flash. */
 .hero-dive.is-flashing .hero-veil-light {
   z-index: 1;
-  animation: dive-flash 2400ms var(--ease-out) forwards;
+  animation: dive-flash 1300ms var(--ease-out) forwards;
+}
+@media (min-width: 768px) {
+  .hero-dive.is-flashing .hero-veil-light {
+    animation-duration: 2400ms;
+  }
 }
 @keyframes dive-flash {
   0% {
     opacity: 0;
     scale: 0.7;
   }
-  22% {
+  30% {
     opacity: 1;
     scale: 1.05;
-  }
-  55% {
-    opacity: 0.85;
-    scale: 1.2;
   }
   100% {
     opacity: 0;
@@ -617,18 +618,24 @@ html.intro-seen .intro {
   height: 100svh;
 }
 .hero-dive .hero-content {
-  /* Fade across more of the dive so the text doesn't vanish in the first swipe. */
-  opacity: clamp(0, calc(1 - var(--dive, 0) * 2.4), 1);
+  opacity: clamp(0, calc(1 - var(--dive, 0) * 4.5), 1);
 }
 .hero-dive .hero-lift {
-  translate: 0 calc(var(--dive, 0) * -22vh);
+  translate: 0 calc(var(--dive, 0) * -16vh);
+}
+@media (min-width: 768px) {
+  .hero-dive .hero-content {
+    opacity: clamp(0, calc(1 - var(--dive, 0) * 2.4), 1);
+  }
+  .hero-dive .hero-lift {
+    translate: 0 calc(var(--dive, 0) * -22vh);
+  }
 }
 .hero-veil-light,
 .hero-veil-dark {
   opacity: 0;
 }
 .hero-dive.is-diving .hero-veil-light {
-  /* Long breath of nacre light while the camera reaches the pearl — held, then yields to the iris. */
   background:
     radial-gradient(circle at 50% 50%, rgb(255 250 240 / 0.7), rgb(255 240 215 / 0.2) 14%, transparent 30%),
     conic-gradient(
@@ -641,13 +648,18 @@ html.intro-seen .intro {
     );
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
   mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
-  /* Rise 0.32→0.52, hold through mid-dive, fade only as the iris takes over. */
-  opacity: clamp(0, min(calc((var(--dive, 0) - 0.32) / 0.2), calc((0.88 - var(--dive, 0)) / 0.2)), 1);
-  scale: calc(0.65 + var(--dive, 0) * 0.55);
+  /* Phone: snappy breath. Desktop: long hold into the iris. */
+  opacity: clamp(0, min(calc((var(--dive, 0) - 0.68) / 0.12), calc((0.95 - var(--dive, 0)) / 0.1)), 1);
+  scale: calc(0.7 + var(--dive, 0) * 0.5);
+}
+@media (min-width: 768px) {
+  .hero-dive.is-diving .hero-veil-light {
+    opacity: clamp(0, min(calc((var(--dive, 0) - 0.32) / 0.2), calc((0.88 - var(--dive, 0)) / 0.2)), 1);
+    scale: calc(0.65 + var(--dive, 0) * 0.55);
+  }
 }
 .hero-dive.is-diving .hero-veil-dark {
-  /* Slow exit into the circle: iris starts mid-late and closes across the last ~45% of the dive. */
-  --iris: clamp(0, calc((var(--dive, 0) - 0.55) / 0.45), 1);
+  --iris: clamp(0, calc((var(--dive, 0) - 0.82) / 0.16), 1);
   background: radial-gradient(
     circle at 50% 50%,
     transparent calc((1 - var(--iris)) * 80vmax - 22vmax),
@@ -656,6 +668,11 @@ html.intro-seen .intro {
     var(--color-abyss) calc((1 - var(--iris)) * 80vmax)
   );
   opacity: 1;
+}
+@media (min-width: 768px) {
+  .hero-dive.is-diving .hero-veil-dark {
+    --iris: clamp(0, calc((var(--dive, 0) - 0.55) / 0.45), 1);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -318,14 +318,17 @@ export function createDepthEngine(canvas: HTMLCanvasElement, { quality, onFirstF
 
     pointer.sx += (pointer.x - pointer.sx) * 0.045;
     pointer.sy += (pointer.y - pointer.sy) * 0.045;
-    // Soft follow so the approach into the pearl doesn't snap with the scroll.
-    diveSmooth += (dive - diveSmooth) * 0.045;
+    // Phone: snappy follow. Desktop: softer approach into the pearl.
+    const finePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+    diveSmooth += (dive - diveSmooth) * (finePointer ? 0.045 : 0.08);
     velocitySmooth += (velocity - velocitySmooth) * 0.06;
     velocity *= 0.9;
 
-    // The dive: shell centres, then the camera eases into the pearl (slow finish = feel the circle).
-    const centre = THREE.MathUtils.smoothstep(diveSmooth, 0, 0.35);
-    const fly = Math.pow(THREE.MathUtils.smoothstep(diveSmooth, 0.22, 0.97), 0.72);
+    // The dive: shell centres, then the camera flies into the pearl.
+    const centre = THREE.MathUtils.smoothstep(diveSmooth, 0, finePointer ? 0.35 : 0.3);
+    const fly = finePointer
+      ? Math.pow(THREE.MathUtils.smoothstep(diveSmooth, 0.22, 0.97), 0.72)
+      : Math.pow(THREE.MathUtils.smoothstep(diveSmooth, 0.12, 0.96), 1.7);
     const calm = 1 - fly;
 
     const stir = Math.min(Math.abs(velocitySmooth) * 0.004, 0.08);
