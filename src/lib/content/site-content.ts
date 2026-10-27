@@ -28,6 +28,31 @@ export const CONTENT_CACHE_TAG = 'sanity:content';
 const withLocalCover = (project: Project): Project =>
   project.cover || !LOCAL_COVERS[project.slug] ? project : { ...project, cover: LOCAL_COVERS[project.slug] };
 
+/**
+ * Seed owns the portfolio demos (live URLs, titles, new entries). Studio can still add extras
+ * that are not in seed; matching slugs take cover/metrics from CMS when present.
+ */
+const mergePortfolioProjects = (fromCms: Project[]): Project[] => {
+  const cmsBySlug = new Map(fromCms.map((p) => [p.slug, p]));
+  const merged = SEED_PROJECTS.map((seed) => {
+    const cms = cmsBySlug.get(seed.slug);
+    if (!cms) return withLocalCover(seed);
+    cmsBySlug.delete(seed.slug);
+    return withLocalCover({
+      ...cms,
+      title: seed.title,
+      summary: seed.summary,
+      liveUrl: seed.liveUrl ?? cms.liveUrl,
+      siteType: seed.siteType,
+      tier: seed.tier,
+      isConcept: seed.isConcept,
+      niche: seed.niche,
+    });
+  });
+  for (const leftover of cmsBySlug.values()) merged.push(withLocalCover(leftover));
+  return merged;
+};
+
 const SEED_CONTENT: SiteContent = {
   settings: SEED_SETTINGS,
   hours: SEED_HOURS,
@@ -76,7 +101,7 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     const missingLegal = LEGAL_DRAFTS.filter((d) => !published.has(d.slug)).map(({ slug, title }) => ({ slug, title }));
     return {
       ...parsed.data,
-      projects: parsed.data.projects.map(withLocalCover),
+      projects: mergePortfolioProjects(parsed.data.projects),
       legalPages: [...parsed.data.legalPages, ...missingLegal],
     };
   } catch (error) {

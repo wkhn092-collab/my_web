@@ -129,8 +129,9 @@ export const LOCAL_COVERS: Record<string, ProjectImage> = Object.fromEntries(
       ['spacehub', 'SpaceHub'],
       ['tene-mashkaot', 'תנא משקאות'],
       ['luxi', 'לוקסי'],
-      ['law-office', 'משרד עורכי דין'],
+      ['law-office', 'כהן ושות׳'],
       ['renovation', 'שיפוצים ואיטום'],
+      ['ridewithyoav', 'RideWithYoav'],
     ] as const
   ).map(([slug, title]) => [slug, { url: `/projects/${slug}.jpg`, alt: `המסך הראשון באתר ${title}`, width: 1280, height: 960 }]),
 );
@@ -186,13 +187,13 @@ export const SEED_PROJECTS: Project[] = [
   {
     id: 'project-law',
     slug: 'law-office',
-    title: 'משרד עורכי דין',
+    title: 'כהן ושות׳',
     niche: niche('law'),
     siteType: 'brand',
     tier: 2,
     isConcept: true,
-    liveUrl: 'https://dimu-orech-din.vercel.app/d/k7q2x9vtl4',
-    summary: 'אשף קצר שמכוון את הפונה לתחום המשפטי הנכון, ומשם לשיחה בוואטסאפ.',
+    liveUrl: 'https://lawyer-seven-snowy.vercel.app/',
+    summary: 'משרד עורכי דין: כותרת חדה, תחומי התמחות, וקריאה לשיחת ייעוץ בלי התחייבות לייצוג.',
     metrics: [],
   },
   {
@@ -205,6 +206,18 @@ export const SEED_PROJECTS: Project[] = [
     isConcept: true,
     liveUrl: 'https://shiputzim-ochre.vercel.app/d/r8m3w6zp2c',
     summary: 'אשף להצעת מחיר, תמונות לפני ואחרי, ותהליך עבודה שקוף משלב לשלב.',
+    metrics: [],
+  },
+  {
+    id: 'project-ridewithyoav',
+    slug: 'ridewithyoav',
+    title: 'RideWithYoav',
+    niche: niche('services'),
+    siteType: 'landing',
+    tier: 2,
+    isConcept: true,
+    liveUrl: 'https://ridewithyoav-sepia.vercel.app/',
+    summary: 'דף נחיתה ליום רכיבה מודרך בגליל: מחיר הכול-כלול, מה כלול במסלול, והרשמה עם מספר מקומות מוגבל.',
     metrics: [],
   },
 ];

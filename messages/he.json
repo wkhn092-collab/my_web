@@ -48,6 +48,7 @@
         { "label": "קבלן או בעל מקצוע", "href": "/projects/renovation" },
         { "label": "משרד: עורכי דין, רואי חשבון", "href": "/projects/law-office" },
         { "label": "חנות או מותג", "href": "/projects/tene-mashkaot" },
+        { "label": "אירוע או יום קהילה", "href": "/projects/ridewithyoav" },
         { "label": "משהו אחר", "href": "/projects" }
       ]
     },
