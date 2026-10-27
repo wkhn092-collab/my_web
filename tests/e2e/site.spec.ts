@@ -10,8 +10,10 @@ test.describe('home', () => {
 
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page.locator('html')).toHaveAttribute('lang', 'he');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('אתרים עם עומק.');
-    await expect(page.locator('#hero-cta')).toHaveText('לשיחה על האתר שלך');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'העבודה שלך כבר ברמה גבוהה. ברשת זה עדיין לא נראה ככה.',
+    );
+    await expect(page.locator('#hero-cta')).toHaveText('לבקשת הדמיה בחינם');
   });
 
   test('has no horizontal overflow', async ({ page }) => {
@@ -37,11 +39,11 @@ test.describe('lead form', () => {
     await page.goto('/#contact');
     const form = page.locator('#contact form');
     await form.getByRole('button', { name: /אתר תדמית/ }).click();
-    await expect(form.getByRole('heading', { name: 'מה הכי חשוב לך שהאתר יעשה?' })).toBeFocused();
+    await expect(form.getByRole('heading', { name: 'מה הכי כואב לך עכשיו?' })).toBeFocused();
     await form.getByRole('button', { name: 'חזרה' }).click();
     await expect(form.getByRole('button', { name: /אתר תדמית/ })).toHaveAttribute('aria-pressed', 'true');
     await form.getByRole('button', { name: /אתר תדמית/ }).click();
-    await form.getByRole('button', { name: 'לקבל יותר פניות' }).click();
+    await form.getByRole('button', { name: 'לקבל פניות רציניות מהאתר, לא רק מוואטסאפ' }).click();
     await expect(form.getByRole('heading', { name: 'לאן לחזור אליך?' })).toBeFocused();
 
     await form.getByRole('button', { name: 'לשליחה' }).click();
@@ -68,7 +70,7 @@ test.describe('lead form', () => {
     await page.goto('/#contact');
     const form = page.locator('#contact form');
     await form.getByRole('button', { name: /אתר תדמית/ }).click();
-    await form.getByRole('button', { name: 'לקבל יותר פניות' }).click();
+    await form.getByRole('button', { name: 'לקבל פניות רציניות מהאתר, לא רק מוואטסאפ' }).click();
     await form.getByLabel('שם').fill('דנה');
     await form.getByLabel('טלפון').fill('050-1234567');
     await form.getByRole('checkbox', { name: /מדיניות הפרטיות/ }).check();
