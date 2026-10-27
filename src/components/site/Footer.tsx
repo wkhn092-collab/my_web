@@ -1,11 +1,9 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { BidiText } from '@/components/BidiText';
 import { Reveal } from '@/components/Reveal';
 import { SplitText } from '@/components/SplitText';
 import type { SiteContent } from '@/lib/content/types';
 import { formatIsraeliPhone, toWhatsAppNumber } from '@/lib/domain/phone';
-import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 import { FAB_MESSAGE, whatsappUrl } from '@/lib/domain/whatsapp';
 import { BackToTop } from './BackToTop';
 import { CookieSettingsButton } from './CookieBanner';
@@ -14,9 +12,8 @@ import { PhoneLink } from './PhoneLink';
 
 export async function Footer({ content }: { content: SiteContent }) {
   const t = await getTranslations();
-  const { settings, hours, legalPages } = content;
+  const { settings, legalPages } = content;
   const phone = formatIsraeliPhone(settings.phoneE164);
-  const replyWindow = formatReplyWindow(getReplyWindow(new Date(), hours));
   const studioName = t('footer.studioName', { brand: settings.brandName });
   // Consumer-protection identity; each part appears only once it is filled in settings.
   const ownerName = settings.legalName ? `${studioName} / ${settings.legalName}` : studioName;
@@ -84,12 +81,6 @@ export async function Footer({ content }: { content: SiteContent }) {
             <div className="glass rounded-2xl p-4 md:rounded-[1.75rem] md:p-7">
               <p className="eyebrow">{t('footer.hours')}</p>
               <p className="pt-3 text-pearl/85 md:pt-4">{t('about.hoursByAppointment')}</p>
-              <p className="mt-4 flex items-center gap-3 border-t border-pearl/10 pt-3 text-sm text-mist md:mt-5 md:pt-4">
-                <span className="pulse-dot inline-block h-2 w-2 shrink-0 rounded-full bg-[#5fd38d]" aria-hidden="true" />
-                <span>
-                  <BidiText text={`${t('common.replyPrefix')} ${replyWindow}`} />
-                </span>
-              </p>
             </div>
 
             <div className="space-y-2.5 px-1 md:space-y-3">

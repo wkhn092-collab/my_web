@@ -324,7 +324,7 @@ export function LeadForm({
                 {w('doneTitle', { name: state.name })}
               </h3>
               <p className="mt-3 text-lg text-pearl/80">
-                <bdi>{w('doneBody', { reply: state.replyWindow })}</bdi>
+                {w('doneBody')}
               </p>
               <p className="mt-8 text-base text-mist">{w('doneWhatsApp')}</p>
               <a

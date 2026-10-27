@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { BidiText } from '@/components/BidiText';
 import { SplitText } from '@/components/SplitText';
 import { WhatsAppIcon } from '@/components/site/WhatsAppIcon';
 import { ProjectCard } from '@/components/works/ProjectCard';
@@ -10,7 +9,7 @@ import { whatsappUrl } from '@/lib/domain/whatsapp';
 import { useSession, useVisitor, useVisitorHydrated } from '@/lib/store/visitor';
 
 /** The name and WhatsApp link arrive via in-memory hand-off only; a direct visit shows the generic version. */
-export function ThanksClient({ replyWindow, projects, siteUrl }: { replyWindow: string; projects: Project[]; siteUrl: string }) {
+export function ThanksClient({ projects, siteUrl }: { projects: Project[]; siteUrl: string }) {
   const t = useTranslations('thanks');
   const handoff = useSession((s) => s.handoff);
   const hydrated = useVisitorHydrated();
@@ -32,7 +31,7 @@ export function ThanksClient({ replyWindow, projects, siteUrl }: { replyWindow: 
         <SplitText key={title} text={title} mode="now" delayMs={150} />
       </h1>
       <p className="rise-in mt-8 text-xl text-pearl/80" style={{ '--rise-delay': '400ms' } as React.CSSProperties}>
-        <BidiText text={`${t('reply')} ${replyWindow}.`} />
+        {t('reply')}
       </p>
 
       {handoff && (

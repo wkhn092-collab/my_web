@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { SEED_FAQS, SEED_HOURS, SEED_PROJECTS, SEED_SERVICES, SEED_SETTINGS } from '@/content/seed-data';
+import { SEED_FAQS, SEED_PROJECTS, SEED_SERVICES, SEED_SETTINGS } from '@/content/seed-data';
 import { businessLd, faqLd, projectLd, serializeJsonLd, servicesLd } from './structured-data';
 
 const BASE = 'https://example.test';
@@ -11,19 +11,11 @@ describe('structured data', () => {
     expect(out).toContain('\\u003c/script>');
   });
 
-  it('describes the business with city only, all of Israel, and no price', () => {
-    const ld = businessLd(SEED_SETTINGS, SEED_HOURS, BASE);
+  it('describes the business with city only, all of Israel, and no price or clock hours', () => {
+    const ld = businessLd(SEED_SETTINGS, BASE);
     expect(ld.address).toEqual({ '@type': 'PostalAddress', addressLocality: 'טבריה', addressCountry: 'IL' });
-    expect(JSON.stringify(ld)).not.toMatch(/streetAddress|priceRange|aggregateRating|review/);
+    expect(JSON.stringify(ld)).not.toMatch(/streetAddress|priceRange|aggregateRating|review|openingHours|14:00|19:00/);
     expect(ld.telephone).toBe(SEED_SETTINGS.phoneE164);
-  });
-
-  it('publishes the reply hours grouped by time range', () => {
-    const hours = businessLd(SEED_SETTINGS, SEED_HOURS, BASE).openingHoursSpecification as { dayOfWeek: string[]; opens: string; closes: string }[];
-    expect(hours).toEqual([
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '14:00', closes: '16:00' },
-      { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'], opens: '19:00', closes: '21:00' },
-    ]);
   });
 
   it('lists services without offers or prices', () => {

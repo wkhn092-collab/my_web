@@ -5,7 +5,6 @@ import { LEAD_GOAL_LABEL, LEAD_SITE_TYPE_LABEL } from '@/lib/content/labels';
 import { getSiteContent } from '@/lib/content/site-content';
 import { resolveAddons } from '@/lib/domain/addons';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
-import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 import { buildLeadMessage, whatsappUrl } from '@/lib/domain/whatsapp';
 import { isConfigured, leadsLocked } from '@/lib/env.server';
 import { LEGAL_VERSION, leadInputSchema, type LeadActionState, type LeadField } from '@/lib/lead/lead-schema';
@@ -66,7 +65,8 @@ export async function submitLead(_prev: LeadActionState, formData: FormData): Pr
   }
 
   const content = await getSiteContent();
-  const replyWindow = formatReplyWindow(getReplyWindow(new Date(), content.hours));
+  /** Public promise: by appointment only — never clock hours on the site or in emails. */
+  const replyWindow = 'בתיאום מראש';
   const addonTitles = resolveAddons(content.addons, lead.addons, lead.siteType).map((a) => a.title);
 
   let savedInSanity = false;

@@ -20,7 +20,6 @@ import { WorksShowcase } from "@/components/works/WorksShowcase";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getSiteContent } from "@/lib/content/site-content";
 import { formatIsraeliPhone, toWhatsAppNumber } from "@/lib/domain/phone";
-import { formatReplyWindow, getReplyWindow } from "@/lib/domain/reply-window";
 import { publicEnv } from "@/lib/env.public";
 import { leadsLocked } from "@/lib/env.server";
 import { businessLd, faqLd, servicesLd } from "@/lib/seo/structured-data";
@@ -35,9 +34,6 @@ export default async function HomePage() {
     headers(),
   ]);
   const { home, settings } = content;
-  const replyWindow = formatReplyWindow(
-    getReplyWindow(new Date(), content.hours),
-  );
   const nonce = requestHeaders.get("x-nonce") ?? undefined;
   const whatsappNumber = toWhatsAppNumber(settings.whatsappE164);
 
@@ -140,7 +136,7 @@ export default async function HomePage() {
           whatsappNumber,
           phoneE164: settings.phoneE164,
           phoneDisplay: formatIsraeliPhone(settings.phoneE164),
-          reply: `${t("common.replyPrefix")} ${replyWindow}`,
+          reply: t("about.hoursByAppointment"),
         }}
       />
 
@@ -162,10 +158,7 @@ export default async function HomePage() {
               <p className="mt-6 text-lg text-mist">{t("form.title")}</p>
 
               {/* Beside the form on desktop; after it on phones, so the form comes first. */}
-              <NextSteps
-                replyWindow={replyWindow}
-                className="mt-12 hidden lg:block"
-              />
+              <NextSteps className="mt-12 hidden lg:block" />
             </div>
             <div className="glass glass-deep rounded-[2rem] p-6 md:p-10 lg:self-start">
               <InlineLeadForm
@@ -176,7 +169,7 @@ export default async function HomePage() {
                 whatsappOnly={leadsLocked}
               />
             </div>
-            <NextSteps replyWindow={replyWindow} className="lg:hidden" />
+            <NextSteps className="lg:hidden" />
           </div>
         </section>
       </SurfaceZone>
@@ -184,7 +177,7 @@ export default async function HomePage() {
       <JsonLd
         nonce={nonce}
         data={[
-          businessLd(settings, content.hours, publicEnv.siteUrl),
+          businessLd(settings, publicEnv.siteUrl),
           servicesLd(content.services, publicEnv.siteUrl),
           faqLd(content.faqs),
         ]}

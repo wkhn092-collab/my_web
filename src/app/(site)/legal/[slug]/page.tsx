@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { BidiText } from '@/components/BidiText';
 import { LegalBody } from '@/components/legal/LegalBody';
-import { formatHoursSummary } from '@/lib/content/hours-summary';
 import { getLegalPage, getSiteContent } from '@/lib/content/site-content';
 import { formatIsraeliPhone } from '@/lib/domain/phone';
 import { formatDate } from '@/lib/format';
@@ -16,7 +15,12 @@ export async function generateMetadata({ params }: PageProps<'/legal/[slug]'>): 
 
 export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) {
   const { slug } = await params;
-  const [page, { settings, hours }, t] = await Promise.all([getLegalPage(slug), getSiteContent(), getTranslations('legal')]);
+  const [page, { settings }, t, tAbout] = await Promise.all([
+    getLegalPage(slug),
+    getSiteContent(),
+    getTranslations('legal'),
+    getTranslations('about'),
+  ]);
   if (!page) notFound();
 
   const pending = t('pending');
@@ -30,7 +34,7 @@ export default async function LegalPage({ params }: PageProps<'/legal/[slug]'>) 
     coordinatorName: settings.accessibilityCoordinator.name,
     coordinatorPhone: formatIsraeliPhone(settings.accessibilityCoordinator.phoneE164),
     coordinatorEmail: settings.accessibilityCoordinator.email,
-    hours: formatHoursSummary(hours).join('. '),
+    hours: tAbout('hoursByAppointment'),
   };
 
   return (

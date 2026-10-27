@@ -1,7 +1,4 @@
-import type { ReplyHours } from '@/lib/domain/reply-window';
 import type { Faq, Project, Service, SiteSettings } from '@/lib/content/types';
-
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 type Ld = Record<string, unknown>;
 
@@ -12,23 +9,8 @@ export function serializeJsonLd(data: Ld | Ld[]): string {
 
 const businessId = (base: string) => `${base}/#business`;
 
-/** One entry per time range, grouped by identical hours so Google gets the compact form. */
-function openingHours(hours: ReplyHours) {
-  const groups = new Map<string, string[]>();
-  hours.days.forEach((ranges, day) => {
-    for (const range of ranges) {
-      const key = `${range.from}-${range.to}`;
-      groups.set(key, [...(groups.get(key) ?? []), DAY_NAMES[day]]);
-    }
-  });
-  return [...groups].map(([key, days]) => {
-    const [opens, closes] = key.split('-');
-    return { '@type': 'OpeningHoursSpecification', dayOfWeek: days, opens, closes };
-  });
-}
-
-/** The studio itself: city only (no street, remote work), all of Israel as the service area, no price range. */
-export function businessLd(settings: SiteSettings, hours: ReplyHours, base: string): Ld {
+/** The studio itself: city only (no street, remote work), all of Israel as the service area, no price range or clock hours. */
+export function businessLd(settings: SiteSettings, base: string): Ld {
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
@@ -43,7 +25,6 @@ export function businessLd(settings: SiteSettings, hours: ReplyHours, base: stri
     address: { '@type': 'PostalAddress', addressLocality: settings.city, addressCountry: 'IL' },
     areaServed: { '@type': 'Country', name: 'ישראל' },
     founder: { '@type': 'Person', name: 'אבישי' },
-    openingHoursSpecification: openingHours(hours),
     knowsLanguage: 'he',
   };
 }
