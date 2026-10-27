@@ -17,8 +17,16 @@ export default async function AboutPage() {
   return (
     <div className="mx-auto max-w-7xl px-5 pb-28 md:px-10 md:pb-40">
       <PageHeader eyebrow={t('home.aboutEyebrow')} title={about.title}>
-        <div className="rise-in relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/50 md:mt-10 md:h-36 md:w-36">
-          <Image src="/about/avishi.jpg" alt={t('home.portraitAlt')} fill sizes="144px" priority className="object-cover" />
+        <div className="rise-in relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/40 bg-ink md:mt-10 md:h-36 md:w-36">
+          <Image
+            src="/about/avishi.jpg"
+            alt={t('home.portraitAlt')}
+            fill
+            sizes="144px"
+            priority
+            unoptimized
+            className="object-cover"
+          />
         </div>
       </PageHeader>
 

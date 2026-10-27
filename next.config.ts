@@ -46,9 +46,16 @@ const nextConfig: NextConfig = {
       { source: '/thanks', headers: [{ key: 'Cache-Control', value: 'private, no-store, max-age=0' }] },
       // 3D models: unhashed names, so a week of caching with background revalidation rather than immutable.
       { source: '/models/:file*', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' }] },
-      // Static covers must stay inline so Safari paints them in <img>, not as downloads.
+      // Static covers / portrait must stay inline so Safari paints them in <img>, not as downloads.
       {
         source: '/projects/:file*',
+        headers: [
+          { key: 'Content-Disposition', value: 'inline' },
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+        ],
+      },
+      {
+        source: '/about/:file*',
         headers: [
           { key: 'Content-Disposition', value: 'inline' },
           { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },

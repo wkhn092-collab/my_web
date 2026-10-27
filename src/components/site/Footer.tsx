@@ -29,19 +29,22 @@ export async function Footer({ content }: { content: SiteContent }) {
   ];
 
   return (
-    <footer className="relative isolate overflow-hidden border-t border-pearl/[0.08] bg-ink" style={{ paddingBottom: 'calc(1.5rem + var(--sticky-cta-height))' }}>
+    <footer
+      className="relative isolate overflow-hidden border-t border-pearl/[0.08] bg-ink"
+      style={{ paddingBottom: 'calc(2rem + var(--sticky-cta-height))' }}
+    >
       <div
         className="pointer-events-none absolute -bottom-1/3 left-1/2 -z-10 h-[100vmin] w-[140vmin] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(201_166_107/0.16),transparent)]"
         aria-hidden="true"
       />
       <div className="pointer-events-none absolute -right-40 top-0 -z-10 h-[70vmin] w-[70vmin] rounded-full bg-[radial-gradient(closest-side,rgb(62_154_168/0.12),transparent)]" aria-hidden="true" />
 
-      <div className="mx-auto max-w-7xl px-5 pt-24 md:px-10 md:pt-36">
+      <div className="mx-auto max-w-7xl px-5 pt-16 md:px-10 md:pt-36">
         {/* The closing call: the biggest line on the page, and one round door into the form. */}
-        <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between md:gap-12">
           <div className="max-w-4xl">
             <p className="eyebrow">{t('footer.nextStep')}</p>
-            <h2 className="mt-6 text-[clamp(2.75rem,6.8vw,6.5rem)] font-light leading-[1.02] tracking-[-0.03em]">
+            <h2 className="mt-5 text-[clamp(2.5rem,6.8vw,6.5rem)] font-light leading-[1.02] tracking-[-0.03em] md:mt-6">
               <SplitText text={t('footer.ctaTitle')} accent={['מקצועיים']} />
             </h2>
           </div>
@@ -69,12 +72,12 @@ export async function Footer({ content }: { content: SiteContent }) {
           </Reveal>
         </div>
 
-        <div className="hairline mt-20 md:mt-28" />
+        <div className="hairline mt-14 md:mt-28" />
 
         {/* Two halves (RTL): hours over contact on the right, navigation beside legal on the left. */}
-        <div className="grid gap-12 py-16 text-base md:grid-cols-2 md:gap-16 lg:gap-24">
-          <div className="space-y-10">
-            <Reveal className="glass rounded-[1.75rem] p-6 md:p-7">
+        <div className="grid gap-10 py-12 text-base md:grid-cols-2 md:gap-16 md:py-16 lg:gap-24">
+          <div className="space-y-8 md:space-y-10">
+            <Reveal className="glass rounded-[1.5rem] p-5 md:rounded-[1.75rem] md:p-7">
               <p className="eyebrow">{t('footer.hours')}</p>
               <p className="pt-4 text-pearl/85">{t('about.hoursByAppointment')}</p>
               <p className="mt-5 flex items-center gap-3 border-t border-pearl/10 pt-4 text-sm text-mist">
@@ -107,15 +110,18 @@ export async function Footer({ content }: { content: SiteContent }) {
             </Reveal>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 self-start md:border-r md:border-pearl/10 md:pr-12 lg:pr-16">
+          <div className="grid grid-cols-2 gap-6 self-start md:gap-8 md:border-r md:border-pearl/10 md:pr-12 lg:pr-16">
             <Reveal as="nav" delay={160} aria-label={t('footer.nav')}>
               <p className="eyebrow" aria-hidden="true">
                 {t('footer.nav')}
               </p>
-              <ul className="space-y-1 pt-5">
+              <ul className="space-y-0.5 pt-4 md:space-y-1 md:pt-5">
                 {navLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className="footer-nav-link inline-flex items-baseline py-1 font-display text-2xl font-light text-pearl/90 lg:text-3xl">
+                    <Link
+                      href={link.href}
+                      className="footer-nav-link inline-flex items-baseline py-1.5 font-display text-[1.35rem] font-light leading-tight text-pearl/90 md:py-1 md:text-2xl lg:text-3xl"
+                    >
                       <span className="footer-nav-dash" aria-hidden="true" />
                       {link.label}
                     </Link>
@@ -128,10 +134,10 @@ export async function Footer({ content }: { content: SiteContent }) {
               <p className="eyebrow" aria-hidden="true">
                 {t('footer.legal')}
               </p>
-              <ul className="space-y-2 pt-5">
+              <ul className="space-y-1.5 pt-4 md:space-y-2 md:pt-5">
                 {legalPages.map((page) => (
                   <li key={page.slug}>
-                    <Link href={`/legal/${page.slug}`} className="link link-reveal inline-block py-1 text-pearl/80">
+                    <Link href={`/legal/${page.slug}`} className="link link-reveal inline-block py-1 text-[0.95rem] text-pearl/80 md:text-base">
                       {page.title}
                     </Link>
                   </li>
@@ -145,10 +151,10 @@ export async function Footer({ content }: { content: SiteContent }) {
         </div>
 
         {/* Who stands behind the site: name, registration and an address for formal requests. */}
-        <Reveal className="glass grid gap-6 rounded-[1.75rem] p-6 text-sm md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:p-8">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-8">
+        <Reveal className="glass grid gap-5 rounded-[1.5rem] p-5 text-sm md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:rounded-[1.75rem] md:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
             <div className="shrink-0">
-              <p className="font-display text-2xl text-pearl">{studioName}</p>
+              <p className="font-display text-xl text-pearl md:text-2xl">{studioName}</p>
               <p className="mt-1 text-mist">
                 {t('footer.tagline')}, {settings.city}
                 {settings.remoteNote ? ` · ${settings.remoteNote}` : ''}
@@ -185,7 +191,7 @@ export async function Footer({ content }: { content: SiteContent }) {
         </Reveal>
       </div>
 
-      <p className="mx-auto mt-6 max-w-7xl px-5 text-center text-sm text-mist md:px-10 md:text-start">
+      <p className="mx-auto mt-8 max-w-7xl px-5 pb-2 text-center text-sm text-mist md:mt-6 md:px-10 md:text-start">
         © {new Date().getFullYear()} {studioName}. {t('footer.rights')}.
       </p>
     </footer>

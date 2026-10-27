@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { BidiText } from '@/components/BidiText';
 import { track } from '@/lib/analytics';
 import { FAB_MESSAGE, whatsappUrl } from '@/lib/domain/whatsapp';
 import { OpenDrawerButton } from './OpenDrawerButton';
@@ -15,7 +14,7 @@ const HERO_CTA_ID = 'hero-cta';
  * Mobile only, and on mobile it replaces the floating WhatsApp button (which would sit on top of content).
  * Slides in once the hero CTA leaves the screen; publishes its height so the page can leave room for it.
  */
-export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string; whatsappNumber: string }) {
+export function StickyCta({ whatsappNumber }: { whatsappNumber: string }) {
   const t = useTranslations('common');
   const tFab = useTranslations('fab');
   const pathname = usePathname();
@@ -56,12 +55,12 @@ export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string
       ref={ref}
       aria-hidden={!visible}
       inert={!visible}
-      className={`sticky-cta fixed inset-x-0 bottom-0 z-30 border-t border-pearl/10 bg-abyss/80 px-4 pt-3 backdrop-blur-xl transition-transform duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
+      className={`sticky-cta fixed inset-x-0 bottom-0 z-30 border-t border-pearl/10 bg-abyss/85 px-5 py-3 backdrop-blur-xl transition-transform duration-300 ease-[var(--ease-out)] motion-reduce:transition-none md:hidden ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
       style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}
     >
-      <div className="flex items-stretch gap-2.5">
+      <div className="flex items-stretch gap-3">
         <OpenDrawerButton location="sticky" className="btn-primary min-w-0 flex-1" magnetic={false}>
           {t('ctaTalk')}
         </OpenDrawerButton>
@@ -76,9 +75,6 @@ export function StickyCta({ replyWindow, whatsappNumber }: { replyWindow: string
           <WhatsAppIcon className="h-6 w-6" />
         </a>
       </div>
-      <p className="mt-1.5 text-center text-sm text-mist">
-        <BidiText text={`${t('replyPrefix')} ${replyWindow}`} />
-      </p>
     </div>
   );
 }

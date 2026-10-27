@@ -40,27 +40,32 @@ export default async function HomePage() {
   );
   const nonce = requestHeaders.get("x-nonce") ?? undefined;
   const whatsappNumber = toWhatsAppNumber(settings.whatsappE164);
-  const liveCount = content.projects.filter((p) => p.liveUrl).length;
 
   return (
     <>
-      <Hero
-        hero={home.hero}
-        replyWindow={replyWindow}
-        eyebrow={
-          liveCount >= 2
-            ? t("home.heroEyebrowLive", { count: liveCount })
-            : t("home.heroEyebrow")
-        }
-      />
+      <Hero hero={home.hero} />
 
-      <BusinessPicker />
-
+      {/* Proof before personality: elite buyers trust work and risk-removal before "who am I". */}
       <WorksShowcase
         projects={content.projects}
         title={home.works.title}
         intro={home.works.intro}
         eyebrow={t("home.worksEyebrow")}
+      />
+
+      <FitCheck eyebrow={t("home.fitEyebrow")} />
+
+      <Proof
+        testimonials={content.testimonials}
+        eyebrow={t("home.proofEyebrow")}
+      />
+
+      <BusinessPicker />
+
+      <Services
+        section={home.services}
+        services={content.services}
+        eyebrow={t("home.servicesEyebrow")}
       />
 
       <section
@@ -78,17 +83,20 @@ export default async function HomePage() {
               {t("nav.about")}
             </h2>
             {PORTRAIT_SRC ? (
-              <Reveal className="relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/50 md:h-32 md:w-32">
+              <Reveal className="relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/40 bg-ink md:h-32 md:w-32">
                 <Image
                   src={PORTRAIT_SRC}
                   alt={t("home.portraitAlt")}
                   fill
                   sizes="128px"
+                  priority
+                  // Same Safari fix as project covers: /_next/image serves attachment and leaves a blank circle.
+                  unoptimized
                   className="object-cover"
                 />
               </Reveal>
             ) : (
-              <Reveal className="mt-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/50 font-display text-4xl text-gilded">
+              <Reveal className="mt-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/40 bg-ink font-display text-4xl text-gilded">
                 <span aria-hidden="true">א</span>
               </Reveal>
             )}
@@ -120,21 +128,9 @@ export default async function HomePage() {
           ctaLabel={t("common.ctaTalk")}
         />
 
+        {/* 3D showcase after the core sale: lawyers/contractors rarely buy the bottle first. */}
         <ProductShowcase eyebrow={t("home.showcaseEyebrow")} />
       </SurfaceZone>
-
-      <Services
-        section={home.services}
-        services={content.services}
-        eyebrow={t("home.servicesEyebrow")}
-      />
-
-      <FitCheck eyebrow={t("home.fitEyebrow")} />
-
-      <Proof
-        testimonials={content.testimonials}
-        eyebrow={t("home.proofEyebrow")}
-      />
 
       <Faq
         section={home.faq}

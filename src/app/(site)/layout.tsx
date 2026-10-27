@@ -20,7 +20,6 @@ import { getSiteContent } from '@/lib/content/site-content';
 import { publicEnv } from '@/lib/env.public';
 import { leadsLocked } from '@/lib/env.server';
 import { toWhatsAppNumber } from '@/lib/domain/phone';
-import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
 
 export default async function SiteLayout({ children }: LayoutProps<'/'>) {
   const [content, messages, t, requestHeaders, draft] = await Promise.all([
@@ -31,7 +30,6 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
     draftMode(),
   ]);
   const nonce = requestHeaders.get('x-nonce') ?? undefined;
-  const replyWindow = formatReplyWindow(getReplyWindow(new Date(), content.hours));
   const whatsappNumber = toWhatsAppNumber(content.settings.whatsappE164);
 
   return (
@@ -46,7 +44,7 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
         {children}
       </main>
       <Footer content={content} />
-      <StickyCta replyWindow={replyWindow} whatsappNumber={whatsappNumber} />
+      <StickyCta whatsappNumber={whatsappNumber} />
       <WhatsAppFab whatsappNumber={whatsappNumber} />
       <LeadDrawer whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} locked={leadsLocked} />
       <CookieBanner />
