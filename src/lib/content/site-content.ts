@@ -33,11 +33,15 @@ const withLocalCover = (project: Project): Project =>
  * that are not in seed; matching slugs take cover/metrics from CMS when present.
  */
 const mergePortfolioProjects = (fromCms: Project[]): Project[] => {
-  const cmsBySlug = new Map(fromCms.map((p) => [p.slug, p]));
+  // First CMS doc wins per slug — Studio sometimes keeps stale duplicates.
+  const cmsBySlug = new Map<string, Project>();
+  for (const p of fromCms) {
+    if (!cmsBySlug.has(p.slug)) cmsBySlug.set(p.slug, p);
+  }
+  const seedSlugs = new Set(SEED_PROJECTS.map((p) => p.slug));
   const merged = SEED_PROJECTS.map((seed) => {
     const cms = cmsBySlug.get(seed.slug);
     if (!cms) return withLocalCover(seed);
-    cmsBySlug.delete(seed.slug);
     return withLocalCover({
       ...cms,
       title: seed.title,
@@ -49,7 +53,10 @@ const mergePortfolioProjects = (fromCms: Project[]): Project[] => {
       niche: seed.niche,
     });
   });
-  for (const leftover of cmsBySlug.values()) merged.push(withLocalCover(leftover));
+  for (const leftover of cmsBySlug.values()) {
+    if (seedSlugs.has(leftover.slug)) continue;
+    merged.push(withLocalCover(leftover));
+  }
   return merged;
 };
 
