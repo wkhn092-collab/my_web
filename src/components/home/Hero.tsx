@@ -13,6 +13,7 @@ const delay = (ms: number) => ({ '--rise-delay': `${ms}ms` }) as CSSProperties;
 /**
  * Full-screen opening: the 3D pearl oyster in the left half (above the text on phones), the headline rising word
  * by word as the intro lifts. Scrolling dives into the pearl (HeroDive) before the rest of the site begins.
+ * Dive height is kept short so works and proof arrive early in the scroll.
  */
 export async function Hero({ hero, replyWindow, eyebrow }: { hero: HomePage['hero']; replyWindow: string; eyebrow: string }) {
   const t = await getTranslations();
@@ -25,20 +26,23 @@ export async function Hero({ hero, replyWindow, eyebrow }: { hero: HomePage['her
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-abyss via-abyss/70 to-transparent" aria-hidden="true" />
 
-        <div className="hero-content hero-lift relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-14 pt-40 md:px-10 md:pb-32">
+        <div className="hero-content hero-lift relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-14 pt-36 md:px-10 md:pb-28 md:pt-40">
           <p className="eyebrow rise-in" style={delay(900)}>
             {eyebrow}
           </p>
           <h1
             id="hero-title"
-            className="mt-4 max-w-5xl md:mt-6 text-[clamp(3.75rem,11.5vw,11rem)] max-md:[@media(max-height:740px)]:text-[3.1rem] font-light leading-[0.92] tracking-[-0.02em] lg:max-w-[50vw] lg:text-[clamp(5rem,8.4vw,10rem)]"
+            className="mt-4 max-w-5xl text-[clamp(2.35rem,7.2vw,4.75rem)] font-light leading-[1.05] tracking-[-0.02em] max-md:[@media(max-height:740px)]:text-[2.1rem] md:mt-5 lg:max-w-[54vw]"
           >
-            <SplitText text={hero.title} mode="now" delayMs={1000} accent={['עומק']} />
+            <SplitText text={hero.title} mode="now" delayMs={1000} accent={['חזק']} />
           </h1>
-          <p className="rise-in mt-6 max-w-xl md:mt-8 max-md:[@media(max-height:740px)]:mt-4 max-md:[@media(max-height:740px)]:text-base text-lg leading-relaxed text-pearl/75 md:text-xl lg:max-w-[min(36rem,46vw)]" style={delay(1350)}>
+          <p
+            className="rise-in mt-5 max-w-xl text-lg leading-relaxed text-pearl/80 max-md:[@media(max-height:740px)]:mt-3 max-md:[@media(max-height:740px)]:text-base md:mt-6 md:text-xl lg:max-w-[min(36rem,48vw)]"
+            style={delay(1350)}
+          >
             {hero.lead}
           </p>
-          <div className="rise-in mt-8 flex flex-col md:mt-10 max-md:[@media(max-height:740px)]:mt-6 gap-3 sm:flex-row sm:items-center sm:gap-5" style={delay(1500)}>
+          <div className="rise-in mt-8 flex flex-col gap-3 max-md:[@media(max-height:740px)]:mt-5 sm:flex-row sm:items-center sm:gap-5 md:mt-9" style={delay(1500)}>
             <OpenDrawerButton id="hero-cta" location="hero">
               {t('common.ctaTalk')}
             </OpenDrawerButton>
