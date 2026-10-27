@@ -1,11 +1,9 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { BidiText } from '@/components/BidiText';
 import { Reveal } from '@/components/Reveal';
 import { OpenDrawerButton } from '@/components/site/OpenDrawerButton';
 import { PageHeader } from '@/components/site/PageHeader';
-import { formatHoursSummary } from '@/lib/content/hours-summary';
 import { getSiteContent } from '@/lib/content/site-content';
 
 export const metadata: Metadata = {
@@ -15,35 +13,32 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const [{ about, hours }, t] = await Promise.all([getSiteContent(), getTranslations()]);
+  const [{ about }, t] = await Promise.all([getSiteContent(), getTranslations()]);
   return (
     <div className="mx-auto max-w-7xl px-5 pb-28 md:px-10 md:pb-40">
       <PageHeader eyebrow={t('home.aboutEyebrow')} title={about.title}>
-        <div className="rise-in relative mt-10 h-32 w-32 overflow-hidden rounded-full border border-gold/50 md:h-40 md:w-40">
-          <Image src="/about/avishi.jpg" alt={t('home.portraitAlt')} fill sizes="160px" priority className="object-cover" />
+        <div className="rise-in relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/50 md:mt-10 md:h-36 md:w-36">
+          <Image src="/about/avishi.jpg" alt={t('home.portraitAlt')} fill sizes="144px" priority className="object-cover" />
         </div>
       </PageHeader>
 
-      <div className="grid gap-16 lg:grid-cols-[1.4fr_1fr]">
-        <div className="space-y-6 text-xl leading-relaxed text-pearl/85">
+      <div className="grid items-start gap-8 md:gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12">
+        <div className="space-y-5 text-lg leading-[1.75] text-pearl/85 md:text-xl">
           {about.paragraphs.map((p, i) => (
-            <Reveal as="p" key={p} delay={i * 80}>
+            <Reveal as="p" key={p} delay={i * 80} className="text-pretty">
               {p}
             </Reveal>
           ))}
         </div>
-        <div className="space-y-12">
-          <Reveal as="section" className="glass rounded-[1.5rem] p-8">
-            <h2 className="text-3xl font-light">{about.processTitle}</h2>
-            <p className="mt-4 text-pearl/80">{about.process}</p>
+
+        <div className="flex flex-col gap-5">
+          <Reveal as="section" className="glass rounded-3xl p-6 md:p-7">
+            <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{about.processTitle}</h2>
+            <p className="mt-3 text-base leading-relaxed text-pretty text-pearl/80 md:text-[1.05rem]">{about.process}</p>
           </Reveal>
-          <Reveal as="section" delay={100} className="glass rounded-[1.5rem] p-8">
-            <h2 className="text-3xl font-light">{t('about.hoursTitle')}</h2>
-            {formatHoursSummary(hours).map((line) => (
-              <p key={line} className="mt-4 text-pearl/80">
-                <BidiText text={line} />
-              </p>
-            ))}
+          <Reveal as="section" delay={80} className="glass rounded-3xl p-6 md:p-7">
+            <h2 className="text-2xl font-light tracking-[-0.01em] md:text-[1.75rem]">{t('about.hoursTitle')}</h2>
+            <p className="mt-3 text-base leading-relaxed text-pearl/80 md:text-[1.05rem]">{t('about.hoursByAppointment')}</p>
           </Reveal>
           <OpenDrawerButton location="about">{t('common.ctaTalk')}</OpenDrawerButton>
         </div>

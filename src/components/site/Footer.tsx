@@ -3,7 +3,6 @@ import { getTranslations } from 'next-intl/server';
 import { BidiText } from '@/components/BidiText';
 import { Reveal } from '@/components/Reveal';
 import { SplitText } from '@/components/SplitText';
-import { formatHoursSummary } from '@/lib/content/hours-summary';
 import type { SiteContent } from '@/lib/content/types';
 import { formatIsraeliPhone, toWhatsAppNumber } from '@/lib/domain/phone';
 import { formatReplyWindow, getReplyWindow } from '@/lib/domain/reply-window';
@@ -42,8 +41,8 @@ export async function Footer({ content }: { content: SiteContent }) {
         <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-4xl">
             <p className="eyebrow">{t('footer.nextStep')}</p>
-            <h2 className="mt-6 text-[clamp(3rem,7.6vw,7.25rem)] font-light leading-[0.98] tracking-[-0.01em]">
-              <SplitText text={t('footer.ctaTitle')} accent={['אתר']} />
+            <h2 className="mt-6 text-[clamp(2.75rem,6.8vw,6.5rem)] font-light leading-[1.02] tracking-[-0.03em]">
+              <SplitText text={t('footer.ctaTitle')} accent={['מקצועיים']} />
             </h2>
           </div>
           <Reveal className="shrink-0 self-center md:self-end">
@@ -77,13 +76,7 @@ export async function Footer({ content }: { content: SiteContent }) {
           <div className="space-y-10">
             <Reveal className="glass rounded-[1.75rem] p-6 md:p-7">
               <p className="eyebrow">{t('footer.hours')}</p>
-              <div className="space-y-1 pt-4 text-pearl/85">
-                {formatHoursSummary(hours).map((line) => (
-                  <p key={line}>
-                    <BidiText text={line} />
-                  </p>
-                ))}
-              </div>
+              <p className="pt-4 text-pearl/85">{t('about.hoursByAppointment')}</p>
               <p className="mt-5 flex items-center gap-3 border-t border-pearl/10 pt-4 text-sm text-mist">
                 <span className="pulse-dot inline-block h-2 w-2 shrink-0 rounded-full bg-[#5fd38d]" aria-hidden="true" />
                 <span>
