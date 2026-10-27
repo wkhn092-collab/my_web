@@ -15,7 +15,7 @@ export function CookieBanner() {
   return (
     <section
       aria-label={t('label')}
-      className="glass fixed inset-x-3 z-50 mx-auto max-w-xl rounded-2xl !bg-ink/90 p-5 shadow-[0_20px_60px_-20px_rgb(0_0_0/0.9)] md:inset-x-auto md:right-8"
+      className="glass fixed inset-x-3 z-50 mx-auto max-w-xl rounded-2xl !bg-ink/90 p-5 shadow-[var(--shadow-contact-md)] md:inset-x-auto md:right-8"
       style={{ bottom: 'calc(0.75rem + var(--sticky-cta-height) + env(safe-area-inset-bottom))' }}
     >
       <p className="text-sm leading-relaxed text-pearl/85">
