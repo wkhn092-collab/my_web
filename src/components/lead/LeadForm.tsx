@@ -64,7 +64,9 @@ export function LeadForm({
   const [values, setValues] = useState<Values>({
     name: '',
     phone: '',
-    siteType: presetSiteType ?? draftSiteType ?? '',
+    // Only a deliberate CTA preset (e.g. from a service card) may pre-select. Never a leftover draft —
+    // otherwise "הדמיה" opens with דף נחיתה already gold as if chosen for the visitor.
+    siteType: presetSiteType ?? '',
     goal: '',
     message: '',
     email: '',
@@ -92,6 +94,10 @@ export function LeadForm({
     if (presetSiteType) {
       setValues((v) => ({ ...v, siteType: presetSiteType }));
       if (step === 1) setStep(2);
+    } else {
+      // Generic CTA: clear any previous selection so step 1 starts blank.
+      setValues((v) => ({ ...v, siteType: '' }));
+      setStep(1);
     }
   }
   const [handledState, setHandledState] = useState(state);

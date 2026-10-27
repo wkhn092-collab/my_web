@@ -99,8 +99,8 @@ export const useSession = create<SessionState>()((set) => ({
   handoff: null,
   soundOn: false,
   setSoundOn: (soundOn) => set({ soundOn }),
-  openDrawer: (siteType = null) => set({ drawerOpen: true, drawerSiteType: siteType }),
-  closeDrawer: () => set({ drawerOpen: false }),
+  openDrawer: (siteType = null) => set({ drawerOpen: true, drawerSiteType: siteType ?? null }),
+  closeDrawer: () => set({ drawerOpen: false, drawerSiteType: null }),
   setHandoff: (handoff) => set({ handoff }),
 }));
 
