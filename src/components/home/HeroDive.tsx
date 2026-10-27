@@ -4,7 +4,12 @@ import { useEffect } from 'react';
 import { prefersReducedMotion } from '@/lib/motion/lenis';
 import { heroDiveProgress } from '@/lib/motion/hero-dive';
 
-const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+/** Ease out, then linger in the late dive (light breath + iris into the circle). */
+const easeDiveOut = (t: number) => {
+  const e = 1 - (1 - t) ** 2.2;
+  // Remap so ~45% of the time covers the last 40% of scroll (pearl / iris).
+  return e < 0.55 ? (e / 0.55) * 0.6 : 0.6 + ((e - 0.55) / 0.45) * 0.4;
+};
 
 /**
  * Turns the hero into a pinned stage the visitor scrolls through (CSS: .hero-dive.is-diving) and feeds the
@@ -85,15 +90,16 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
     const distance = to - from;
     if (Math.abs(distance) < 2) return;
     const down = to > from;
-    const duration = down ? 2800 : 1600;
-    // Where the light breathes in the scroll-tied dive (CSS .hero-veil-light peaks mid-to-late dive).
-    const flashAt = (section.offsetHeight - window.innerHeight) * 0.5;
+    const duration = down ? 4200 : 1800;
+    // Flash when the nacre light is peaking (~mid dive), so the breath is felt on the way into the circle.
+    const flashAt = (section.offsetHeight - window.innerHeight) * 0.42;
     let flashed = !down || from >= flashAt;
     const startedAt = performance.now();
     gliding = true;
     const step = (now: number) => {
       const t = Math.min(1, (now - startedAt) / duration);
-      window.scrollTo(0, from + distance * easeInOut(t));
+      const p = down ? easeDiveOut(t) : 1 - easeDiveOut(1 - t);
+      window.scrollTo(0, from + distance * p);
       if (!flashed && window.scrollY >= flashAt) {
         flashed = true;
         flash();
