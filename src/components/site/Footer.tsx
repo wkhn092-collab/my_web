@@ -38,12 +38,12 @@ export async function Footer({ content }: { content: SiteContent }) {
       />
       <div className="pointer-events-none absolute -right-40 top-0 -z-10 h-[70vmin] w-[70vmin] rounded-full bg-[radial-gradient(closest-side,rgb(62_154_168/0.12),transparent)]" aria-hidden="true" />
 
-      <div className="mx-auto max-w-7xl px-5 pt-12 md:px-10 md:pt-36">
+      <div className="mx-auto max-w-7xl px-5 pt-12 md:px-10 md:pt-20">
         {/* The closing call: the biggest line on the page, and one round door into the form. */}
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-12">
           <div className="max-w-4xl">
             <p className="eyebrow">{t('footer.nextStep')}</p>
-            <h2 className="mt-4 text-[clamp(2.35rem,6.8vw,6.5rem)] font-light leading-[1.02] tracking-[-0.03em] md:mt-6">
+            <h2 className="mt-4 text-[clamp(2.35rem,6.8vw,6.5rem)] font-light leading-[1.02] tracking-[-0.03em] md:mt-5">
               <SplitText text={t('footer.ctaTitle')} accent={['מקצועיים']} />
             </h2>
           </div>
@@ -71,14 +71,14 @@ export async function Footer({ content }: { content: SiteContent }) {
           </Reveal>
         </div>
 
-        <div className="hairline mt-10 md:mt-28" />
+        <div className="hairline mt-10 md:mt-14" />
 
         {/*
           Mobile: links first, then a tight contact strip — no tall empty band before the studio card.
           Desktop: hours/contact | nav/legal.
         */}
-        <div className="grid gap-8 py-8 text-base md:grid-cols-2 md:gap-16 md:py-16 lg:gap-24">
-          <div className="order-2 space-y-6 md:order-1 md:space-y-10">
+        <div className="grid gap-8 py-8 text-base md:grid-cols-2 md:gap-12 md:py-10 lg:gap-16">
+          <div className="order-2 space-y-6 md:order-1 md:space-y-7">
             <HoursCard />
 
             <div className="space-y-2.5 px-1 md:space-y-3">
@@ -103,17 +103,17 @@ export async function Footer({ content }: { content: SiteContent }) {
             </div>
           </div>
 
-          <div className="order-1 grid grid-cols-2 gap-5 self-start md:order-2 md:gap-8 md:border-r md:border-pearl/10 md:pr-12 lg:pr-16">
+          <div className="order-1 grid grid-cols-2 gap-5 self-start md:order-2 md:gap-8 md:border-r md:border-pearl/10 md:pr-10 lg:pr-12">
             <nav aria-label={t('footer.nav')}>
               <p className="eyebrow" aria-hidden="true">
                 {t('footer.nav')}
               </p>
-              <ul className="space-y-0 pt-3 md:space-y-1 md:pt-5">
+              <ul className="space-y-0 pt-3 md:space-y-1 md:pt-4">
                 {navLinks.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="footer-nav-link inline-flex items-baseline py-1 font-display text-[1.25rem] font-light leading-tight text-pearl/90 md:py-1 md:text-2xl lg:text-3xl"
+                      className="footer-nav-link inline-flex items-baseline py-1 font-display text-[1.25rem] font-light leading-tight text-pearl/90 md:py-1 md:text-2xl lg:text-[1.85rem]"
                     >
                       <span className="footer-nav-dash" aria-hidden="true" />
                       {link.label}
@@ -127,7 +127,7 @@ export async function Footer({ content }: { content: SiteContent }) {
               <p className="eyebrow" aria-hidden="true">
                 {t('footer.legal')}
               </p>
-              <ul className="space-y-1 pt-3 md:space-y-2 md:pt-5">
+              <ul className="space-y-1 pt-3 md:space-y-2 md:pt-4">
                 {legalPages.map((page) => (
                   <li key={page.slug}>
                     <Link href={`/legal/${page.slug}`} className="link link-reveal inline-block py-0.5 text-[0.9rem] text-pearl/80 md:py-1 md:text-base">
@@ -143,40 +143,34 @@ export async function Footer({ content }: { content: SiteContent }) {
           </div>
         </div>
 
-        {/* Identity — flush strip on mobile, glass card only from md up (no floating island in empty abyss). */}
+        {/* Identity — one compact strip; email lives only under contact above. */}
         <div className="border-t border-pearl/10 pt-5 md:border-0 md:pt-0">
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-10 md:rounded-[1.75rem] md:border md:border-pearl/10 md:bg-[linear-gradient(160deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] md:p-8 md:shadow-[var(--shadow-contact-sm)] md:backdrop-blur-[18px]">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between md:gap-6 md:rounded-2xl md:border md:border-pearl/10 md:bg-[linear-gradient(160deg,rgb(255_255_255/0.06),rgb(255_255_255/0.015))] md:px-6 md:py-4 md:shadow-[var(--shadow-contact-sm)] md:backdrop-blur-[18px]">
+            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
               <div className="shrink-0">
-                <p className="font-display text-lg text-pearl md:text-2xl">{studioName}</p>
-                {placeLine ? <p className="mt-0.5 text-sm text-mist md:mt-1 md:text-base">{placeLine}</p> : null}
+                <p className="font-display text-lg text-pearl md:text-xl">{studioName}</p>
+                {placeLine ? <p className="mt-0.5 text-sm text-mist">{placeLine}</p> : null}
               </div>
-              <dl className="grid gap-1 text-sm text-mist sm:border-r sm:border-pearl/10 sm:pr-8 md:gap-1.5 md:text-base">
-                {settings.legalName && (
-                  <div className="flex flex-wrap gap-x-2">
-                    <dt>{t('footer.businessName')}</dt>
-                    <dd className="text-pearl/85">
-                      <bdi>{ownerName}</bdi>
-                    </dd>
-                  </div>
-                )}
-                {registration && (
-                  <div className="flex flex-wrap gap-x-2">
-                    <dt>{registration.type}:</dt>
-                    <dd className="text-pearl/85">
-                      <bdi>{registration.number}</bdi>
-                    </dd>
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-x-2">
-                  <dt>{t('footer.officialEmail')}</dt>
-                  <dd>
-                    <a href={`mailto:${settings.email}`} className="link text-pearl/85">
-                      <bdi>{settings.email}</bdi>
-                    </a>
-                  </dd>
-                </div>
-              </dl>
+              {(settings.legalName || registration) && (
+                <dl className="grid gap-1 text-sm text-mist sm:border-r sm:border-pearl/10 sm:pr-6">
+                  {settings.legalName && (
+                    <div className="flex flex-wrap gap-x-2">
+                      <dt>{t('footer.businessName')}</dt>
+                      <dd className="text-pearl/85">
+                        <bdi>{ownerName}</bdi>
+                      </dd>
+                    </div>
+                  )}
+                  {registration && (
+                    <div className="flex flex-wrap gap-x-2">
+                      <dt>{registration.type}:</dt>
+                      <dd className="text-pearl/85">
+                        <bdi>{registration.number}</bdi>
+                      </dd>
+                    </div>
+                  )}
+                </dl>
+              )}
             </div>
             <div className="flex items-center justify-between gap-4 border-t border-pearl/10 pt-4 md:border-0 md:justify-end md:pt-0">
               <p className="text-sm text-mist md:hidden">
@@ -188,7 +182,7 @@ export async function Footer({ content }: { content: SiteContent }) {
         </div>
       </div>
 
-      <p className="mx-auto mt-5 hidden max-w-7xl px-5 pb-1 text-sm text-mist md:mt-6 md:block md:px-10 md:text-start">
+      <p className="mx-auto mt-4 hidden max-w-7xl px-5 pb-1 text-sm text-mist md:mt-4 md:block md:px-10 md:text-start">
         © {new Date().getFullYear()} {studioName}. {t('footer.rights')}.
       </p>
     </footer>
