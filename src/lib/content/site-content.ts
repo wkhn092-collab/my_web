@@ -106,6 +106,13 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     }
     const published = new Set(parsed.data.legalPages.map((p) => p.slug));
     const missingLegal = LEGAL_DRAFTS.filter((d) => !published.has(d.slug)).map(({ slug, title }) => ({ slug, title }));
+    const faqById = new Map(parsed.data.faqs.map((f) => [f.id, f]));
+    const faqs = SEED_FAQS.map((seed) => {
+      const cms = faqById.get(seed.id);
+      faqById.delete(seed.id);
+      return cms ? { ...cms, question: seed.question, answer: seed.answer } : seed;
+    }).concat([...faqById.values()]);
+
     return {
       ...parsed.data,
       // Seed owns the hero headline line-breaks (desktop two-line lockup).
@@ -113,6 +120,8 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
         ...parsed.data.home,
         hero: { ...parsed.data.home.hero, title: SEED_HOME.hero.title },
       },
+      // Seed owns FAQ copy so price numbers never reappear from an old Studio draft.
+      faqs,
       projects: mergePortfolioProjects(parsed.data.projects),
       legalPages: [...parsed.data.legalPages, ...missingLegal],
     };
