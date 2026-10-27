@@ -1,7 +1,7 @@
 import 'server-only';
 import { createHash } from 'node:crypto';
 import { headers } from 'next/headers';
-import { env } from '@/lib/env.server';
+import { env, isDeployed } from '@/lib/env.server';
 
 export async function getClientIp(): Promise<string> {
   const h = await headers();
@@ -28,7 +28,10 @@ export async function isSameOriginRequest(): Promise<boolean> {
 
 /** SHA-256 with a server-side salt: lets us spot abuse without storing the IP itself. */
 export function hashIp(ip: string): string {
-  return createHash('sha256')
-    .update(`${env.LEAD_IP_SALT ?? 'dev-only-salt'}:${ip}`)
-    .digest('hex');
+  const salt = env.LEAD_IP_SALT;
+  if (!salt) {
+    if (isDeployed) throw new Error('LEAD_IP_SALT missing');
+    return createHash('sha256').update(`dev-only-salt:${ip}`).digest('hex');
+  }
+  return createHash('sha256').update(`${salt}:${ip}`).digest('hex');
 }

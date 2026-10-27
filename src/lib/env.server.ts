@@ -131,6 +131,11 @@ if (leadsLocked) {
   console.warn(`[env] Lead form locked. Missing: ${missingOnDeploy.join(', ')}`);
 }
 
+/** Retention cron is separate from lead intake: missing secret skips purge, it must not lock the form. */
+if (isDeployed && !env.CRON_SECRET) {
+  console.warn('[env] CRON_SECRET missing: /api/cron/purge-leads will refuse to run (old leads will not be deleted).');
+}
+
 export class ServiceNotConfiguredError extends Error {
   constructor(service: string) {
     super(`Service not configured: ${service}`);
