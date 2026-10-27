@@ -29,7 +29,7 @@ export async function Hero({ hero }: { hero: HomePage['hero'] }) {
         <div className="hero-content hero-lift relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-14 pt-36 md:px-10 md:pb-28 md:pt-40">
           <h1
             id="hero-title"
-            className="max-w-5xl text-[clamp(2.35rem,7.2vw,4.75rem)] font-light leading-[1.05] tracking-[-0.02em] max-md:[@media(max-height:740px)]:text-[2.1rem] lg:max-w-[54vw]"
+            className="max-w-5xl text-[clamp(2.35rem,7.2vw,4.75rem)] font-light leading-[1.12] tracking-[-0.02em] max-md:[@media(max-height:740px)]:text-[2.1rem] md:max-w-[18ch] lg:max-w-[16ch]"
           >
             <SplitText text={hero.title} mode="now" delayMs={900} accent={['חזק']} />
           </h1>

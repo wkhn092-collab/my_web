@@ -108,6 +108,11 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
     const missingLegal = LEGAL_DRAFTS.filter((d) => !published.has(d.slug)).map(({ slug, title }) => ({ slug, title }));
     return {
       ...parsed.data,
+      // Seed owns the hero headline line-breaks (desktop two-line lockup).
+      home: {
+        ...parsed.data.home,
+        hero: { ...parsed.data.home.hero, title: SEED_HOME.hero.title },
+      },
       projects: mergePortfolioProjects(parsed.data.projects),
       legalPages: [...parsed.data.legalPages, ...missingLegal],
     };

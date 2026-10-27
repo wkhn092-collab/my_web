@@ -3,18 +3,37 @@ import { Reveal } from './Reveal';
 
 const PUNCTUATION = /[.,:;!?״"׳']/g;
 
-function words(text: string, accent: string[]) {
+function words(text: string, accent: string[], indexOffset = 0) {
   const list = text.split(/\s+/).filter(Boolean);
   return list.map((word, i) => (
-    <Fragment key={`${word}-${i}`}>
+    <Fragment key={`${word}-${indexOffset + i}`}>
       <span className="split-word">
-        <span className={accent.includes(word.replace(PUNCTUATION, '')) ? 'text-gilded' : undefined} style={{ '--i': i } as CSSProperties}>
+        <span
+          className={accent.includes(word.replace(PUNCTUATION, '')) ? 'text-gilded' : undefined}
+          style={{ '--i': indexOffset + i } as CSSProperties}
+        >
           {word}
         </span>
       </span>
       {i < list.length - 1 ? ' ' : null}
     </Fragment>
   ));
+}
+
+/** Soft line breaks (`\n` in copy) become block rows so a desktop headline can sit on two lines. */
+function lines(text: string, accent: string[]) {
+  const parts = text.split('\n').map((part) => part.trim()).filter(Boolean);
+  if (parts.length <= 1) return words(text.replace(/\n/g, ' ').trim(), accent);
+  let offset = 0;
+  return parts.map((part, line) => {
+    const node = (
+      <span key={`line-${line}`} className="block">
+        {words(part, accent, offset)}
+      </span>
+    );
+    offset += part.split(/\s+/).filter(Boolean).length;
+    return node;
+  });
 }
 
 /**
@@ -42,13 +61,13 @@ export function SplitText({
   if (mode === 'now') {
     return (
       <Tag id={id} className={`split-now ${className}`} style={{ '--split-delay': `${delayMs}ms` } as CSSProperties}>
-        {words(text, accent)}
+        {lines(text, accent)}
       </Tag>
     );
   }
   return (
     <Reveal as={Tag} id={id} bare className={`split-scroll ${className}`}>
-      {words(text, accent)}
+      {lines(text, accent)}
     </Reveal>
   );
 }
