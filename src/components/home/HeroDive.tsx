@@ -85,9 +85,9 @@ function autoDiveOnTouch(section: HTMLElement): () => void {
     const distance = to - from;
     if (Math.abs(distance) < 2) return;
     const down = to > from;
-    const duration = down ? 1900 : 1200;
-    // Where the light breathes in the scroll-tied dive (CSS .hero-veil-light peaks around --dive 0.8).
-    const flashAt = (section.offsetHeight - window.innerHeight) * 0.55;
+    const duration = down ? 2800 : 1600;
+    // Where the light breathes in the scroll-tied dive (CSS .hero-veil-light peaks mid-to-late dive).
+    const flashAt = (section.offsetHeight - window.innerHeight) * 0.5;
     let flashed = !down || from >= flashAt;
     const startedAt = performance.now();
     gliding = true;

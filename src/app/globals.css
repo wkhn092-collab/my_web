@@ -476,13 +476,13 @@ html.intro-seen .intro {
 }
 
 /* ───────── Hero dive: a pinned stage scrolled through, into the pearl (HeroDive.tsx sets --dive 0..1) ───────── */
-/* Short dive: enough for the pearl beat, not enough to bury proof below the fold. */
+/* Tall enough to feel the dive; not so tall that proof never arrives. */
 .hero-dive.is-diving {
-  height: 155svh;
+  height: 220svh;
 }
 @media (max-width: 767px) {
   .hero-dive.is-diving {
-    height: 130svh;
+    height: 180svh;
   }
 }
 
@@ -591,7 +591,7 @@ html.intro-seen .intro {
 /* Touch: the swipe glides through the dive too fast for the scroll-tied light, so it plays as one timed flash. */
 .hero-dive.is-flashing .hero-veil-light {
   z-index: 1;
-  animation: dive-flash 1300ms var(--ease-out) forwards;
+  animation: dive-flash 1800ms var(--ease-out) forwards;
 }
 @keyframes dive-flash {
   0% {
@@ -613,10 +613,11 @@ html.intro-seen .intro {
   height: 100svh;
 }
 .hero-dive .hero-content {
-  opacity: clamp(0, calc(1 - var(--dive, 0) * 4.5), 1);
+  /* Fade across more of the dive so the text doesn't vanish in the first swipe. */
+  opacity: clamp(0, calc(1 - var(--dive, 0) * 2.4), 1);
 }
 .hero-dive .hero-lift {
-  translate: 0 calc(var(--dive, 0) * -16vh);
+  translate: 0 calc(var(--dive, 0) * -22vh);
 }
 .hero-veil-light,
 .hero-veil-dark {
@@ -637,12 +638,12 @@ html.intro-seen .intro {
     );
   -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
   mask-image: radial-gradient(circle at 50% 50%, #000 22%, transparent 66%);
-  opacity: clamp(0, min(calc((var(--dive, 0) - 0.68) / 0.12), calc((0.95 - var(--dive, 0)) / 0.1)), 1);
+  opacity: clamp(0, min(calc((var(--dive, 0) - 0.55) / 0.18), calc((0.92 - var(--dive, 0)) / 0.14)), 1);
   scale: calc(0.7 + var(--dive, 0) * 0.5);
 }
 .hero-dive.is-diving .hero-veil-dark {
   /* Through the pearl into the dark: an iris closing from the edges to the centre (never a grey cross-fade). */
-  --iris: clamp(0, calc((var(--dive, 0) - 0.82) / 0.16), 1);
+  --iris: clamp(0, calc((var(--dive, 0) - 0.72) / 0.24), 1);
   background: radial-gradient(
     circle at 50% 50%,
     transparent calc((1 - var(--iris)) * 80vmax - 22vmax),

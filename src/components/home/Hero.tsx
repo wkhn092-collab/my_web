@@ -12,7 +12,7 @@ const delay = (ms: number) => ({ '--rise-delay': `${ms}ms` }) as CSSProperties;
 /**
  * Full-screen opening: the 3D pearl oyster in the left half (above the text on phones), the headline rising word
  * by word as the intro lifts. Scrolling dives into the pearl (HeroDive) before the rest of the site begins.
- * Dive height is kept short so works and proof arrive early in the scroll.
+ * Dive is long enough to feel the pearl, then releases into works.
  * No eyebrow / reply line on purpose — they crowd the first screen on phones.
  */
 export async function Hero({ hero }: { hero: HomePage['hero'] }) {
