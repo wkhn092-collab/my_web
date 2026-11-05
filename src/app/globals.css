@@ -468,11 +468,80 @@ html.intro-seen .intro {
   opacity: 0;
 }
 @media (max-width: 767px) {
+  /* Mobile fallback that still reads as a shell/pearl when WebGL is late or skipped. */
   .scene-poster::before {
     background:
-      radial-gradient(48% 26% at 50% 28%, rgb(232 212 168 / 0.2), transparent 70%),
-      radial-gradient(70% 36% at 50% 30%, rgb(62 154 168 / 0.16), transparent 72%);
+      radial-gradient(42% 28% at 50% 26%, rgb(255 244 220 / 0.28), transparent 68%),
+      radial-gradient(58% 36% at 50% 30%, rgb(232 212 168 / 0.22), transparent 70%),
+      radial-gradient(78% 42% at 50% 34%, rgb(62 154 168 / 0.2), transparent 74%);
   }
+  .scene-poster::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 22%;
+    width: min(72vw, 18rem);
+    height: min(42vw, 11rem);
+    translate: -50% 0;
+    border-radius: 50% 50% 42% 42%;
+    border: 1px solid rgb(232 212 168 / 0.28);
+    background:
+      radial-gradient(circle at 50% 58%, rgb(255 244 220 / 0.35), transparent 42%),
+      radial-gradient(ellipse at 50% 40%, rgb(62 154 168 / 0.18), transparent 70%);
+    box-shadow:
+      0 0 40px rgb(232 212 168 / 0.12),
+      inset 0 -12px 28px rgb(8 16 28 / 0.35);
+    opacity: 0.9;
+    transition: opacity 1.6s var(--ease-out);
+  }
+  .scene-poster:has(> canvas[data-live])::after {
+    opacity: 0;
+  }
+}
+
+/* Static product stand-in until WebGL paints (and forever if it fails). */
+.product-stage-poster {
+  background:
+    radial-gradient(42% 55% at 50% 48%, rgb(232 212 168 / 0.22), transparent 70%),
+    radial-gradient(28% 38% at 50% 42%, rgb(255 244 220 / 0.16), transparent 68%),
+    radial-gradient(60% 70% at 50% 60%, rgb(62 154 168 / 0.12), transparent 72%);
+  transition: opacity 1.2s var(--ease-out);
+}
+.product-stage[data-kind='perfume'] .product-stage-poster::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(28%, 7.5rem);
+  height: min(62%, 22rem);
+  translate: -50% -52%;
+  border-radius: 40% 40% 18% 18% / 12% 12% 28% 28%;
+  border: 1px solid rgb(232 212 168 / 0.35);
+  background:
+    linear-gradient(180deg, rgb(255 244 220 / 0.2), transparent 35%),
+    linear-gradient(180deg, rgb(201 166 107 / 0.25), rgb(62 154 168 / 0.12) 55%, rgb(12 22 38 / 0.4));
+  box-shadow: 0 24px 48px rgb(0 0 0 / 0.35);
+}
+.product-stage[data-kind='diamond'] .product-stage-poster::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(38%, 11rem);
+  height: min(38%, 11rem);
+  translate: -50% -50%;
+  rotate: 45deg;
+  border: 1px solid rgb(232 212 168 / 0.4);
+  background:
+    linear-gradient(135deg, rgb(255 244 220 / 0.35), transparent 45%),
+    linear-gradient(225deg, rgb(62 154 168 / 0.25), rgb(12 22 38 / 0.5));
+  box-shadow: 0 20px 50px rgb(0 0 0 / 0.4);
+}
+.product-stage[data-live] .product-stage-poster {
+  opacity: 0;
+}
+.product-stage[data-failed] .product-stage-poster {
+  opacity: 1;
 }
 
 /* ───────── Hero dive: a pinned stage scrolled through, into the pearl (HeroDive.tsx sets --dive 0..1) ───────── */
@@ -659,19 +728,36 @@ html.intro-seen .intro {
   }
 }
 .hero-dive.is-diving .hero-veil-dark {
-  --iris: clamp(0, calc((var(--dive, 0) - 0.82) / 0.16), 1);
+  --iris: clamp(0, calc((var(--dive, 0) - 0.72) / 0.22), 1);
   background: radial-gradient(
     circle at 50% 50%,
     transparent calc((1 - var(--iris)) * 80vmax - 22vmax),
-    rgb(50 170 150 / 0.4) calc((1 - var(--iris)) * 80vmax - 13vmax),
-    rgb(90 60 150 / 0.6) calc((1 - var(--iris)) * 80vmax - 6vmax),
+    rgb(50 170 150 / 0.35) calc((1 - var(--iris)) * 80vmax - 13vmax),
+    rgb(30 70 110 / 0.55) calc((1 - var(--iris)) * 80vmax - 6vmax),
     var(--color-abyss) calc((1 - var(--iris)) * 80vmax)
   );
   opacity: 1;
 }
 @media (min-width: 768px) {
   .hero-dive.is-diving .hero-veil-dark {
-    --iris: clamp(0, calc((var(--dive, 0) - 0.55) / 0.45), 1);
+    --iris: clamp(0, calc((var(--dive, 0) - 0.5) / 0.42), 1);
+  }
+}
+
+/* The word born from the pearl as the iris closes — dive leads to a payoff, not empty blur. */
+.hero-dive-reveal {
+  opacity: 0;
+  scale: 0.86;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 40px rgb(232 212 168 / 0.35);
+}
+.hero-dive.is-diving .hero-dive-reveal {
+  opacity: clamp(0, calc((var(--dive, 0) - 0.78) / 0.14), 1);
+  scale: calc(0.86 + var(--dive, 0) * 0.14);
+}
+@media (min-width: 768px) {
+  .hero-dive.is-diving .hero-dive-reveal {
+    opacity: clamp(0, calc((var(--dive, 0) - 0.62) / 0.22), 1);
   }
 }
 

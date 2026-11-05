@@ -16,14 +16,14 @@ type Props = {
 };
 
 /**
- * A live 3D product on a turntable: turns with the scroll, can be flicked with a drag, follows the pointer.
- * Loads only when it approaches the viewport; draws one still frame on reduced motion; renders nothing where
- * WebGL is missing or the device is too weak (the surrounding section stands on its own).
+ * A live 3D product on a turntable. A CSS poster stays visible until the first WebGL frame
+ * (and forever if WebGL fails / is skipped) so the section never sells a blank half-screen.
  */
 export function ProductStage({ kind, className = '', cursorLabel, trackSelector }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [live, setLive] = useState(false);
   const [interactive, setInteractive] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,7 +33,10 @@ export function ProductStage({ kind, className = '', cursorLabel, trackSelector 
 
     const start = async () => {
       const tier = detectStageTier();
-      if (tier === 'poster') return;
+      if (tier === 'poster') {
+        setFailed(true);
+        return;
+      }
       const { createProductEngine } = await import('./product-engine');
       if (cancelled) return;
       const still = tier === 'still';
@@ -43,23 +46,27 @@ export function ProductStage({ kind, className = '', cursorLabel, trackSelector 
           kind,
           quality: still ? 'reduced' : tier,
           still,
-          onFirstFrame: () => setLive(true),
+          onFirstFrame: () => {
+            if (!cancelled) setLive(true);
+          },
           onTooSlow: () => {
             rememberSceneOff();
             setLive(false);
+            setFailed(true);
             cleanup?.();
           },
           onFail: () => {
             setLive(false);
+            setFailed(true);
             cleanup?.();
           },
         });
       } catch {
+        setFailed(true);
         return;
       }
       setInteractive(!still);
 
-      // Resolved on every scroll: a pin wrapper may be added after the stage starts.
       const track = () => (trackSelector ? canvas.closest(trackSelector) : null) ?? canvas.closest('section') ?? canvas;
       let visible = false;
       const sync = () => engine.setRunning(visible && !document.hidden && !useVisitor.getState().motionPaused);
@@ -122,8 +129,6 @@ export function ProductStage({ kind, className = '', cursorLabel, trackSelector 
       };
     };
 
-    // Once the page is idle, fetch the model file and the engine chunk (both small and cached), so the stage
-    // appears instantly when the visitor gets there. The GPU work itself still waits for the approach below.
     const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
     const cancelIdle = window.cancelIdleCallback ?? window.clearTimeout;
     const warm = idle(
@@ -135,13 +140,14 @@ export function ProductStage({ kind, className = '', cursorLabel, trackSelector 
       { timeout: 4000 },
     );
 
+    // Start loading one full viewport away so the bottle is ready when the visitor arrives.
     const approach = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         approach.disconnect();
         void start();
       },
-      { rootMargin: '150% 0px' },
+      { rootMargin: '100% 0px' },
     );
     approach.observe(canvas);
 
@@ -154,14 +160,17 @@ export function ProductStage({ kind, className = '', cursorLabel, trackSelector 
   }, [kind, trackSelector]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      data-cursor={interactive && cursorLabel ? 'view' : undefined}
-      data-cursor-label={interactive ? cursorLabel : undefined}
-      className={`touch-pan-y select-none transition-opacity duration-[1400ms] ease-[var(--ease-out)] ${live ? 'opacity-100' : 'opacity-0'} ${
-        interactive ? 'cursor-grab active:cursor-grabbing' : ''
-      } ${className}`}
-    />
+    <div className={`product-stage relative ${className}`} data-kind={kind} data-live={live ? '' : undefined} data-failed={failed ? '' : undefined}>
+      <div className="product-stage-poster absolute inset-0" aria-hidden="true" />
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        data-cursor={interactive && cursorLabel ? 'view' : undefined}
+        data-cursor-label={interactive ? cursorLabel : undefined}
+        className={`absolute inset-0 h-full w-full touch-pan-y select-none transition-opacity duration-[1400ms] ease-[var(--ease-out)] ${live ? 'opacity-100' : 'opacity-0'} ${
+          interactive ? 'cursor-grab active:cursor-grabbing' : ''
+        }`}
+      />
+    </div>
   );
 }

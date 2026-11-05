@@ -60,6 +60,10 @@ export async function Hero({ hero }: { hero: HomePage['hero'] }) {
 
         <div className="hero-veil-light pointer-events-none absolute inset-0" aria-hidden="true" />
         <div className="hero-veil-dark pointer-events-none absolute inset-0 bg-abyss" aria-hidden="true" />
+        {/* Born from the pearl as the dive settles — so the strongest beat leads somewhere. */}
+        <p className="hero-dive-reveal pointer-events-none absolute inset-0 z-[2] flex items-center justify-center font-display text-[clamp(3.5rem,18vw,9rem)] font-light tracking-[-0.04em] text-pearl" aria-hidden="true">
+          עומק
+        </p>
       </div>
     </section>
   );

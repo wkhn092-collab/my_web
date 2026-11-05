@@ -86,14 +86,20 @@ export function DepthScene() {
           lastY = window.scrollY;
         };
 
-        // The gap between the header and the headline's eyebrow, where the shell sits on portrait screens.
+        // Gap between the header and the headline — where the shell sits on portrait screens.
+        // (Eyebrow was removed from the hero; measure against the title / content band.)
         const measure = () => {
-          const eyebrow = hero.querySelector<HTMLElement>('.hero-content .eyebrow');
+          const anchor =
+            hero.querySelector<HTMLElement>('#hero-title') ??
+            hero.querySelector<HTMLElement>('[data-shell-band]') ??
+            hero.querySelector<HTMLElement>('.hero-lift');
           // Mid-dive the text is lifted and fading: only the resting layout is a valid reference.
-          if (!eyebrow || hero.getBoundingClientRect().top < -2) return;
+          if (!anchor || hero.getBoundingClientRect().top < -2) return;
           const canvasTop = canvas.getBoundingClientRect().top;
           const headerBottom = document.querySelector('header')?.getBoundingClientRect().bottom ?? 64;
-          engine!.setFreeBand(Math.max(56, headerBottom - canvasTop), eyebrow.getBoundingClientRect().top - canvasTop - 12);
+          const bandTop = Math.max(56, headerBottom - canvasTop + 8);
+          const bandBottom = Math.max(bandTop + 120, anchor.getBoundingClientRect().top - canvasTop - 16);
+          engine!.setFreeBand(bandTop, bandBottom);
         };
         measure();
         // Again once the entrance animation has settled the text in its final place.

@@ -10,7 +10,6 @@ import { Hero } from "@/components/home/Hero";
 import { NextSteps } from "@/components/home/NextSteps";
 import { ProductShowcase } from "@/components/home/ProductShowcase";
 import { Proof } from "@/components/proof/Proof";
-import { ProductStage } from "@/components/scene/ProductStage";
 import { Services } from "@/components/home/Services";
 import { SurfaceZone } from "@/components/home/SurfaceZone";
 import { InlineLeadForm } from "@/components/lead/LazyLeadForm";
@@ -72,47 +71,43 @@ export default async function HomePage() {
           className="pointer-events-none absolute left-[22%] top-1/2 -z-10 h-[80vmin] w-[80vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgb(201_166_107/0.14),transparent_65%)]"
           aria-hidden="true"
         />
-        <div className="mx-auto grid max-w-7xl items-center gap-6 px-5 md:px-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 px-5 md:px-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
+          {PORTRAIT_SRC ? (
+            <Reveal className="relative mx-auto aspect-[4/5] w-full max-w-md overflow-hidden rounded-[2rem] border border-pearl/10 bg-ink md:max-w-none lg:mx-0 lg:max-h-[min(72vh,36rem)]">
+              <Image
+                src={PORTRAIT_SRC}
+                alt={t("home.portraitAlt")}
+                fill
+                sizes="(min-width: 1024px) 42vw, 90vw"
+                priority
+                unoptimized
+                className="object-cover object-[50%_18%] grayscale contrast-[1.05]"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-abyss/70 via-transparent to-abyss/20" aria-hidden="true" />
+            </Reveal>
+          ) : (
+            <Reveal className="relative mx-auto flex aspect-[4/5] w-full max-w-md items-center justify-center rounded-[2rem] border border-gold/30 bg-ink font-display text-7xl text-gilded lg:mx-0">
+              <span aria-hidden="true">א</span>
+            </Reveal>
+          )}
           <div>
             <p className="eyebrow">{t("home.aboutEyebrow")}</p>
             <h2 id="about-teaser-title" className="sr-only">
               {t("nav.about")}
             </h2>
-            {PORTRAIT_SRC ? (
-              <Reveal className="relative mt-8 h-28 w-28 overflow-hidden rounded-full border border-gold/40 bg-ink md:h-32 md:w-32">
-                <Image
-                  src={PORTRAIT_SRC}
-                  alt={t("home.portraitAlt")}
-                  fill
-                  sizes="128px"
-                  priority
-                  // Same Safari fix as project covers: /_next/image serves attachment and leaves a blank circle.
-                  unoptimized
-                  className="object-cover"
-                />
-              </Reveal>
-            ) : (
-              <Reveal className="mt-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/40 bg-ink font-display text-4xl text-gilded">
-                <span aria-hidden="true">א</span>
-              </Reveal>
-            )}
             <SplitText
               as="p"
               text={home.about.text}
-              className="mt-8 font-display text-3xl font-light leading-snug md:text-5xl"
+              className="mt-6 font-display text-3xl font-light leading-snug md:mt-8 md:text-5xl lg:text-[clamp(2.4rem,3.4vw,3.4rem)]"
             />
-            <Reveal className="mt-10">
+            <p className="mt-8 font-display text-2xl font-light italic text-gold-soft/90" aria-hidden="true">
+              אבישי
+            </p>
+            <Reveal className="mt-8">
               <Link href="/about" className="link text-lg">
                 {t("about.more")}
               </Link>
             </Reveal>
-          </div>
-          <div className="relative -mx-5 h-72 md:mx-0 md:h-96 lg:h-[28rem]">
-            <ProductStage
-              kind="diamond"
-              cursorLabel={t("showcase.drag")}
-              className="absolute inset-0 h-full w-full"
-            />
           </div>
         </div>
       </section>

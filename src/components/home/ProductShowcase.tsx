@@ -71,7 +71,12 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
         className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_60%_at_30%_55%,rgb(201_166_107/0.1),transparent_70%)]"
         aria-hidden="true"
       />
-      <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 md:px-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-6">
+      <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 md:px-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-center lg:gap-8">
+        {/* Bottle first and large — the section sells 3D, not empty glass beside copy. */}
+        <div className="relative -mx-5 h-[68svh] min-h-[22rem] md:mx-0 lg:h-[min(88vh,46rem)]">
+          <ProductStage kind="perfume" cursorLabel={t('drag')} trackSelector=".pin-spacer" className="absolute inset-0 h-full w-full" />
+        </div>
+
         <div>
           <p className="eyebrow">{eyebrow}</p>
           <h2 id="showcase-title" className="mt-5 text-5xl font-light md:text-7xl lg:text-6xl xl:text-7xl lg:[@media(max-height:860px)]:mt-3 lg:[@media(max-height:860px)]:text-5xl">
@@ -92,10 +97,6 @@ export function ProductShowcase({ eyebrow }: { eyebrow: string }) {
             </OpenDrawerButton>
             <span className="glass rounded-full px-4 py-2 text-xs text-pearl/80">{t('badge')}</span>
           </div>
-        </div>
-
-        <div className="relative -mx-5 h-[68svh] min-h-[22rem] md:mx-0 lg:h-[86vh]">
-          <ProductStage kind="perfume" cursorLabel={t('drag')} trackSelector=".pin-spacer" className="absolute inset-0 h-full w-full" />
         </div>
 
         <div className="lg:hidden" data-fact-scroll="">
