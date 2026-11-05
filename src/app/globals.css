@@ -52,6 +52,9 @@
 
   --sticky-cta-height: 0px;
   --header-height: 4.5rem;
+  /* Dive story: 0 at the surface → 1 at the seabed (DepthMeter). */
+  --depth: 0;
+  --depth-m: 0;
   color-scheme: dark;
 }
 
@@ -76,7 +79,12 @@
   }
 
   body {
-    background: var(--color-abyss);
+    /* Surface: teal-tinted abyss. Deeper scroll → colder, darker water. */
+    background: color-mix(
+      in srgb,
+      #071820 calc(var(--depth) * 72%),
+      color-mix(in srgb, #0e3a48 28%, var(--color-abyss))
+    );
     color: var(--color-pearl);
     font-family: var(--font-sans);
     font-size: 18px;
@@ -86,6 +94,7 @@
     overflow-x: clip;
     /* Room for the mobile sticky CTA so it never covers the end of the page. */
     padding-bottom: var(--sticky-cta-height);
+    transition: background-color 200ms linear;
   }
 
   h1,
@@ -218,6 +227,7 @@
     background-size: 100% 1px;
   }
 
+  /* Gold is reserved for the primary CTA — section labels use lake/mist instead. */
   .eyebrow {
     display: inline-flex;
     align-items: center;
@@ -225,13 +235,13 @@
     font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.32em;
-    color: var(--color-gold);
+    color: color-mix(in srgb, var(--color-lake) 70%, var(--color-mist));
   }
   .eyebrow::before {
     content: '';
     width: 2.5rem;
     height: 1px;
-    background: linear-gradient(to left, var(--color-gold), transparent);
+    background: linear-gradient(to left, var(--color-lake), transparent);
   }
 
   .text-gilded {
@@ -559,12 +569,13 @@ html.intro-seen .intro {
 .surface-color {
   --iris-r: calc(var(--surface, 0) * 90vmax);
   --drift: calc(var(--surface, 0) * 18%);
+  /* Ocean layers — teal / deep blue, not purple SaaS blobs. */
   background:
-    radial-gradient(38% 32% at calc(82% - var(--drift)) 18%, rgb(232 212 168 / 0.28), transparent 70%),
-    radial-gradient(55% 50% at calc(10% + var(--drift)) 85%, rgb(62 154 168 / 0.55), transparent 70%),
-    radial-gradient(50% 45% at 55% calc(70% - var(--drift)), rgb(140 80 165 / 0.45), transparent 70%),
-    radial-gradient(60% 55% at calc(75% - var(--drift)) 40%, rgb(30 70 140 / 0.6), transparent 70%),
-    linear-gradient(160deg, #0c3a48 0%, #16305f 45%, #2e2560 75%, #3b2658 100%);
+    radial-gradient(38% 32% at calc(82% - var(--drift)) 18%, rgb(120 220 210 / 0.18), transparent 70%),
+    radial-gradient(55% 50% at calc(10% + var(--drift)) 85%, rgb(62 154 168 / 0.45), transparent 70%),
+    radial-gradient(50% 45% at 55% calc(70% - var(--drift)), rgb(20 70 100 / 0.5), transparent 70%),
+    radial-gradient(60% 55% at calc(75% - var(--drift)) 40%, rgb(12 40 70 / 0.55), transparent 70%),
+    linear-gradient(160deg, #0a3540 0%, #0f2a48 45%, #0c1e38 75%, #091018 100%);
   /* A soft-edged iris, never a hard circle, with the screen edges melting into the dark. */
   -webkit-mask-image:
     radial-gradient(circle at 50% 50%, #000 calc(var(--iris-r) - 12vmax), transparent var(--iris-r)),
@@ -628,12 +639,13 @@ html.intro-seen .intro {
 }
 /* ───────── Sunset: the same iris at the end of the page, in the colours of the Kinneret at dusk (SurfaceZone tone="sunset") ───────── */
 .surface-zone--sunset .surface-color {
+  /* Seabed / pearl return — dark with a soft nacre glow, not pink-purple SaaS. */
   background:
-    radial-gradient(38% 32% at calc(80% - var(--drift)) 20%, rgb(255 210 140 / 0.3), transparent 70%),
-    radial-gradient(55% 50% at calc(12% + var(--drift)) 82%, rgb(236 122 84 / 0.4), transparent 70%),
-    radial-gradient(50% 45% at 55% calc(68% - var(--drift)), rgb(205 78 128 / 0.38), transparent 70%),
-    radial-gradient(60% 55% at calc(72% - var(--drift)) 42%, rgb(112 48 128 / 0.55), transparent 70%),
-    linear-gradient(160deg, #2c1a44 0%, #4a2148 40%, #5c2a3f 70%, #2e1c46 100%);
+    radial-gradient(38% 32% at calc(80% - var(--drift)) 20%, rgb(232 212 168 / 0.22), transparent 70%),
+    radial-gradient(55% 50% at calc(12% + var(--drift)) 82%, rgb(62 154 168 / 0.28), transparent 70%),
+    radial-gradient(50% 45% at 55% calc(68% - var(--drift)), rgb(20 50 70 / 0.45), transparent 70%),
+    radial-gradient(60% 55% at calc(72% - var(--drift)) 42%, rgb(8 20 36 / 0.7), transparent 70%),
+    linear-gradient(160deg, #071018 0%, #0c1a28 40%, #0a1420 70%, #050a10 100%);
 }
 .surface-zone--sunset .surface-color::after {
   background: linear-gradient(
@@ -758,6 +770,36 @@ html.intro-seen .intro {
 @media (min-width: 768px) {
   .hero-dive.is-diving .hero-dive-reveal {
     opacity: clamp(0, calc((var(--dive, 0) - 0.62) / 0.22), 1);
+  }
+}
+
+/* Depth story helpers */
+.depth-biolume {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: calc(var(--depth) * 0.55);
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 22%, rgb(120 220 210 / 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 78% 38%, rgb(90 200 190 / 0.4), transparent),
+    radial-gradient(1px 1px at 34% 68%, rgb(150 230 220 / 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 88% 72%, rgb(62 154 168 / 0.5), transparent),
+    radial-gradient(1px 1px at 56% 18%, rgb(180 240 230 / 0.35), transparent),
+    radial-gradient(1px 1px at 22% 84%, rgb(100 210 200 / 0.4), transparent);
+  mix-blend-mode: screen;
+}
+.waterline-wash {
+  background:
+    linear-gradient(to bottom, transparent 0%, rgb(62 154 168 / 0.06) 42%, rgb(8 20 36 / 0.35) 58%, rgb(5 12 22 / 0.55) 100%);
+}
+.waterline-below {
+  filter: saturate(0.75);
+  opacity: 0.82;
+}
+@media (min-width: 768px) {
+  .waterline-below {
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 0.75), #000);
   }
 }
 

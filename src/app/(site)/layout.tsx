@@ -12,6 +12,7 @@ import { Analytics } from '@/components/site/Analytics';
 import { WebVitals } from '@/components/site/WebVitals';
 import { AnnouncementBar } from '@/components/site/AnnouncementBar';
 import { CookieBanner } from '@/components/site/CookieBanner';
+import { DepthMeter } from '@/components/site/DepthMeter';
 import { Footer } from '@/components/site/Footer';
 import { Header } from '@/components/site/Header';
 import { StickyCta } from '@/components/site/StickyCta';
@@ -48,7 +49,9 @@ export default async function SiteLayout({ children }: LayoutProps<'/'>) {
       <WhatsAppFab whatsappNumber={whatsappNumber} />
       <LeadDrawer whatsappNumber={whatsappNumber} addons={content.addons} nonce={nonce} locked={leadsLocked} />
       <CookieBanner />
+      <DepthMeter />
       <div className="grain" aria-hidden="true" />
+      <div className="depth-biolume" aria-hidden="true" />
       <SmoothScroll />
       <TextMotion />
       <ButtonFx />

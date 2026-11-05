@@ -100,7 +100,7 @@ export default async function HomePage() {
               text={home.about.text}
               className="mt-6 font-display text-3xl font-light leading-snug md:mt-8 md:text-5xl lg:text-[clamp(2.4rem,3.4vw,3.4rem)]"
             />
-            <p className="mt-8 font-display text-2xl font-light italic text-gold-soft/90" aria-hidden="true">
+            <p className="mt-8 font-display text-2xl font-light italic text-pearl/55" aria-hidden="true">
               אבישי
             </p>
             <Reveal className="mt-8">
@@ -141,6 +141,11 @@ export default async function HomePage() {
           aria-labelledby="contact-title"
           className="relative py-28 md:py-40"
         >
+          {/* Pearl returns at the seabed — closes the dive story from the hero. */}
+          <div
+            className="pointer-events-none absolute left-1/2 top-[18%] -z-10 size-[min(48vw,22rem)] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(255_244_220/0.28),rgb(232_212_168/0.1)_42%,transparent_70%)] blur-[2px]"
+            aria-hidden="true"
+          />
           <div className="mx-auto grid max-w-7xl gap-14 px-5 md:px-10 lg:grid-cols-[1fr_1.1fr]">
             <div className="lg:sticky lg:top-32 lg:self-start">
               <p className="eyebrow">{t("home.contactEyebrow")}</p>

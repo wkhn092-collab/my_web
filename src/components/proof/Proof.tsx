@@ -81,19 +81,20 @@ export async function Proof({ testimonials, eyebrow }: { testimonials: Testimoni
           </>
         )}
 
-        <ul className={`grid gap-6 md:grid-cols-3 ${hasReviews ? 'mt-8' : 'mt-14'}`}>
+        {/* Large scroll-revealed lines instead of three identical glass cards. */}
+        <ol className={`space-y-10 md:space-y-14 ${hasReviews ? 'mt-10' : 'mt-14'}`}>
           {commitments.map((item, i) => (
-            <Reveal as="li" key={item.title} delay={i * 90} className="glass rounded-[1.75rem] p-7">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/50 text-gold" aria-hidden="true">
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12.5l4.5 4.5L19 7.5" />
-                </svg>
+            <Reveal as="li" key={item.title} delay={i * 100} className="grid gap-3 md:grid-cols-[auto_1fr] md:items-baseline md:gap-10">
+              <span className="font-display text-5xl font-light tabular-nums text-pearl/25 md:text-7xl" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
               </span>
-              <h3 className="mt-5 font-display text-2xl">{item.title}</h3>
-              <p className="mt-2 text-base text-mist">{item.body}</p>
+              <div>
+                <h3 className="font-display text-3xl font-light leading-snug md:text-4xl">{item.title}</h3>
+                <p className="mt-3 max-w-2xl text-lg text-mist md:text-xl">{item.body}</p>
+              </div>
             </Reveal>
           ))}
-        </ul>
+        </ol>
       </div>
     </section>
   );
